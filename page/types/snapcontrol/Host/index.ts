@@ -1,2 +1,1 @@
-import Host from "./Host";
-export default Host
+export {default} from './Host'

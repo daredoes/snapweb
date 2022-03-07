@@ -1,2 +1,1 @@
-import Volume from './Volume'
-export default Volume
+export {default} from './Volume'

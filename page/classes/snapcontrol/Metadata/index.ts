@@ -1,2 +1,1 @@
-import Metadata from './Metadata'
-export default Metadata
+export {default} from './Metadata'

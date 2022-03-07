@@ -1,2 +1,1 @@
-import Snapclient from './Snapclient'
-export default Snapclient
+export {default} from './Snapclient'

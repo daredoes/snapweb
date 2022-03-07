@@ -1,2 +1,1 @@
-import Server from './Server'
-export default Server
+export {default} from './Server'

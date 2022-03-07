@@ -1,2 +1,1 @@
-import PlaybackStatus from './PlaybackStatus'
-export default PlaybackStatus
+export {default} from './PlaybackStatus'
