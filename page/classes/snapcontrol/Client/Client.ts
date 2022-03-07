@@ -1,4 +1,6 @@
 import { Client as Interface, Host as HostInterface, Snapclient as SnapclientInterface, Config as ConfigInterface, Volume as VolumeInterface } from 'types/snapcontrol'
+import Host from 'classes/snapcontrol/Host'
+import Snapclient from 'classes/snapcontrol/Snapclient'
 import Volume from 'classes/snapcontrol/Volume'
 
 class Config implements ConfigInterface {
@@ -71,8 +73,8 @@ class Config implements ConfigInterface {
 class Client implements Interface {
     id: string = ""
     connected: boolean = false
-    host!: HostInterface
-    snapclient!: SnapclientInterface
+    host!: Host
+    snapclient!: Snapclient
     config!: Config
     lastSeen!: { sec: number; usec: number }
 
@@ -84,17 +86,33 @@ class Client implements Interface {
         const changedBooleans = [
             this.getId() != this.setId(params.id),
             this.updateConfig(params.config),
-            this.getConnected() != this.setConnected(params.connected)
+            this.updateHost(params.host),
+            this.updateSnapclient(params.snapclient),
+            this.getConnected() != this.setConnected(params.connected),
+            this.getLastSeen() != this.setLastSeen(params.lastSeen),
         ]
         
         const noUpdate = changedBooleans.every((changed: boolean) => {
             return !changed
         })
-        this.snapclient = params.snapclient
-        this.lastSeen = params.lastSeen
-        this.host = params.host
         // Do UI Updates Here
         return !noUpdate
+    }
+
+    updateSnapclient(params: SnapclientInterface): boolean {
+        if (!this.snapclient) {
+            this.snapclient = new Snapclient(params)
+            return true
+        }
+        return this.snapclient.update(params)
+    }
+
+    updateHost(params: HostInterface): boolean {
+        if (!this.host) {
+            this.host = new Host(params)
+            return true
+        }
+        return this.host.update(params)
     }
 
     updateConfig(params: ConfigInterface): boolean {
@@ -103,6 +121,15 @@ class Client implements Interface {
             return true
         }
         return this.config.update(params)
+    }
+
+    getLastSeen(): { sec: number; usec: number } {
+        return this.lastSeen
+    }
+
+    setLastSeen(params: {sec: number, usec: number}): { sec: number; usec: number } {
+        this.lastSeen = params
+        return this.getLastSeen()
     }
 
     getId(): string {
