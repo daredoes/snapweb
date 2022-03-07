@@ -1,42 +1,24 @@
 import Host from 'types/snapcontrol/Host'
+import Volume from 'types/snapcontrol/Volume';
+import Snapclient from 'types/snapcontrol/Snapclient';
 
-class Client {
-    constructor(json: any) {
-        this.fromJson(json);
-    }
+export type Config = {
+    instance: number
+    latency: number
+    name: string
+    volume: Volume
+}
 
-    fromJson(json: any) {
-        this.id = json.id;
-        this.host = new Host(json.host);
-        let jsnapclient = json.snapclient;
-        this.snapclient = { name: jsnapclient.name, protocolVersion: jsnapclient.protocolVersion, version: jsnapclient.version }
-        let jconfig = json.config;
-        this.config = { instance: jconfig.instance, latency: jconfig.latency, name: jconfig.name, volume: { muted: jconfig.volume.muted, percent: jconfig.volume.percent } }
-        this.lastSeen = { sec: json.lastSeen.sec, usec: json.lastSeen.usec }
-        this.connected = Boolean(json.connected);
+type Client = {
+    id: string
+    host: Host
+    snapclient: Snapclient
+    config: Config
+    lastSeen: {
+        sec: number
+        usec: number
     }
-
-    id: string = "";
-    host!: Host;
-    snapclient!: {
-        name: string;
-        protocolVersion: number;
-        version: string;
-    }
-    config!: {
-        instance: number;
-        latency: number;
-        name: string;
-        volume: {
-            muted: boolean;
-            percent: number;
-        }
-    };
-    lastSeen!: {
-        sec: number;
-        usec: number;
-    };
-    connected: boolean = false;
+    connected: boolean
 }
 
 export default Client

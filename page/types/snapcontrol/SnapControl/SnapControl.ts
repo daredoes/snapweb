@@ -4,13 +4,26 @@ import Properties from 'types/snapcontrol/Properties'
 import Metadata from 'types/snapcontrol/Metadata'
 import Group from 'types/snapcontrol/Group'
 import Client from 'types/snapcontrol/Client'
+import PlaybackStatus from 'types/snapcontrol/PlaybackStatus'
 
 class SnapControl {
-    constructor(baseUrl: string) {
+    constructor(updateGroupVolume: (group: Group) => void, updatePlaybackState: (playbackState: PlaybackStatus) => void, baseUrl?: string) {
         this.server = new Server();
-        this.baseUrl = baseUrl;
+        this.updateGroupVolume = updateGroupVolume
+        this.updatePlaybackState = updatePlaybackState
+        if (baseUrl) {
+            this.updateBaseUrl(baseUrl)
+        }
+    }
+
+    public updateBaseUrl(baseUrl: string) {
+        if (this.connection) {
+            this.connection.close()
+        }
+        this.server = new Server();
+        this.baseUrl = baseUrl
+        this.status_req_id = -1
         this.msg_id = 0;
-        this.status_req_id = -1;
         this.connect();
     }
 
@@ -31,7 +44,7 @@ class SnapControl {
             case 'Client.OnVolumeChanged':
                 let client = this.getClient(notification.params.id);
                 client.config.volume = notification.params.volume;
-                updateGroupVolume(this.getGroupFromClient(client.id));
+                this.updateGroupVolume(this.getGroupFromClient(client.id));
                 return true;
             case 'Client.OnLatencyChanged':
                 this.getClient(notification.params.id).config.latency = notification.params.latency;
@@ -97,25 +110,11 @@ class SnapControl {
         // https://googlechrome.github.io/samples/media-session/audio.html
         // https://developer.mozilla.org/en-US/docs/Web/API/MediaSession/setActionHandler#seekto
         console.log('updateProperties: ', props);
-        let play_state: MediaSessionPlaybackState = "none";
         if (props.playbackStatus != undefined) {
-            if (props.playbackStatus == "playing") {
-                audio.play();
-                play_state = "playing";
-            }
-            else if (props.playbackStatus == "paused") {
-                audio.pause();
-                play_state = "paused";
-            }
-            else if (props.playbackStatus == "stopped") {
-                audio.pause();
-                play_state = "none";
-            }
+            this.updatePlaybackState(props.playbackStatus as PlaybackStatus)
         }
 
         let mediaSession = navigator.mediaSession!;
-        mediaSession.playbackState = play_state;
-        console.log('updateProperties playbackState: ', navigator.mediaSession!.playbackState);
         // if (props.canGoNext == undefined || !props.canGoNext!)
         mediaSession.setActionHandler('play', () => {
             props.canPlay ?
@@ -349,7 +348,7 @@ class SnapControl {
 
         let msgJson = JSON.stringify(msg);
         console.log("Sending: " + msgJson);
-        this.connection.send(msgJson);
+        this.connection?.send(msgJson);
         return this.msg_id;
     }
 
@@ -380,11 +379,13 @@ class SnapControl {
         }
     }
 
-    baseUrl: string;
-    connection!: WebSocket;
+    baseUrl?: string;
+    connection?: WebSocket;
     server: Server;
-    msg_id: number;
-    status_req_id: number;
+    msg_id: number = 0;
+    status_req_id: number = -1;
+    updateGroupVolume!: (group: Group) => void;
+    updatePlaybackState!: (playbackState: PlaybackStatus) => void;
 }
 
 export default SnapControl

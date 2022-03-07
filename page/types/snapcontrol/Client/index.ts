@@ -1,2 +1,3 @@
-import Client from './Client'
+import Client, {Config} from './Client'
+export {Config}
 export default Client

@@ -1,2 +1,2 @@
-import PlaybackStatus from './PlaybackStatus'
-export default PlaybackStatus
+import SnapControl from './SnapControl'
+export default SnapControl

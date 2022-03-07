@@ -3,8 +3,7 @@ import Group from 'types/snapcontrol/Group';
 import Metadata from 'types/snapcontrol/Metadata'
 import Properties from 'types/snapcontrol/Properties';
 import Stream from 'types/snapcontrol/Stream';
-
-
+import Server from 'types/snapcontrol/Server';
 
 
 class SnapControl {

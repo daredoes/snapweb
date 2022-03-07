@@ -183,64 +183,16 @@ function show(snapcontrol: SnapControl, hide_offline?: boolean, snapstream?: Sna
             let slider = document.getElementById("vol_" + group.id) as HTMLInputElement;
             if (slider == null)
                 continue;
+
+            // TODO:DARE replace these groupVolumeEnter functions
             slider.addEventListener('pointerdown', function () {
-                groupVolumeEnter(group.id);
+                // groupVolumeEnter(group.id);
             });
             slider.addEventListener('touchstart', function () {
-                groupVolumeEnter(group.id);
+                // groupVolumeEnter(group.id);
             });
         }
     }
-}
-
-function updateGroupVolume(group: Group) {
-    let group_vol = snapcontrol.getGroupVolume(group, hide_offline);
-    let slider = document.getElementById("vol_" + group.id) as HTMLInputElement;
-    if (slider == null)
-        return;
-    console.log("updateGroupVolume group: " + group.id + ", volume: " + group_vol + ", slider: " + (slider != null));
-    slider.value = String(group_vol);
-}
-
-let client_volumes: Array<number>;
-let group_volume: number;
-function setGroupVolume(group_id: string) {
-    let group = snapcontrol.getGroup(group_id);
-    let percent = (document.getElementById('vol_' + group.id) as HTMLInputElement).valueAsNumber;
-    console.log("setGroupVolume id: " + group.id + ", volume: " + percent);
-    // show()
-    let delta = percent - group_volume;
-    let ratio: number;
-    if (delta < 0)
-        ratio = (group_volume - percent) / group_volume;
-    else
-        ratio = (percent - group_volume) / (100 - group_volume);
-
-    for (let i = 0; i < group.clients.length; ++i) {
-        let new_volume = client_volumes[i];
-        if (delta < 0)
-            new_volume -= ratio * client_volumes[i];
-        else
-            new_volume += ratio * (100 - client_volumes[i]);
-        let client_id = group.clients[i].id;
-        // TODO: use batch request to update all client volumes at once
-        snapcontrol.setVolume(client_id, new_volume);
-        let slider = document.getElementById('vol_' + client_id) as HTMLInputElement;
-        if (slider)
-            slider.value = String(new_volume);
-    }
-}
-
-function groupVolumeEnter(group_id: string) {
-    let group = snapcontrol.getGroup(group_id);
-    let percent = (document.getElementById('vol_' + group.id) as HTMLInputElement).valueAsNumber;
-    console.log("groupVolumeEnter id: " + group.id + ", volume: " + percent);
-    group_volume = percent;
-    client_volumes = [];
-    for (let i = 0; i < group.clients.length; ++i) {
-        client_volumes.push(group.clients[i].config.volume.percent);
-    }
-    // show()
 }
 
 function setVolume(id: string, mute: boolean) {
