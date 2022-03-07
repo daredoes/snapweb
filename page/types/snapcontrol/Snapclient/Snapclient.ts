@@ -1,7 +1,7 @@
-class Snapclient {
-    name!: string
-    protocolVersion!: number
-    version!: string
+interface Snapclient {
+    name: string
+    protocolVersion: number
+    version: string
 }
 
 export default Snapclient

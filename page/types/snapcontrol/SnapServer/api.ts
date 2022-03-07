@@ -231,7 +231,7 @@ export type ClientOnDisconnectResponse = {
 
 export type ClientOnVolumeChangedResponse = {
     id: string,
-    volume: Volume
+    volume: typeof Volume
 }
 
 export type ClientOnLatencyChangedResponse = {

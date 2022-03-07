@@ -2,7 +2,7 @@ import Metadata from "types/snapcontrol/Metadata";
 import PlaybackStatus from "types/snapcontrol/PlaybackStatus";
 
 
-class Properties {
+interface Properties {
     loopStatus?: string;
     shuffle?: boolean
     volume?: number;
@@ -11,13 +11,13 @@ class Properties {
     position?: number;
     minimumRate?: number;
     maximumRate?: number;
-    canGoNext!: boolean;
-    canGoPrevious!: boolean;
-    canPlay!: boolean;
-    canPause!: boolean;
-    canSeek!: boolean;
-    canControl!: boolean;
-    metadata!: Metadata;
+    canGoNext: boolean;
+    canGoPrevious: boolean;
+    canPlay: boolean;
+    canPause: boolean;
+    canSeek: boolean;
+    canControl: boolean;
+    metadata: Metadata;
 }
 
 export default Properties

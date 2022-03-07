@@ -1,6 +1,8 @@
-class Volume {
-    muted!: boolean;
-    percent!: number;
+
+
+interface Volume {
+    muted: boolean;
+    percent: number;
 }
 
 export default Volume
