@@ -14,9 +14,16 @@ function getDefaultBaseUrl(): string {
 }
 
 
+// Todo:DARE - For when you return
+// 1. Implement classes/Properties
+// 2. Implemenet classes/Server
+// 3. Implemenet classes/Stream
+// 4. Start writing notification methods from Snapcontrol into controller
+
 class Controller {
     private static instance: Controller;
     private serverInstance: SnapServer = new SnapServer();
+    // Write functions directly into these
     private messageMethods: API.MessageMethods = {}
     private notificationMethods: API.NotificationMethods = {}
     private _audio?: HTMLAudioElement
