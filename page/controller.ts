@@ -15,9 +15,9 @@ function getDefaultBaseUrl(): string {
 
 
 // Todo:DARE - For when you return
-// 1. Implement classes/Properties
-// 2. Implemenet classes/Server
-// 3. Implemenet classes/Stream
+// 1. Implement classes/Properties - DONE
+// 2. Implemenet classes/Stream
+// 3. Implemenet classes/Server
 // 4. Start writing notification methods from Snapcontrol into controller
 
 class Controller {

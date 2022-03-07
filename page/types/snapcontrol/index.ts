@@ -1,7 +1,7 @@
 import Volume from './Volume'
-import Stream from './Stream'
+import Stream, {StreamUri} from './Stream'
 import Snapclient from './Snapclient'
-import Server from './Server'
+import Server, {ServerDetails} from './Server'
 import Properties from './Properties'
 import PlaybackStatus from './PlaybackStatus'
 import Metadata from './Metadata'
@@ -18,7 +18,9 @@ export {
     PlaybackStatus,
     Properties,
     Server,
+    ServerDetails,
     Snapclient,
     Stream,
+    StreamUri,
     Volume
 }
