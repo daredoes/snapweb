@@ -2,9 +2,9 @@ import Stream from 'types/snapcontrol/Stream'
 import Group from 'types/snapcontrol/Group'
 import Host from 'types/snapcontrol/Host'
 
-type Server = {
-    groups: Group[]
-    server: {
+class Server {
+    groups!: Group[]
+    server!: {
         host: Host;
         snapserver: {
             controlProtocolVersion: number;
@@ -13,7 +13,7 @@ type Server = {
             version: string;
         }
     };
-    streams: Stream[];
+    streams!: Stream[];
 }
 
 export default Server

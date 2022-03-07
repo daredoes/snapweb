@@ -1,9 +1,9 @@
 import Properties from "types/snapcontrol/Properties";
 
-type Stream = {
-    id: string;
-    status: string;
-    uri: {
+class Stream {
+    id!: string;
+    status!: string;
+    uri!: {
         raw: string;
         scheme: string;
         host: string;
@@ -12,7 +12,7 @@ type Stream = {
         query: string;
     }
 
-    properties: Properties;
+    properties!: Properties;
 }
 
 export default Stream

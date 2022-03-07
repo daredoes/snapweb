@@ -16,9 +16,9 @@ function getDefaultBaseUrl(): string {
 
 class Controller {
     private static instance: Controller;
-    serverInstance: SnapServer = new SnapServer();
-    messageMethods: API.MessageMethods = {}
-    notificationMethods: API.NotificationMethods = {}
+    private serverInstance: SnapServer = new SnapServer();
+    private messageMethods: API.MessageMethods = {}
+    private notificationMethods: API.NotificationMethods = {}
     private _audio?: HTMLAudioElement
     private play_state: MediaSessionPlaybackState = "none";
 

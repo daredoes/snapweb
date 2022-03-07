@@ -1,4 +1,4 @@
-type Metadata = {
+class Metadata {
     title?: string;
     artist?: string[];
     album?: string;
