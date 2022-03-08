@@ -34,7 +34,7 @@ class Group implements Interface {
     updateClients(params: ClientInterface[]): boolean {
         let changed = false;
         params.forEach((param: ClientInterface) => {
-            if (this.updateClient(param)) {
+            if (this.updateClient(param, false)) {
                 changed = true
             }
         })
@@ -45,12 +45,32 @@ class Group implements Interface {
         return changed
     }
 
-    updateClient(params: ClientInterface): boolean {
-        if (!this.clientsById[params.id]) {
+    getClient(id: string): Client | undefined {
+        return this.clientsById[id]
+    }
+
+    updateClient(params: ClientInterface, update: boolean = true): boolean {
+        const client = this.getClient(params.id)
+        let didUpdate = false
+        if (client) {
+            didUpdate = this.clientsById[params.id].update(params)
+        } else {
             this.clientsById[params.id] = new Client(params)
+            didUpdate = true
+        }
+        if (update) {
+            this.clients = Object.values(this.clientsById)
+        }
+        return didUpdate
+    }
+
+    deleteClient(id: string): boolean {
+        if (this.clientsById[id]) {
+            delete this.clientsById[id]
+            this.clients = Object.values(this.clientsById)
             return true
         }
-        return this.clientsById[params.id].update(params)
+        return false
     }
 
     getId(): string {

@@ -1,5 +1,6 @@
+import Controller from 'controller'
 import { Metadata as MInterface, PlaybackStatus, Properties as Interface } from 'types/snapcontrol'
-import Metadata from '../Metadata'
+import Metadata from 'classes/snapcontrol/Metadata'
 
 class Properties implements Interface {
     loopStatus?: string
@@ -55,11 +56,29 @@ class Properties implements Interface {
     }
 
     updateMetadata(metadata: MInterface): boolean {
-        if (!this.metadata) {
+        let didUpdate = false
+        if (this.metadata) {
+            didUpdate = this.metadata.update(metadata)
+        } else {
             this.metadata = new Metadata(metadata)
-            return true
+            didUpdate = true
         }
-        return this.metadata.update(metadata)
+        if (didUpdate) {
+            if (metadata.duration != undefined) {
+                navigator.mediaSession!.setPositionState!({
+                    duration: this.metadata.getDuration(),
+                    playbackRate: this.getRate(),
+                    position: this.getPosition()
+                });
+            } else {
+                navigator.mediaSession!.setPositionState!({
+                    duration: 0,
+                    playbackRate: 1.0,
+                    position: 0
+                });
+            }
+        }
+        return didUpdate
     }
 
     getLoopStatus(): string | undefined {
@@ -77,6 +96,26 @@ class Properties implements Interface {
 
     setPlaybackStatus(playbackStatus?: PlaybackStatus): PlaybackStatus | undefined {
         this.playbackStatus = playbackStatus
+        let play_state: MediaSessionPlaybackState = "none";
+        const audio = Controller.getInstance().audio()
+        if (playbackStatus != undefined) {
+            if (playbackStatus == "playing") {
+                audio.play();
+                play_state = "playing";
+            }
+            else if (playbackStatus == "paused") {
+                audio.pause();
+                play_state = "paused";
+            }
+            else if (playbackStatus == "stopped") {
+                audio.pause();
+                play_state = "none";
+            }
+        }
+
+        let mediaSession = navigator.mediaSession!;
+        mediaSession.playbackState = play_state;
+        
         return this.getPlaybackStatus()
     }
 

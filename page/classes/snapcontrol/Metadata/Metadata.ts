@@ -12,6 +12,30 @@ class Metadata implements Interface {
         this.update(params)
     }
 
+    private updateMediaMetadata(): MediaMetadata {
+        const artwork = this.getArtUrl() || 'snapcast-512.png'
+        const hasMusic = this.duration != undefined
+        const defaultAlbum = hasMusic ? 'Unknown Album' : ''
+        const defaultArtist = hasMusic ? 'Unknown Artist(s)' : ''
+        const defaultTitle = hasMusic ? 'Unknown title' : ''
+        const newMetadata = new MediaMetadata({
+            album: this.getAlbum() || defaultAlbum,
+            artist: this.getArtist()?.join(', ') || defaultArtist,
+            title: this.getTitle() || defaultTitle,
+            artwork: [
+                // { src: artwork, sizes: '250x250', type: 'image/jpeg' },
+                // 'https://dummyimage.com/96x96', sizes: '96x96', type: 'image/png' },
+                { src: artwork, sizes: '128x128', type: 'image/png' },
+                { src: artwork, sizes: '192x192', type: 'image/png' },
+                { src: artwork, sizes: '256x256', type: 'image/png' },
+                { src: artwork, sizes: '384x384', type: 'image/png' },
+                { src: artwork, sizes: '512x512', type: 'image/png' },
+            ]
+        })
+        navigator.mediaSession!.metadata = newMetadata
+        return newMetadata
+    }
+
     public update(params: Interface): boolean {
 
         const changedBooleans = [
@@ -25,6 +49,9 @@ class Metadata implements Interface {
         const noUpdate = changedBooleans.every((changed: boolean) => {
             return !changed
         })
+        if (!noUpdate) {
+            this.updateMediaMetadata()
+        }
         // Do UI Updates Here
         return !noUpdate
     }
@@ -42,7 +69,7 @@ class Metadata implements Interface {
         return this.title
     }
 
-    public setTitle(title?: string): string | undefined{
+    private setTitle(title?: string): string | undefined{
         this.title = title
         return this.getTitle()
     }
@@ -51,7 +78,7 @@ class Metadata implements Interface {
         return this.artist
     }
 
-    public setArtist(artist?: string[]): string[] | undefined{
+    private setArtist(artist?: string[]): string[] | undefined{
         this.artist = artist
         return this.getArtist()
     }
@@ -60,7 +87,7 @@ class Metadata implements Interface {
         return this.album
     }
 
-    public setAlbum(album?: string): string | undefined{
+    private setAlbum(album?: string): string | undefined{
         this.album = album
         return this.getAlbum()
     }
@@ -69,7 +96,7 @@ class Metadata implements Interface {
         return this.artUrl
     }
 
-    public setArtUrl(artUrl?: string): string | undefined{
+    private setArtUrl(artUrl?: string): string | undefined{
         this.artUrl = artUrl
         return this.getArtUrl()
     }

@@ -25,6 +25,7 @@ class SnapServer {
     private connection?: WebSocket;
     private msg_id: number = 0;
     private pending_response: Record<string, any> = {}
+    private pending_response_requests: Record<string, Record<string, any>> = {}
 
     private handleMessageMethods: MessageMethods = {}
     private handleNotificationMethods: NotificationMethods = {}
@@ -78,9 +79,10 @@ class SnapServer {
                 if (this.pending_response[msgData.id]) {
                     const func = this.handleMessageMethods[this.pending_response[msgData.id] as keyof MessageMethods]
                     if (func) {
-                        func(msgData['result'])
+                        func({request: this.pending_response_requests[msgData.id] as any, result: msgData['result']})
                     }
                     delete this.pending_response[msgData.id]
+                    delete this.pending_response_requests[msgData.id]
                 }
             } else {
                 const func = this.handleNotificationMethods[msgData['method'] as keyof NotificationMethods]
@@ -200,6 +202,7 @@ class SnapServer {
             methodId = `${method}.${msg.params.command || msg.params.property}`
         }
         this.pending_response[newMsgId] = methodId
+        this.pending_response_requests[newMsgId] = msg.params || {}
         return this.msg_id;
     }
 }

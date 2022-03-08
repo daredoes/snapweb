@@ -10,7 +10,10 @@ export type GroupGetStatus = {
 }
 
 export type GroupGetStatusResponse = {
-    group: Group
+    result: {
+        group: Group
+    }
+    request: GroupGetStatus
 }
 
 export type GroupSetMute = {
@@ -19,7 +22,10 @@ export type GroupSetMute = {
 }
 
 export type GroupSetMuteResponse = {
-    mute: boolean
+    result: {
+        mute: boolean
+    }
+    request: GroupSetMute
 }
 
 export type GroupSetClients = {
@@ -27,7 +33,10 @@ export type GroupSetClients = {
     clients: string[]
 }
 
-export type GroupSetClientsResponse = Server
+export type GroupSetClientsResponse = {
+    result: Server
+    request: GroupSetClients
+}
 
 export type GroupSetStream = {
     id: string,
@@ -35,7 +44,10 @@ export type GroupSetStream = {
 }
 
 export type GroupSetStreamResponse = {
-    stream_id: string
+    request: GroupSetStream
+    result: {
+        stream_id: string
+    }
 }
 
 export type GroupSetName = {
@@ -43,34 +55,49 @@ export type GroupSetName = {
 }
 
 export type GroupSetNameResponse = {
-    id: string,
-    name: string
+    request: GroupSetName
+    result: {
+        id: string,
+        name: string
+    }
 }
 
 export type ServerGetRPCVersion = {}
 
 export type ServerGetRPCVersionResponse = {
-    major: number
-    minor: number
-    patch: number
+    request: ServerGetRPCVersion
+    result: {
+        major: number
+        minor: number
+        patch: number
+    }
 }
 
 export type ServerGetStatus = {}
 
-export type ServerGetStatusResponse = Server
+export type ServerGetStatusResponse = {
+    request: ServerGetStatus
+    result: Server
+}
 
 export type ServerDeleteClient = {
     id: string
 }
 
-export type ServerDeleteClientResponse = Server
+export type ServerDeleteClientResponse = {
+    request: ServerDeleteClient
+    result: Server
+}
 
 export type ClientGetStatus = {
     id: string
 }
 
 export type ClientGetStatusResponse = {
-    client: Client
+    request: ServerDeleteClient
+    result: {
+        client: Client
+    }
 }
 
 export type ClientSetLatency = {
@@ -79,7 +106,10 @@ export type ClientSetLatency = {
 }
 
 export type ClientSetLatencyResponse = {
-    latency: number
+    result: {
+        latency: number
+    }
+    request: ClientSetLatency
 }
 
 export type ClientSetName = {
@@ -88,7 +118,10 @@ export type ClientSetName = {
 }
 
 export type ClientSetNameResponse = {
-    name: string
+    request: ClientSetName
+    result: {
+        name: string
+    }
 }
 
 export type ClientSetVolume = {
@@ -101,15 +134,16 @@ export type ClientSetVolume = {
 }
 
 export type ClientSetVolumeResponse = {
-    volume: Volume
+    request: ClientSetVolume
+    result: {
+        volume: Volume
+    }
 }
 
 export interface SetControlParams {
     id: string,
     params?: Record<string, any>
 }
-
-export type SetControlResponse = string
 
 export interface StreamControlPlayParams extends SetControlParams {}
 export interface StreamControlPauseParams extends SetControlParams {}
@@ -128,12 +162,20 @@ export interface StreamControlSetPositionParams extends SetControlParams {
     }
 }
 
+export type SetControlResponse = {
+    request: StreamControlPlayParams | StreamControlPauseParams | StreamControlPlayPauseParams | StreamControlStopParams | StreamControlNextParams | StreamControlPreviousParams | StreamControlSeekParams,
+    result: string
+}
+
 export type StreamAddStream = {
     streamUri: string
 }
 
 export type StreamAddStreamResponse = {
-    stream_id: string
+    request: StreamAddStream,
+    result: {
+        stream_id: string
+    }
 }
 
 export type StreamRemoveStream = {
@@ -141,7 +183,10 @@ export type StreamRemoveStream = {
 }
 
 export type StreamRemoveStreamResponse = {
-    stream_id: string
+    request: StreamRemoveStream,
+    result: {
+        stream_id: string
+    }
 }
 
 export interface SetPropertyParams {
@@ -170,13 +215,19 @@ export interface SetPropertyRate extends SetPropertyParams {
     value: number
 }
 
-export type SetPropertyResponse = string
+export type SetPropertyResponse = {
+    request: SetPropertyRate | SetPropertyVolume | SetPropertyShuffle | SetPropertyLoopStatus,
+    result: string
+}
 
 export interface GetPropertyParams {
     id: string
 }
 
-export type GetPropertyResponse = Properties
+export type GetPropertyResponse = {
+    request: GetPropertyParams
+    result: Properties
+}
 
 export type MessageMethods = {
     'Client.GetStatus'?: (response: ClientGetStatusResponse) => void

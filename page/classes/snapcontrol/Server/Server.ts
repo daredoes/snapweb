@@ -12,6 +12,7 @@ class Server implements Interface {
     groupsById: Record<string, Group> = {}
     streamsById: Record<string, Stream> = {}
     clientsById: Record<string, Client> = {}
+    groupsByClientId: Record<string, Group> = {}
 
     constructor(params: Interface) {
         this.update(params)
@@ -61,13 +62,16 @@ class Server implements Interface {
 
     private updateClientsById(): void {
         const newClientsById: Record<string, Client> = {}
-        this.groups.forEach((group) => {
+        const newGroupsByClientId: Record<string, Group> = {}
+        this.groups.forEach((group: Group) => {
             Object.assign(newClientsById, group.clientsById)
+            Object.assign(newGroupsByClientId, {[group.id]: group})
         })
         this.clientsById = newClientsById
+        this.groupsByClientId = newGroupsByClientId
     }
 
-    updateClient(params: ClientInterface): boolean {
+    updateClient(params: ClientInterface, update: boolean = true): boolean {
         const client = this.getClient(params.id)
         let didUpdate = false
         if (client) {
@@ -75,6 +79,9 @@ class Server implements Interface {
         } else {
             this.clientsById[params.id] = new Client(params)
             didUpdate = true
+            if (update) {
+                this.updateClientsById()
+            }
         }
         return didUpdate
     }
@@ -82,12 +89,12 @@ class Server implements Interface {
     updateGroup(params: GroupInterface, updateClients: boolean = true): boolean {
         const group = this.getGroup(params.id)
         let didUpdate = false
-        if (!group) {
+        if (group) {
+            didUpdate = this.groupsById[params.id].update(params)
+        } else {
             this.groupsById[params.id] = new Group(params)
             didUpdate = true
-        }
-        if (!didUpdate) {
-            didUpdate = this.groupsById[params.id].update(params)
+            this.groups = Object.values(this.groupsById)
         }
         if (updateClients) {
             this.updateClientsById()
@@ -95,10 +102,38 @@ class Server implements Interface {
         return didUpdate
     }
 
+    deleteGroup(id: string): boolean {
+        if (this.groupsById[id]) {
+            delete this.groupsById[id]
+            this.groups = Object.values(this.groupsById)
+            return true
+        }
+        return false
+    }
+
+    deleteStream(id: string): boolean {
+        if (this.streamsById[id]) {
+            delete this.streamsById[id]
+            this.streams = Object.values(this.streamsById)
+            return true
+        }
+        return false
+    }
+
+    deleteClient(id: string): boolean {
+        this.getClient(id)
+        if (this.clientsById[id]) {
+            delete this.clientsById[id]
+            this.streams = Object.values(this.streamsById)
+            return true
+        }
+        return false
+    }
+
     updateStreams(params: StreamInterface[]): boolean {
         let changed = false;
         params.forEach((param: StreamInterface) => {
-            if (this.updateStream(param)) {
+            if (this.updateStream(param, false)) {
                 changed = true
             }
         })
@@ -113,13 +148,19 @@ class Server implements Interface {
         return this.streamsById[id]
     }
 
-    updateStream(params: StreamInterface): boolean {
+    updateStream(params: StreamInterface, update: boolean = true): boolean {
         const stream = this.getGroup(params.id)
-        if (!stream) {
+        let didUpdate = false
+        if (stream) {
+            didUpdate = this.streamsById[params.id].update(params)
+        } else {
             this.streamsById[params.id] = new Stream(params)
-            return true
+            didUpdate = true
+            if (update) {
+                this.streams = Object.values(this.streamsById)
+            }
         }
-        return this.streamsById[params.id].update(params)
+        return didUpdate
     }
 
     getServer(): ServerDetails {

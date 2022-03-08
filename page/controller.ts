@@ -1,6 +1,5 @@
 import SnapServer, {API} from "types/snapcontrol/SnapServer";
 import Server from "classes/snapcontrol/Server";
-import PlaybackStatus from "types/snapcontrol/PlaybackStatus";
 
 // let snapcontrol!: SnapControl;
 // let snapstream: SnapStream | null = null;
@@ -24,7 +23,32 @@ class Controller {
     private serverInstance: SnapServer = new SnapServer();
     private server?: Server
     // Write functions directly into these
-    private messageMethods: API.MessageMethods = {}
+    private messageMethods: API.MessageMethods = {
+        'Server.DeleteClient': (response: API.ServerDeleteClientResponse) => {
+            if (this.server) {
+                this.server.update(response.result)
+            } else {
+                this.server = new Server(response.result)
+            }
+        },
+        'Server.GetStatus': (response: API.ServerGetStatusResponse) => {
+            if (this.server) {
+                this.server.update(response.result)
+            } else {
+                this.server = new Server(response.result)
+            }
+        },
+        'Client.GetStatus': (response: API.ClientGetStatusResponse) => {
+            if (this.server) {
+                this.server.getClient(response.result.client.id)?.update(response.result.client)
+            }
+        },
+        'Client.SetLatency': (response: API.ClientSetLatencyResponse) => {
+            if (this.server) {
+                this.server.getClient(response.request.id)?.setLatency(response.result.latency)
+            }
+        }
+    }
     private notificationMethods: API.NotificationMethods = {
         'Server.OnUpdate': ({server}: API.ServerOnUpdateResponse) => {
             if (this.server) {
@@ -98,7 +122,6 @@ class Controller {
         },
     }
     private _audio?: HTMLAudioElement
-    private play_state: MediaSessionPlaybackState = "none";
 
     private constructor() {
         this.buildAudio()
@@ -127,7 +150,7 @@ class Controller {
         return document.createElement('audio')
     }
 
-    private audio() {
+    audio() {
         if (!this._audio) {
             this._audio = this.buildAudio()
         }
@@ -135,26 +158,7 @@ class Controller {
     }
 
     public getPlayState(): MediaSessionPlaybackState {
-        return this.play_state
-    }
-
-    public updatePlaybackState(playbackStatus: PlaybackStatus) {
-        if (playbackStatus === "playing") {
-            this.audio().play();
-            this.play_state = "playing";
-        }
-        else if (playbackStatus === "paused") {
-            this.audio().pause();
-            this.play_state = "paused";
-        }
-        else if (playbackStatus === "stopped") {
-            this.audio().pause();
-            this.play_state = "none";
-        }
-
-        let mediaSession = navigator.mediaSession!;
-        mediaSession.playbackState = this.play_state;
-        console.log('updateProperties playbackState: ', navigator.mediaSession!.playbackState);
+        return navigator.mediaSession!.playbackState
     }
 }
 
