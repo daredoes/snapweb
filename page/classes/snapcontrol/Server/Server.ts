@@ -1,6 +1,7 @@
-import { Server as Interface, ServerDetails, Group as GroupInterface, Stream as StreamInterface } from 'types/snapcontrol'
+import { Server as Interface, Client as ClientInterface, ServerDetails, Group as GroupInterface, Stream as StreamInterface } from 'types/snapcontrol'
 import Group from 'classes/snapcontrol/Group'
 import Stream from 'classes/snapcontrol/Stream'
+import Client from 'classes/snapcontrol/Client'
 
 
 class Server implements Interface {
@@ -10,9 +11,15 @@ class Server implements Interface {
 
     groupsById: Record<string, Group> = {}
     streamsById: Record<string, Stream> = {}
+    clientsById: Record<string, Client> = {}
 
     constructor(params: Interface) {
         this.update(params)
+    }
+
+    // Do any UI clean up here before deleting this object
+    cleanup(): void {
+
     }
 
     update(params: Interface) {
@@ -32,13 +39,14 @@ class Server implements Interface {
     updateGroups(params: GroupInterface[]): boolean {
         let changed = false;
         params.forEach((param: GroupInterface) => {
-            if (this.updateGroup(param)) {
+            if (this.updateGroup(param, false)) {
                 changed = true
             }
         })
 
         if (changed) {
             this.groups = Object.values(this.groupsById)
+            this.updateClientsById()
         }
         return changed
     }
@@ -47,13 +55,44 @@ class Server implements Interface {
         return this.groupsById[id]
     }
 
-    updateGroup(params: GroupInterface): boolean {
+    getClient(id: string): Client | undefined {
+        return this.clientsById[id]
+    }
+
+    private updateClientsById(): void {
+        const newClientsById: Record<string, Client> = {}
+        this.groups.forEach((group) => {
+            Object.assign(newClientsById, group.clientsById)
+        })
+        this.clientsById = newClientsById
+    }
+
+    updateClient(params: ClientInterface): boolean {
+        const client = this.getClient(params.id)
+        let didUpdate = false
+        if (client) {
+            didUpdate = client.update(params)
+        } else {
+            this.clientsById[params.id] = new Client(params)
+            didUpdate = true
+        }
+        return didUpdate
+    }
+
+    updateGroup(params: GroupInterface, updateClients: boolean = true): boolean {
         const group = this.getGroup(params.id)
+        let didUpdate = false
         if (!group) {
             this.groupsById[params.id] = new Group(params)
-            return true
+            didUpdate = true
         }
-        return this.groupsById[params.id].update(params)
+        if (!didUpdate) {
+            didUpdate = this.groupsById[params.id].update(params)
+        }
+        if (updateClients) {
+            this.updateClientsById()
+        }
+        return didUpdate
     }
 
     updateStreams(params: StreamInterface[]): boolean {
