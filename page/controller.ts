@@ -15,7 +15,7 @@ function getDefaultBaseUrl(): string {
 
 
 // Todo:DARE - For when you return
-// 1. Start writing notification methods from Snapcontrol into controller
+// 1. Keep writing message methods from Snapcontrol into controller
 // 2. Think about this "getMyStreamId" concept
 
 class Controller {
@@ -47,7 +47,43 @@ class Controller {
             if (this.server) {
                 this.server.getClient(response.request.id)?.setLatency(response.result.latency)
             }
-        }
+        },
+        'Client.SetName': (response: API.ClientSetNameResponse) => {
+            if (this.server) {
+                this.server.getClient(response.request.id)?.setName(response.result.name)
+            }
+        },
+        'Client.SetVolume': (response: API.ClientSetVolumeResponse) => {
+            if (this.server) {
+                this.server.getClient(response.request.id)?.setVolume(response.result.volume)
+            }
+        },
+        'Group.GetStatus': (response: API.GroupGetStatusResponse) => {
+            if (this.server) {
+                this.server.updateGroup(response.result.group)
+            }
+        },
+        'Group.SetStream': (response: API.GroupSetStreamResponse) => {
+            if (this.server) {
+                this.server.getGroup(response.request.id)?.setStreamId(response.result.stream_id)
+            }
+        },
+        'Group.SetName': (response: API.GroupSetNameResponse) => {
+            if (this.server) {
+                this.server.getGroup(response.result.id)?.setName(response.result.name)
+            }
+        },
+        'Group.SetMute': (response: API.GroupSetMuteResponse) => {
+            if (this.server) {
+                this.server.getGroup(response.request.id)?.setMuted(response.result.mute)
+            }
+        },
+        'Group.SetClients': (response: API.GroupSetClientsResponse) => {
+            if (this.server) {
+                this.server.update(response.result)
+            }
+        },
+
     }
     private notificationMethods: API.NotificationMethods = {
         'Server.OnUpdate': ({server}: API.ServerOnUpdateResponse) => {
