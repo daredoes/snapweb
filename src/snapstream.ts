@@ -1,4 +1,4 @@
-import Flac from './3rd-party/libflac'
+import Flac from 'libflacjs/dist/libflac'
 
 const appVersion = require('../package.json').version;
 
