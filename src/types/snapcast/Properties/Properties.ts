@@ -1,5 +1,5 @@
-import Metadata from "types/snapcontrol/Metadata";
-import PlaybackStatus from "types/snapcontrol/PlaybackStatus";
+import Metadata from "types/snapcast/Metadata";
+import PlaybackStatus from "types/snapcast/PlaybackStatus";
 
 
 interface Properties {

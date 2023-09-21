@@ -1,9 +1,9 @@
-import Client from 'types/snapcontrol/Client'
-import Group from 'types/snapcontrol/Group'
-import Server from 'types/snapcontrol/Server'
-import Volume from 'types/snapcontrol/Volume'
-import Properties from 'types/snapcontrol/Properties'
-import Stream from 'types/snapcontrol/Stream'
+import Client from 'types/snapcast/Client'
+import Group from 'types/snapcast/Group'
+import Server from 'types/snapcast/Server'
+import Volume from 'types/snapcast/Volume'
+import Properties from 'types/snapcast/Properties'
+import Stream from 'types/snapcast/Stream'
 
 export type GroupGetStatus = {
     id: string

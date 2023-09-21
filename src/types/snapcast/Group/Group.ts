@@ -1,4 +1,4 @@
-import Client from 'types/snapcontrol/Client'
+import Client from 'types/snapcast/Client'
 
 interface Group {
     name: string

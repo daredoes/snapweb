@@ -1,6 +1,6 @@
-import Host from 'types/snapcontrol/Host'
-import Volume from 'types/snapcontrol/Volume';
-import Snapclient from 'types/snapcontrol/Snapclient';
+import Host from 'types/snapcast/Host'
+import Volume from 'types/snapcast/Volume';
+import Snapclient from 'types/snapcast/Snapclient';
 
 export interface Config {
     instance: number

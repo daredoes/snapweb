@@ -1,4 +1,4 @@
-import Properties from "types/snapcontrol/Properties";
+import Properties from "types/snapcast/Properties";
 
 export interface StreamUri {
     raw: string;

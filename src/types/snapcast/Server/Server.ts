@@ -1,6 +1,6 @@
-import Stream from 'types/snapcontrol/Stream'
-import Group from 'types/snapcontrol/Group'
-import Host from 'types/snapcontrol/Host'
+import Stream from 'types/snapcast/Stream'
+import Group from 'types/snapcast/Group'
+import Host from 'types/snapcast/Host'
 
 export interface ServerDetails {
     host: Host;

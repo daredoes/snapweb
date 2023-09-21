@@ -8,7 +8,7 @@ import Metadata from './Metadata'
 import Host from './Host'
 import Group from './Group'
 import Client, {Config} from './Client'
-import SnapServer from './SnapServer'
+export type * from './api'
 
 export type {
     Client,
@@ -25,5 +25,3 @@ export type {
     StreamUri,
     Volume
 }
-
-export { SnapServer }

@@ -17,7 +17,7 @@ import {
     StreamControlSeekParams,
     StreamControlSetPositionParams,
     StreamControlStopParams,
-} from './api'
+} from 'types/snapcast/api'
 
 // A Wrapper for the JSON RPC Websocket API
 class SnapServer {
