@@ -20,6 +20,13 @@ function getChromeVersion(): number | null {
   return raw ? parseInt(raw[2]) : null;
 }
 
+export function getDefaultBaseUrl(): string {
+  return (
+    (window.location.protocol === "https:" ? "wss://" : "ws://") +
+    window.location.host
+  );
+}
+
 function uuidv4(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -28,9 +35,13 @@ function uuidv4(): string {
   });
 }
 
+interface ConnectParams {
+    mac: string, arch: string, os: string, hostname: string, uniqueId: string, version: string
+}
+
 // Browser specific implementation
-class SnapStream {
-  constructor(baseUrl: string = "http://0.0.0.0") {
+class SnapclientBrowser {
+  constructor(baseUrl: string = getDefaultBaseUrl()) {
     this.baseUrl = baseUrl;
     this.timeProvider = new TimeProvider();
 
@@ -78,10 +89,10 @@ class SnapStream {
   }
 
   public async setPlaying(playing: boolean): Promise<void> {
-    // fill in
+    this.playing = playing
   }
 
-  connect() {
+  connect({ hostname = "Snapweb Client", mac = "00:00:00:00:00:00", arch = "web", os = navigator.platform, uniqueId = uuidv4(), version = "0.0.0" }: ConnectParams) {
     this.streamsocket = new WebSocket(this.baseUrl);
     this.streamsocket.binaryType = "arraybuffer";
     this.streamsocket.onmessage = (ev) => this.onMessage(ev);
@@ -90,13 +101,13 @@ class SnapStream {
       console.log("on open");
       let hello = new HelloMessage();
 
-      hello.mac = "00:00:00:00:00:00";
-      hello.arch = "web";
-      hello.os = navigator.platform;
-      hello.hostname = "Snapweb client";
-      hello.uniqueId = await SnapStream.getClientId();
+      hello.mac = mac;
+      hello.arch = arch;
+      hello.os = os;
+      hello.hostname = hostname;
+      hello.uniqueId = uniqueId;
       // const versionElem = null // document.getElementsByTagName("meta").namedItem("version");
-      hello.version = "0.0.0";
+      hello.version = version;
 
       this.sendMessage(hello);
       this.syncTime();
@@ -108,7 +119,14 @@ class SnapStream {
     this.streamsocket.onclose = () => {
       window.clearInterval(this.syncHandle);
       console.info("connection lost, reconnecting in 1s");
-      setTimeout(() => this.connect(), 1000);
+      setTimeout(() => this.connect({
+        mac,
+        arch,
+        os,
+        hostname,
+        uniqueId,
+        version
+      }), 1000);
     };
   }
 
@@ -306,6 +324,7 @@ class SnapStream {
 
   baseUrl: string;
   streamsocket!: WebSocket;
+  playing: boolean = false;
   playTime: number = 0;
   msgId: number = 0;
   bufferDurationMs: number = 80; // 0;
@@ -330,4 +349,4 @@ class SnapStream {
 
   latency: number = 0;
 }
-export default SnapStream;
+export default SnapclientBrowser;

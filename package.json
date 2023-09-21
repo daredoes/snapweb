@@ -7,15 +7,29 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "libflacjs": "^5.4.0",
     "preact": "^10.16.0"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^12.1.5",
     "@preact/preset-vite": "^2.5.0",
+    "@storybook/addon-essentials": "^7.4.3",
+    "@storybook/addon-interactions": "^7.4.3",
+    "@storybook/addon-links": "^7.4.3",
+    "@storybook/blocks": "^7.4.3",
+    "@storybook/preact": "^7.4.3",
+    "@storybook/preact-vite": "^7.4.3",
+    "@storybook/testing-library": "^0.2.1",
+    "bun-types": "^1.0.2",
     "prettier": "^3.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.4.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }

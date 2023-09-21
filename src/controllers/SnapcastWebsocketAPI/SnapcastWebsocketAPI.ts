@@ -22,7 +22,7 @@ import {
 } from "types/snapcast/api";
 
 // A Wrapper for the JSON RPC Websocket API
-class SnapServer {
+class SnapcastWebsocketAPI {
   private url?: string;
   private connection?: WebSocket;
   private msg_id: number = 0;
@@ -233,4 +233,4 @@ class SnapServer {
   }
 }
 
-export default SnapServer;
+export default SnapcastWebsocketAPI;
