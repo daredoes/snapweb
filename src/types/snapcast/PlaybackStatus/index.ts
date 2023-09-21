@@ -1,1 +1,1 @@
-export type {default} from './PlaybackStatus'
+export type {default, default as PlaybackStatus} from './PlaybackStatus'

@@ -1,3 +1,4 @@
+import { API } from 'controllers/api';
 import {
     ClientSetLatency,
     ClientSetName,
@@ -9,6 +10,7 @@ import {
     MessageMethods,
     NotificationMethods,
     ServerDeleteClient,
+    ServerRequest,
     StreamControlNextParams,
     StreamControlPauseParams,
     StreamControlPlayParams,
@@ -68,9 +70,9 @@ class SnapServer {
     private openSocket() {
         if (this.url) {
             try {
-                console.log("Opening connection to", this.url)
+                console.info("Opening connection to", this.url)
                 this.connection = new WebSocket(this.url);
-                console.log("Opened connection to", this.url)
+                console.info("Opened connection to", this.url)
                 return true
             } catch (e) {
                 console.error('Invalid connection', e)
@@ -91,18 +93,18 @@ class SnapServer {
                 const msgData = JSON.parse(msg.data);
                 const isResponse: boolean = (msgData.id != undefined)
                 if (isResponse) {
-                    console.log("Received message", msgData)
+                    console.info("Received message", msgData)
                     if (this.pending_response[msgData.id]) {
                         const func = this.handleMessageMethods[this.pending_response[msgData.id] as keyof MessageMethods]
                         if (func) {
-                            console.log(`Calling function ${this.pending_response[msgData.id] as keyof MessageMethods}`, { request: this.pending_response_requests[msgData.id] as any, result: msgData['result'] })
+                            console.info(`Calling function ${this.pending_response[msgData.id] as keyof MessageMethods}`, { request: this.pending_response_requests[msgData.id] as any, result: msgData['result'] })
                             func({ request: this.pending_response_requests[msgData.id] as any, result: msgData['result'] })
                         }
                         delete this.pending_response[msgData.id]
                         delete this.pending_response_requests[msgData.id]
                     }
                 } else {
-                    console.log("Received notification", msgData)
+                    console.info("Received notification", msgData)
                     const func = this.handleNotificationMethods[msgData['method'] as keyof NotificationMethods]
                     if (func) {
                         func(msgData['params'])
@@ -110,7 +112,7 @@ class SnapServer {
                 }
             };
             this.connection.onopen = () => {
-                console.log("connected to webserver")
+                console.info("connected to webserver")
                 if (this._handleOpen) {
                     this._handleOpen()
                 }
@@ -134,102 +136,93 @@ class SnapServer {
 
             };
         } else {
-            console.log("Failed to open socket")
+            console.info("Failed to open socket")
         }
 
     }
 
     public serverGetStatus(): number {
-        return this.sendRequest('Server.GetStatus')
+        return this.sendServerRequest(API.serverGetStatus())
     }
 
     public streamControlSetPosition(options: StreamControlSetPositionParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'setPosition', params: options.params })
+        return this.sendServerRequest(API.streamControlSetPosition(options))
     }
 
     public streamControlSeek(options: StreamControlSeekParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'seek', params: options.params })
+        return this.sendServerRequest(API.streamControlSeek(options))
     }
 
     public streamControlPrevious(options: StreamControlPreviousParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'previous', params: options.params })
+        return this.sendServerRequest(API.streamControlPrevious(options))
     }
 
     public streamControlNext(options: StreamControlNextParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'next', params: options.params })
+        return this.sendServerRequest(API.streamControlNext(options))
     }
 
     public streamControlStop(options: StreamControlStopParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'stop', params: options.params })
+        return this.sendServerRequest(API.streamControlStop(options))
     }
 
     public streamControlPlayPause(options: StreamControlPlayPauseParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'playPause', params: options.params })
+        return this.sendServerRequest(API.streamControlPlayPause(options))
     }
 
     public streamControlPause(options: StreamControlPauseParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'pause', params: options.params })
+        return this.sendServerRequest(API.streamControlPause(options))
     }
 
     public streamControlPlay(options: StreamControlPlayParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'play', params: options.params })
+        return this.sendServerRequest(API.streamControlPlay(options))
     }
 
     public clientSetVolume(options: ClientSetVolume): number {
-        return this.sendRequest('Client.SetVolume', options)
+        return this.sendServerRequest(API.clientSetVolume(options))
     }
 
     public clientSetName(options: ClientSetName): number {
-        return this.sendRequest('Client.SetName', options)
+        return this.sendServerRequest(API.clientSetName(options))
     }
 
     public clientSetLatency(options: ClientSetLatency): number {
-        return this.sendRequest('Client.SetLatency', options)
+        return this.sendServerRequest(API.clientSetLatency(options))
     }
 
     public serverDeleteClient(options: ServerDeleteClient): number {
-        return this.sendRequest('Server.DeleteClient', options)
+        return this.sendServerRequest(API.serverDeleteClient(options))
     }
 
 
     public groupSetStream(options: GroupSetStream): number {
-        return this.sendRequest('Group.SetStream', options)
+        return this.sendServerRequest(API.groupSetStream(options))
     }
 
     public groupSetClients(options: GroupSetClients): number {
-        return this.sendRequest('Group.SetClients', options)
+        return this.sendServerRequest(API.groupSetClients(options))
 
     }
 
     public groupSetMute(options: GroupSetMute): number {
-        return this.sendRequest('Group.SetMute', options)
+        return this.sendServerRequest(API.groupSetMute(options))
     }
 
     public groupSetName(options: GroupSetName): number {
-        return this.sendRequest('Group.SetName', options)
+        return this.sendServerRequest(API.groupSetName(options))
     }
 
-    // Sends a request through the websocket connection and increments our counter for requests to the server
-    private sendRequest(method: string, params?: any): number {
-        let newMsgId = ++this.msg_id
-        let msg: any = {
-            id: newMsgId,
-            jsonrpc: '2.0',
-            method: method
-        };
-        if (params)
-            msg.params = params;
-
-        let msgJson = JSON.stringify(msg);
-        console.log("Sending: " + msgJson);
-        this.connection?.send(msgJson);
-        let methodId = method
-        if (msg.params?.command || msg.params?.property) {
-            methodId = `${method}.${msg.params?.command || msg.params?.property}`
+    private sendServerRequest(msg: ServerRequest) {
+        if (this.connection) {
+            const originalMethodId = msg.id;
+            const newMsgId = ++this.msg_id;
+            const msgJson = JSON.stringify(msg)
+            this.connection.send(msgJson)
+            this.pending_response[newMsgId] = originalMethodId
+            this.pending_response_requests[newMsgId] = msg.params || {}
+            return newMsgId;
         }
-        this.pending_response[newMsgId] = methodId
-        this.pending_response_requests[newMsgId] = msg.params || {}
-        return this.msg_id;
+        return -1;
+
     }
 }
 

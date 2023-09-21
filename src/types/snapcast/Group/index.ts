@@ -1,1 +1,1 @@
-export type {default} from './Group'
+export type {default, default as Group} from './Group'

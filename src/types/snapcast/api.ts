@@ -340,3 +340,16 @@ export type NotificationMethods = {
     'Stream.OnUpdate'?: (response: StreamOnUpdateResponse) => void
     'Stream.OnProperties'?: (response: StreamOnProperties) => void
 }
+
+export interface ServerRequest {
+    id: number | string
+    jsonrpc: string
+    method: string
+    params?: Record<string, unknown>
+}
+
+export interface StreamControlPayload {
+    id: string | number
+    params?: Record<string, any>
+    command: 'setPosition' | 'seek' | 'previous' | 'next' | 'stop' | 'playPause' | 'pause' | 'play'
+}
