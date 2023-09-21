@@ -1,4 +1,4 @@
 import SnapServer from './SnapServer'
-import * as API from './api'
-export {API}
+import type * as API from './api'
+export type {API}
 export default SnapServer

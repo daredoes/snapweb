@@ -8,8 +8,9 @@ import Metadata from './Metadata'
 import Host from './Host'
 import Group from './Group'
 import Client, {Config} from './Client'
+import SnapServer from './SnapServer'
 
-export {
+export type {
     Client,
     Config,
     Group,
@@ -24,3 +25,5 @@ export {
     StreamUri,
     Volume
 }
+
+export { SnapServer }

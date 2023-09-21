@@ -1,1 +1,1 @@
-export {default} from './Metadata'
+export type {default} from './Metadata'

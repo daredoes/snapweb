@@ -1,1 +1,1 @@
-export {default} from './Snapclient'
+export type {default} from './Snapclient'

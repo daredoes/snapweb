@@ -1,1 +1,1 @@
-export {default, ServerDetails} from './Server'
+export type {default, ServerDetails} from './Server'

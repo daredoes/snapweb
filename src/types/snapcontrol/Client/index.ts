@@ -1,1 +1,1 @@
-export {default, Config} from './Client'
+export type {default, Config} from './Client'

@@ -1,1 +1,1 @@
-export { default } from './AudioContext'
+export type { default } from './AudioContext'

@@ -1,1 +1,1 @@
-export {default} from './Properties'
+export type {default} from './Properties'

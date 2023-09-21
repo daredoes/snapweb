@@ -1,1 +1,1 @@
-export {default} from './Volume'
+export type {default} from './Volume'

@@ -1,4 +1,4 @@
-import { 
+import {
     ClientSetLatency,
     ClientSetName,
     ClientSetVolume,
@@ -36,7 +36,7 @@ class SnapServer {
     private _handleClose?: () => void
 
 
-    constructor() {}
+    constructor() { }
 
     public connect(
         url: string,
@@ -66,16 +66,17 @@ class SnapServer {
     }
 
     private openSocket() {
-        try {
-            console.log("Opening connection to", this.url)
-            this.connection = new WebSocket(this.url);
-            console.log("Opened connection to", this.url)
-        } catch (e) {
-            console.error('Invalid connection', e)
-            return false
+        if (this.url) {
+            try {
+                console.log("Opening connection to", this.url)
+                this.connection = new WebSocket(this.url);
+                console.log("Opened connection to", this.url)
+                return true
+            } catch (e) {
+                console.error('Invalid connection', e)
+            }
         }
-        return true
-
+        return false
     }
 
     private _connect(
@@ -85,7 +86,7 @@ class SnapServer {
             console.error('No URL to connect to')
             return;
         }
-        if (this.openSocket()) {
+        if (this.openSocket() && this.connection) {
             this.connection.onmessage = (msg: MessageEvent) => {
                 const msgData = JSON.parse(msg.data);
                 const isResponse: boolean = (msgData.id != undefined)
@@ -94,8 +95,8 @@ class SnapServer {
                     if (this.pending_response[msgData.id]) {
                         const func = this.handleMessageMethods[this.pending_response[msgData.id] as keyof MessageMethods]
                         if (func) {
-                            console.log(`Calling function ${this.pending_response[msgData.id] as keyof MessageMethods}`, {request: this.pending_response_requests[msgData.id] as any, result: msgData['result']})
-                            func({request: this.pending_response_requests[msgData.id] as any, result: msgData['result']})
+                            console.log(`Calling function ${this.pending_response[msgData.id] as keyof MessageMethods}`, { request: this.pending_response_requests[msgData.id] as any, result: msgData['result'] })
+                            func({ request: this.pending_response_requests[msgData.id] as any, result: msgData['result'] })
                         }
                         delete this.pending_response[msgData.id]
                         delete this.pending_response_requests[msgData.id]
@@ -108,14 +109,14 @@ class SnapServer {
                     }
                 }
             };
-            this.connection.onopen = () => { 
+            this.connection.onopen = () => {
                 console.log("connected to webserver")
                 if (this._handleOpen) {
                     this._handleOpen()
                 }
             };
-            this.connection.onerror = (ev: Event) => { 
-                console.error('error:', ev); 
+            this.connection.onerror = (ev: Event) => {
+                console.error('error:', ev);
                 if (this._handleError) {
                     this._handleError(ev)
                 }
@@ -130,12 +131,12 @@ class SnapServer {
                         preventAutomaticReconnect
                     ), 1000);
                 }
-                
+
             };
         } else {
             console.log("Failed to open socket")
         }
-        
+
     }
 
     public serverGetStatus(): number {
@@ -143,35 +144,35 @@ class SnapServer {
     }
 
     public streamControlSetPosition(options: StreamControlSetPositionParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'setPosition', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'setPosition', params: options.params })
     }
 
     public streamControlSeek(options: StreamControlSeekParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'seek', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'seek', params: options.params })
     }
 
     public streamControlPrevious(options: StreamControlPreviousParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'previous', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'previous', params: options.params })
     }
 
     public streamControlNext(options: StreamControlNextParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'next', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'next', params: options.params })
     }
 
     public streamControlStop(options: StreamControlStopParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'stop', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'stop', params: options.params })
     }
 
     public streamControlPlayPause(options: StreamControlPlayPauseParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'playPause', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'playPause', params: options.params })
     }
 
     public streamControlPause(options: StreamControlPauseParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'pause', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'pause', params: options.params })
     }
 
     public streamControlPlay(options: StreamControlPlayParams): number {
-        return this.sendRequest('Stream.Control', { id: options.id, command: 'play', params: options.params})
+        return this.sendRequest('Stream.Control', { id: options.id, command: 'play', params: options.params })
     }
 
     public clientSetVolume(options: ClientSetVolume): number {
