@@ -1,14 +1,16 @@
 import SnapcastWebsocketAPI from "controllers/SnapcastWebsocketAPI";
 import SnapclientBrowser from "controllers/snapcontrol/SnapclientBrowser";
+import { convertHttpToWebsocket } from "helpers";
 
 // Controls the snapclient stream for this device if desired, and manages the WebAudio MediaSession state for the browser.
 class WebAudioController {
   private static instance: WebAudioController;
   public apiInstance: SnapcastWebsocketAPI = new SnapcastWebsocketAPI();
-  public snapclientInstance: SnapclientBrowser = new SnapclientBrowser();
+  public snapclientInstance: SnapclientBrowser;
   private _audio?: HTMLAudioElement;
 
-  private constructor() {
+  private constructor(baseUrl: string = window.location.href) {
+    this.snapclientInstance = new SnapclientBrowser(convertHttpToWebsocket(baseUrl));
     this.buildAudio();
   }
 

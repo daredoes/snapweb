@@ -20,13 +20,6 @@ function getChromeVersion(): number | null {
   return raw ? parseInt(raw[2]) : null;
 }
 
-export function getDefaultBaseUrl(): string {
-  return (
-    (window.location.protocol === "https:" ? "wss://" : "ws://") +
-    window.location.host
-  );
-}
-
 function uuidv4(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -41,7 +34,7 @@ interface ConnectParams {
 
 // Browser specific implementation
 class SnapclientBrowser {
-  constructor(baseUrl: string = getDefaultBaseUrl()) {
+  constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.timeProvider = new TimeProvider();
 
