@@ -1,1 +1,1 @@
-export { default } from './CodecMessage'
+export { default } from "./CodecMessage";

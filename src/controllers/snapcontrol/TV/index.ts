@@ -1,1 +1,1 @@
-export { default } from './TV'
+export { default } from "./TV";

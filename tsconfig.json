@@ -5,7 +5,7 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "baseUrl": "./src",                       /* Base directory to resolve non-absolute module names. */
+    "baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

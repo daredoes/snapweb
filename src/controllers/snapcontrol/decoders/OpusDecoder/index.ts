@@ -1,1 +1,1 @@
-export { default } from './OpusDecoder'
+export { default } from "./OpusDecoder";

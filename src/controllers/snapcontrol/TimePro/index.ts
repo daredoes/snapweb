@@ -1,1 +1,1 @@
-export { default } from './TimePro'
+export { default } from "./TimePro";

@@ -1,1 +1,1 @@
-export { default } from './SnapStream'
+export { default } from "./SnapStream";

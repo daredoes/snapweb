@@ -1,1 +1,1 @@
-export { default } from './FlacDecoder'
+export { default } from "./FlacDecoder";

@@ -1,1 +1,1 @@
-export { default } from './ServerSettingsMessage'
+export { default } from "./ServerSettingsMessage";

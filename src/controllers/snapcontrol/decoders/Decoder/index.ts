@@ -1,1 +1,1 @@
-export { default } from './Decoder'
+export { default } from "./Decoder";

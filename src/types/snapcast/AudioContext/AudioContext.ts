@@ -1,5 +1,5 @@
 interface AC extends AudioContext {
-    readonly outputLatency: number;
+  readonly outputLatency: number;
 }
 
-export default AC
+export default AC;

@@ -1,1 +1,1 @@
-export type {default, ServerDetails, default as Server} from './Server'
+export type { default, ServerDetails, default as Server } from "./Server";

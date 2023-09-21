@@ -1,34 +1,34 @@
-import BaseMessage from 'controllers/snapcontrol/messages/BaseMessage'
-import TV from 'controllers/snapcontrol/TV'
+import BaseMessage from "controllers/snapcontrol/messages/BaseMessage";
+import TV from "controllers/snapcontrol/TV";
 
 class TimeMessage extends BaseMessage {
-    constructor(buffer?: ArrayBuffer) {
-        super(buffer);
-        if (buffer) {
-            this.deserialize(buffer);
-        }
-        this.type = 4;
+  constructor(buffer?: ArrayBuffer) {
+    super(buffer);
+    if (buffer) {
+      this.deserialize(buffer);
     }
+    this.type = 4;
+  }
 
-    deserialize(buffer: ArrayBuffer) {
-        super.deserialize(buffer);
-        let view = new DataView(buffer);
-        this.latency = new TV(view.getInt32(26, true), view.getInt32(30, true));
-    }
+  deserialize(buffer: ArrayBuffer) {
+    super.deserialize(buffer);
+    let view = new DataView(buffer);
+    this.latency = new TV(view.getInt32(26, true), view.getInt32(30, true));
+  }
 
-    serialize(): ArrayBuffer {
-        let buffer = super.serialize();
-        let view = new DataView(buffer);
-        view.setInt32(26, this.latency.sec, true);
-        view.setInt32(30, this.latency.usec, true);
-        return buffer;
-    }
+  serialize(): ArrayBuffer {
+    let buffer = super.serialize();
+    let view = new DataView(buffer);
+    view.setInt32(26, this.latency.sec, true);
+    view.setInt32(30, this.latency.usec, true);
+    return buffer;
+  }
 
-    getSize() {
-        return 8;
-    }
+  getSize() {
+    return 8;
+  }
 
-    latency: TV = new TV(0, 0);
+  latency: TV = new TV(0, 0);
 }
 
-export default TimeMessage
+export default TimeMessage;

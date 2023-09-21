@@ -1,8 +1,6 @@
-
-
 interface Volume {
-    muted: boolean;
-    percent: number;
+  muted: boolean;
+  percent: number;
 }
 
-export default Volume
+export default Volume;

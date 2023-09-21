@@ -1,1 +1,1 @@
-export { default } from './AudioStream'
+export { default } from "./AudioStream";

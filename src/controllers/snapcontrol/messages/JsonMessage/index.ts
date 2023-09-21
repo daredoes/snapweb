@@ -1,1 +1,1 @@
-export { default } from './JsonMessage'
+export { default } from "./JsonMessage";

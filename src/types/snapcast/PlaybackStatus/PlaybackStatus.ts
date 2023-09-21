@@ -1,3 +1,3 @@
-type PlaybackStatus = 'stopped' | 'paused' | 'playing';
+type PlaybackStatus = "stopped" | "paused" | "playing";
 
-export default PlaybackStatus
+export default PlaybackStatus;

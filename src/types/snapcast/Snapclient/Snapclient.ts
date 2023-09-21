@@ -1,7 +1,7 @@
 interface Snapclient {
-    name: string
-    protocolVersion: number
-    version: string
+  name: string;
+  protocolVersion: number;
+  version: string;
 }
 
-export default Snapclient
+export default Snapclient;

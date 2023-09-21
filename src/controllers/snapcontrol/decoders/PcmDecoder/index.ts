@@ -1,1 +1,1 @@
-export { default } from './PcmDecoder'
+export { default } from "./PcmDecoder";

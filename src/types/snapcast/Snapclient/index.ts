@@ -1,1 +1,1 @@
-export type {default, default as Snapclient} from './Snapclient'
+export type { default, default as Snapclient } from "./Snapclient";

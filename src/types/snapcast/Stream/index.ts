@@ -1,1 +1,1 @@
-export type {default, default as Stream, StreamUri} from './Stream'
+export type { default, default as Stream, StreamUri } from "./Stream";

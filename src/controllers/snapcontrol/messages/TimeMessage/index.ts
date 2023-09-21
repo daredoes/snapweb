@@ -1,1 +1,1 @@
-export { default } from './TimeMessage'
+export { default } from "./TimeMessage";
