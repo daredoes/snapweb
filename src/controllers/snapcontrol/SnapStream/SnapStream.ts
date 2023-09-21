@@ -28,6 +28,7 @@ function uuidv4(): string {
   });
 }
 
+// Browser specific implementation
 class SnapStream {
   constructor(baseUrl: string = "http://0.0.0.0") {
     this.baseUrl = baseUrl;

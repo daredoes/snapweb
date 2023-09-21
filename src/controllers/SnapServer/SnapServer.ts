@@ -26,7 +26,9 @@ class SnapServer {
   private url?: string;
   private connection?: WebSocket;
   private msg_id: number = 0;
+  // Links numeric request ID to ID used to match method handling
   private pending_response: Record<string, any> = {};
+  // Links numeric request ID to request used in method handling
   private pending_response_requests: Record<string, Record<string, any>> = {};
 
   private handleMessageMethods: MessageMethods = {};

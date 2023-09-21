@@ -200,9 +200,11 @@ export type StreamRemoveStreamResponse = {
   };
 };
 
+export type Property = "loopStatus" | "shuffle" | "volume" | "rate"
+
 export interface SetPropertyParams {
   id: string;
-  property: string;
+  property: Property;
   value: any;
 }
 
@@ -354,8 +356,10 @@ export type NotificationMethods = {
   "Stream.OnProperties"?: (response: StreamOnProperties) => void;
 };
 
+export type ServerRequestMethodIds = keyof MessageMethods | keyof NotificationMethods
+
 export interface ServerRequest {
-  id: number | string;
+  id: number | ServerRequestMethodIds | string;
   jsonrpc: string;
   method: string;
   params?: Record<string, unknown>;
