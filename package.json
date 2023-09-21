@@ -12,8 +12,10 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@modular-forms/solid": "^0.19.2",
     "libflacjs": "^5.4.0",
-    "preact": "^10.16.0"
+    "preact": "^10.16.0",
+    "preact-feather": "^4.2.1"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^12.1.5",
