@@ -1,6 +1,6 @@
-import Decoder from "controllers/snapcontrol/decoders/Decoder";
-import SampleFormat from "controllers/snapcontrol/SampleFormat";
-import PcmChunkMessage from "controllers/snapcontrol/messages/PcmChunkMessage";
+import Decoder from "src/controllers/snapcontrol/decoders/Decoder";
+import SampleFormat from "src/controllers/snapcontrol/SampleFormat";
+import PcmChunkMessage from "src/controllers/snapcontrol/messages/PcmChunkMessage";
 
 class PcmDecoder extends Decoder {
   setHeader(buffer: ArrayBuffer): SampleFormat | null {

@@ -14,7 +14,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    "baseUrl": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"],
+    },
 
     /* Linting */
     "strict": true,

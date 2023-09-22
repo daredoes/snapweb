@@ -1,4 +1,4 @@
-import { API } from "controllers/api";
+import { API } from "src/controllers/api";
 import {
   ClientSetLatency,
   ClientSetName,
@@ -19,7 +19,7 @@ import {
   StreamControlSeekParams,
   StreamControlSetPositionParams,
   StreamControlStopParams,
-} from "types/snapcast/api";
+} from "src/types/snapcast/api";
 
 // A Wrapper for the JSON RPC Websocket API
 class SnapcastWebsocketAPI {

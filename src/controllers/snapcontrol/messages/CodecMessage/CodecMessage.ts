@@ -1,4 +1,4 @@
-import BaseMessage from "controllers/snapcontrol/messages/BaseMessage";
+import BaseMessage from "src/controllers/snapcontrol/messages/BaseMessage";
 
 class CodecMessage extends BaseMessage {
   constructor(buffer?: ArrayBuffer) {

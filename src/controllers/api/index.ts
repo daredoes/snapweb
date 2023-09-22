@@ -17,7 +17,7 @@ import {
   StreamControlStopParams,
   ServerRequest,
   StreamControlPayload,
-} from "types/snapcast/api";
+} from "src/types/snapcast/api";
 
 export const serverGetStatus = (): ServerRequest => {
   return makeRequest("Server.GetStatus");

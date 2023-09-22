@@ -1,6 +1,6 @@
-import BaseMessage from "controllers/snapcontrol/messages/BaseMessage";
-import SampleFormat from "controllers/snapcontrol/SampleFormat";
-import TV from "controllers/snapcontrol/TV";
+import BaseMessage from "src/controllers/snapcontrol/messages/BaseMessage";
+import SampleFormat from "src/controllers/snapcontrol/SampleFormat";
+import TV from "src/controllers/snapcontrol/TV";
 
 class PcmChunkMessage extends BaseMessage {
   constructor(buffer: ArrayBuffer, sampleFormat: SampleFormat) {

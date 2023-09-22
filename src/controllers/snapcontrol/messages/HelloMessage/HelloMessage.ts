@@ -1,4 +1,4 @@
-import JsonMessage from "controllers/snapcontrol/messages/JsonMessage";
+import JsonMessage from "src/controllers/snapcontrol/messages/JsonMessage";
 
 class HelloMessage extends JsonMessage {
   constructor(buffer?: ArrayBuffer) {

@@ -1,6 +1,10 @@
 export function convertHttpToWebsocket(httpUrl: string): string {
-  const url = new URL(httpUrl);
-  return (url.protocol === "https:" ? "wss://" : "ws://") + url.hostname;
+  try {
+    const url = new URL(httpUrl);
+    return (url.protocol === "https:" ? "wss://" : "ws://") + url.host + url.pathname;
+  } catch {
+    return httpUrl
+  }
 }
 
 export function getDefaultBaseUrl(): string {

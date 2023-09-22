@@ -1,5 +1,5 @@
-import BaseMessage from "controllers/snapcontrol/messages/BaseMessage";
-import TV from "controllers/snapcontrol/TV";
+import BaseMessage from "src/controllers/snapcontrol/messages/BaseMessage";
+import TV from "src/controllers/snapcontrol/TV";
 
 class TimeMessage extends BaseMessage {
   constructor(buffer?: ArrayBuffer) {

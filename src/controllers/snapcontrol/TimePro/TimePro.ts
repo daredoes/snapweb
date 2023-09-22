@@ -1,4 +1,4 @@
-import AudioContext from "types/snapcast/AudioContext";
+import AudioContext from "src/types/snapcast/AudioContext";
 class TimePro {
   constructor(ctx: AudioContext | undefined = undefined) {
     if (ctx) {

@@ -1,19 +1,19 @@
-import AudioStream from "controllers/snapcontrol/AudioStream";
-import TimeProvider from "controllers/snapcontrol/TimePro";
-import Decoder from "controllers/snapcontrol/decoders/Decoder";
-import FlacDecoder from "controllers/snapcontrol/decoders/FlacDecoder";
-import OpusDecoder from "controllers/snapcontrol/decoders/OpusDecoder";
-import PcmDecoder from "controllers/snapcontrol/decoders/PcmDecoder";
-import CodecMessage from "controllers/snapcontrol/messages/CodecMessage";
-import HelloMessage from "controllers/snapcontrol/messages/HelloMessage";
-import SampleFormat from "controllers/snapcontrol/SampleFormat";
-import PcmChunkMessage from "controllers/snapcontrol/messages/PcmChunkMessage";
-import BaseMessage from "controllers/snapcontrol/messages/BaseMessage";
-import PlayBuffer from "controllers/snapcontrol/PlayBuffer";
-import TimeMessage from "controllers/snapcontrol/messages/TimeMessage";
-import ServerSettingsMessage from "controllers/snapcontrol/messages/ServerSettingsMessage";
-import TV from "controllers/snapcontrol/TV";
-import AudioContext from "types/snapcast/AudioContext";
+import AudioStream from "src/controllers/snapcontrol/AudioStream";
+import TimeProvider from "src/controllers/snapcontrol/TimePro";
+import Decoder from "src/controllers/snapcontrol/decoders/Decoder";
+import FlacDecoder from "src/controllers/snapcontrol/decoders/FlacDecoder";
+import OpusDecoder from "src/controllers/snapcontrol/decoders/OpusDecoder";
+import PcmDecoder from "src/controllers/snapcontrol/decoders/PcmDecoder";
+import CodecMessage from "src/controllers/snapcontrol/messages/CodecMessage";
+import HelloMessage from "src/controllers/snapcontrol/messages/HelloMessage";
+import SampleFormat from "src/controllers/snapcontrol/SampleFormat";
+import PcmChunkMessage from "src/controllers/snapcontrol/messages/PcmChunkMessage";
+import BaseMessage from "src/controllers/snapcontrol/messages/BaseMessage";
+import PlayBuffer from "src/controllers/snapcontrol/PlayBuffer";
+import TimeMessage from "src/controllers/snapcontrol/messages/TimeMessage";
+import ServerSettingsMessage from "src/controllers/snapcontrol/messages/ServerSettingsMessage";
+import TV from "src/controllers/snapcontrol/TV";
+import AudioContext from "src/types/snapcast/AudioContext";
 
 function getChromeVersion(): number | null {
   const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
@@ -28,18 +28,9 @@ function uuidv4(): string {
   });
 }
 
-interface ConnectParams {
-  mac: string;
-  arch: string;
-  os: string;
-  hostname: string;
-  uniqueId: string;
-  version: string;
-}
-
 // Browser specific implementation
 class SnapclientBrowser {
-  constructor(baseUrl: string) {
+  constructor(baseUrl?: string) {
     this.baseUrl = baseUrl;
     this.timeProvider = new TimeProvider();
 
@@ -87,56 +78,70 @@ class SnapclientBrowser {
   }
 
   public async setPlaying(playing: boolean): Promise<void> {
+    if (this.onPlay) {
+      this.onPlay(playing)
+    }
     this.playing = playing;
   }
 
-  connect({
+  connect(
     hostname = "Snapweb Client",
     mac = "00:00:00:00:00:00",
     arch = "web",
     os = navigator.platform,
     uniqueId = uuidv4(),
     version = "0.0.0",
-  }: ConnectParams) {
-    this.streamsocket = new WebSocket(this.baseUrl);
-    this.streamsocket.binaryType = "arraybuffer";
-    this.streamsocket.onmessage = (ev) => this.onMessage(ev);
-
-    this.streamsocket.onopen = async () => {
-      console.log("on open");
-      let hello = new HelloMessage();
-
-      hello.mac = mac;
-      hello.arch = arch;
-      hello.os = os;
-      hello.hostname = hostname;
-      hello.uniqueId = uniqueId;
-      // const versionElem = null // document.getElementsByTagName("meta").namedItem("version");
-      hello.version = version;
-
-      this.sendMessage(hello);
-      this.syncTime();
-      this.syncHandle = window.setInterval(() => this.syncTime(), 1000);
-    };
-    this.streamsocket.onerror = (ev) => {
-      console.error("error:", ev);
-    };
-    this.streamsocket.onclose = () => {
-      window.clearInterval(this.syncHandle);
-      console.info("connection lost, reconnecting in 1s");
-      setTimeout(
-        () =>
-          this.connect({
-            mac,
-            arch,
-            os,
-            hostname,
-            uniqueId,
-            version,
-          }),
-        1000
-      );
-    };
+  ) {
+    if (this.baseUrl) {
+      this.streamsocket = new WebSocket(this.baseUrl);
+      this.streamsocket.binaryType = "arraybuffer";
+      this.streamsocket.onmessage = (ev) => this.onMessage(ev);
+  
+      this.streamsocket.onopen = async () => {
+        console.log("on open");
+        let hello = new HelloMessage();
+  
+        hello.mac = mac;
+        hello.arch = arch;
+        hello.os = os;
+        hello.hostname = hostname;
+        hello.uniqueId = uniqueId;
+        // const versionElem = null // document.getElementsByTagName("meta").namedItem("version");
+        hello.version = version;
+  
+        this.sendMessage(hello);
+        this.syncTime();
+        this.syncHandle = window.setInterval(() => this.syncTime(), 1000);
+        if (this.onConnect) {
+          this.onConnect()
+        }
+      };
+      this.streamsocket.onerror = (ev) => {
+        console.error("error:", ev);
+        if (this.onError) {
+          this.onError(ev);
+        }
+      };
+      this.streamsocket.onclose = () => {
+        window.clearInterval(this.syncHandle);
+        console.info("connection lost, reconnecting in 1s");
+        if (this.onDisconnect) {
+          this.onDisconnect()
+        }
+        setTimeout(
+          () =>
+            this.connect(
+              hostname,
+              mac,
+              arch,
+              os,
+              uniqueId,
+              version,
+            ),
+          1000
+        );
+      };
+    }
   }
 
   private onMessage(msg: MessageEvent) {
@@ -248,7 +253,7 @@ class SnapclientBrowser {
     msg.sent = new TV(0, 0);
     msg.sent.setMilliseconds(this.timeProvider.now());
     msg.id = ++this.msgId;
-    if (this.streamsocket.readyState == this.streamsocket.OPEN) {
+    if (this.streamsocket && this.streamsocket.readyState == this.streamsocket.OPEN) {
       this.streamsocket.send(msg.serialize());
     }
   }
@@ -279,12 +284,13 @@ class SnapclientBrowser {
     this.setPlaying(false);
     window.clearInterval(this.syncHandle);
     this.stopAudio();
-    if (
+    if (this.streamsocket && 
       ([WebSocket.OPEN, WebSocket.CONNECTING] as number[]).includes(
         this.streamsocket.readyState
       )
     ) {
-      this.streamsocket.onclose = () => {};
+      this.streamsocket.onclose = () => {
+      };
       this.streamsocket.close();
     }
   }
@@ -330,8 +336,8 @@ class SnapclientBrowser {
       this.bufferFrameCount / (this.sampleFormat as SampleFormat).rate;
   }
 
-  baseUrl: string;
-  streamsocket!: WebSocket;
+  baseUrl?: string;
+  streamsocket?: WebSocket;
   playing: boolean = false;
   playTime: number = 0;
   msgId: number = 0;
@@ -356,5 +362,11 @@ class SnapclientBrowser {
   bufferNum: number = 0;
 
   latency: number = 0;
+
+  onConnect?: () => void;
+  onDisconnect?: () => void;
+  onError?: (ev: Event) => void;
+
+  onPlay?: (playing: boolean) => void;
 }
 export default SnapclientBrowser;

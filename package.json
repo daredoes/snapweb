@@ -18,12 +18,14 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.10",
+    "@uidotdev/usehooks": "^2.3.1",
     "autoprefixer": "^10.4.16",
     "libflacjs": "^5.4.0",
     "postcss": "^8.4.30",
     "postcss-cli": "^10.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "use-media-session": "^0.0.3"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.4.3",

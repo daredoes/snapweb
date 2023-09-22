@@ -1,4 +1,4 @@
-import TV from "controllers/snapcontrol/TV";
+import TV from "src/controllers/snapcontrol/TV";
 
 class BaseMessage {
   constructor(_buffer?: ArrayBuffer) {}
