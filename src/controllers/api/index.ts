@@ -24,7 +24,7 @@ export const serverGetStatus = (): ServerRequest => {
 };
 
 export const streamControlSetPosition = (
-  options: StreamControlSetPositionParams,
+  options: StreamControlSetPositionParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -35,7 +35,7 @@ export const streamControlSetPosition = (
 };
 
 export const streamControlSeek = (
-  options: StreamControlSeekParams,
+  options: StreamControlSeekParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -46,7 +46,7 @@ export const streamControlSeek = (
 };
 
 export const streamControlPrevious = (
-  options: StreamControlPreviousParams,
+  options: StreamControlPreviousParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -57,7 +57,7 @@ export const streamControlPrevious = (
 };
 
 export const streamControlNext = (
-  options: StreamControlNextParams,
+  options: StreamControlNextParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -68,7 +68,7 @@ export const streamControlNext = (
 };
 
 export const streamControlStop = (
-  options: StreamControlStopParams,
+  options: StreamControlStopParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -79,7 +79,7 @@ export const streamControlStop = (
 };
 
 export const streamControlPlayPause = (
-  options: StreamControlPlayPauseParams,
+  options: StreamControlPlayPauseParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -90,7 +90,7 @@ export const streamControlPlayPause = (
 };
 
 export const streamControlPause = (
-  options: StreamControlPauseParams,
+  options: StreamControlPauseParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -101,7 +101,7 @@ export const streamControlPause = (
 };
 
 export const streamControlPlay = (
-  options: StreamControlPlayParams,
+  options: StreamControlPlayParams
 ): ServerRequest => {
   const payload: StreamControlPayload = {
     id: options.id,
@@ -124,7 +124,7 @@ export const clientSetLatency = (options: ClientSetLatency): ServerRequest => {
 };
 
 export const serverDeleteClient = (
-  options: ServerDeleteClient,
+  options: ServerDeleteClient
 ): ServerRequest => {
   return makeRequest("Server.DeleteClient", options);
 };

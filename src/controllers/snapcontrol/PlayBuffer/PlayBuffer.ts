@@ -3,7 +3,7 @@ class PlayBuffer {
     buffer: AudioBuffer,
     playTime: number,
     source: AudioBufferSourceNode,
-    destination: AudioNode,
+    destination: AudioNode
   ) {
     this.buffer = buffer;
     this.playTime = playTime;

@@ -1,5 +1,17 @@
-import { render } from "preact";
-import { App } from "./app.tsx";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import CssBaseline from "@mui/material/CssBaseline";
+
+import App from "./App.tsx";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import "./index.css";
 
-render(<App />, document.getElementById("app")!);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <CssBaseline />
+    <App />
+  </React.StrictMode>
+);

@@ -47,7 +47,7 @@ class SnapcastWebsocketAPI {
     handleOpen?: () => void,
     handleClose?: () => void,
     handleMessageMethods?: MessageMethods,
-    handleNotificationMethods?: NotificationMethods,
+    handleNotificationMethods?: NotificationMethods
   ) {
     if (this.connection) {
       this.connection.close();
@@ -102,7 +102,7 @@ class SnapcastWebsocketAPI {
                 {
                   request: this.pending_response_requests[msgData.id] as any,
                   result: msgData["result"],
-                },
+                }
               );
               func({
                 request: this.pending_response_requests[msgData.id] as any,
@@ -154,7 +154,7 @@ class SnapcastWebsocketAPI {
   }
 
   public streamControlSetPosition(
-    options: StreamControlSetPositionParams,
+    options: StreamControlSetPositionParams
   ): number {
     return this.sendServerRequest(API.streamControlSetPosition(options));
   }

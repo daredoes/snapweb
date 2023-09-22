@@ -29,7 +29,12 @@ function uuidv4(): string {
 }
 
 interface ConnectParams {
-    mac: string, arch: string, os: string, hostname: string, uniqueId: string, version: string
+  mac: string;
+  arch: string;
+  os: string;
+  hostname: string;
+  uniqueId: string;
+  version: string;
 }
 
 // Browser specific implementation
@@ -82,10 +87,17 @@ class SnapclientBrowser {
   }
 
   public async setPlaying(playing: boolean): Promise<void> {
-    this.playing = playing
+    this.playing = playing;
   }
 
-  connect({ hostname = "Snapweb Client", mac = "00:00:00:00:00:00", arch = "web", os = navigator.platform, uniqueId = uuidv4(), version = "0.0.0" }: ConnectParams) {
+  connect({
+    hostname = "Snapweb Client",
+    mac = "00:00:00:00:00:00",
+    arch = "web",
+    os = navigator.platform,
+    uniqueId = uuidv4(),
+    version = "0.0.0",
+  }: ConnectParams) {
     this.streamsocket = new WebSocket(this.baseUrl);
     this.streamsocket.binaryType = "arraybuffer";
     this.streamsocket.onmessage = (ev) => this.onMessage(ev);
@@ -112,14 +124,18 @@ class SnapclientBrowser {
     this.streamsocket.onclose = () => {
       window.clearInterval(this.syncHandle);
       console.info("connection lost, reconnecting in 1s");
-      setTimeout(() => this.connect({
-        mac,
-        arch,
-        os,
-        hostname,
-        uniqueId,
-        version
-      }), 1000);
+      setTimeout(
+        () =>
+          this.connect({
+            mac,
+            arch,
+            os,
+            hostname,
+            uniqueId,
+            version,
+          }),
+        1000
+      );
     };
   }
 
@@ -145,12 +161,12 @@ class SnapclientBrowser {
         if (this.sampleFormat.channels != 2 || this.sampleFormat.bits != 16) {
           alert(
             "Stream must be stereo with 16 bit depth, actual format: " +
-              this.sampleFormat.toString(),
+              this.sampleFormat.toString()
           );
         } else {
           if (this.bufferDurationMs != 0) {
             this.bufferFrameCount = Math.floor(
-              this.bufferDurationMs * this.sampleFormat.msRate(),
+              this.bufferDurationMs * this.sampleFormat.msRate()
             );
           }
 
@@ -170,7 +186,7 @@ class SnapclientBrowser {
           this.stream = new AudioStream(
             this.timeProvider,
             this.sampleFormat,
-            this.bufferMs,
+            this.bufferMs
           );
           this.latency =
             (this.ctx.baseLatency !== undefined ? this.ctx.baseLatency : 0) +
@@ -181,7 +197,7 @@ class SnapclientBrowser {
               ", output latency: " +
               this.ctx.outputLatency +
               ", latency: " +
-              this.latency,
+              this.latency
           );
           this.play();
         }
@@ -189,7 +205,7 @@ class SnapclientBrowser {
     } else if (type == 2) {
       let pcmChunk = new PcmChunkMessage(
         msg.data,
-        this.sampleFormat as SampleFormat,
+        this.sampleFormat as SampleFormat
       );
       if (this.decoder) {
         let decoded = this.decoder.decode(pcmChunk);
@@ -212,14 +228,14 @@ class SnapclientBrowser {
           ", volume: " +
           this.serverSettings.volumePercent +
           ", muted: " +
-          this.serverSettings.muted,
+          this.serverSettings.muted
       );
     } else if (type == 4) {
       if (this.timeProvider) {
         let time = new TimeMessage(msg.data);
         this.timeProvider.setDiff(
           time.latency.getMilliseconds(),
-          this.timeProvider.now() - time.sent.getMilliseconds(),
+          this.timeProvider.now() - time.sent.getMilliseconds()
         );
       }
       // console.log("Time sec: " + time.latency.sec + ", usec: " + time.latency.usec + ", diff: " + this.timeProvider.diff);
@@ -265,7 +281,7 @@ class SnapclientBrowser {
     this.stopAudio();
     if (
       ([WebSocket.OPEN, WebSocket.CONNECTING] as number[]).includes(
-        this.streamsocket.readyState,
+        this.streamsocket.readyState
       )
     ) {
       this.streamsocket.onclose = () => {};
@@ -287,7 +303,7 @@ class SnapclientBrowser {
       this.ctx!.createBuffer(
         this.sampleFormat!.channels,
         this.bufferFrameCount,
-        this.sampleFormat!.rate,
+        this.sampleFormat!.rate
       );
     let playTimeMs = (this.playTime + this.latency) * 1000 - this.bufferMs;
     this.stream!.getNextBuffer(buffer, playTimeMs);
@@ -297,15 +313,14 @@ class SnapclientBrowser {
       buffer,
       this.playTime,
       source,
-      this.gainNode!,
+      this.gainNode!
     );
     this.audioBuffers.push(playBuffer);
     playBuffer.num = ++this.bufferNum;
     playBuffer.onended = (buffer: PlayBuffer) => {
       // let diff = this.timeProvider.nowSec() - buffer.playTime;
       this.freeBuffers.push(
-        this.audioBuffers.splice(this.audioBuffers.indexOf(buffer), 1)[0]
-          .buffer,
+        this.audioBuffers.splice(this.audioBuffers.indexOf(buffer), 1)[0].buffer
       );
       // console.debug("PlayBuffer " + playBuffer.num + " ended after: " + (diff * 1000) + ", in flight: " + this.audioBuffers.length);
       this.playNext();

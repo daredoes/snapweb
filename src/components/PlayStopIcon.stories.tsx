@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/preact';
+import type { Meta, StoryObj } from "@storybook/react";
 
 import PlayStopIcon from "./PlayStopIcon";
 
@@ -8,12 +8,12 @@ const meta: Meta<typeof component> = {
   component,
 };
 
-type Story = StoryObj<typeof component>
+type Story = StoryObj<typeof component>;
 
-export default meta
+export default meta;
 
 export const Primary: Story = {
   args: {
-    playing: true
-  }
-}
+    playing: true,
+  },
+};

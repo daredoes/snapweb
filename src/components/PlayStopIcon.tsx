@@ -1,23 +1,23 @@
-import { Play, Square } from 'preact-feather';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from "react";
+import { PlayArrow, Stop } from "@mui/icons-material";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 
-
-
-export interface PlayStopIconProps {
-  playing?: boolean
+export interface PlayStopIconProps extends IconButtonProps {
+  playing?: boolean;
 }
 
-const PlayStopIcon = ({playing}: PlayStopIconProps) => {
+const PlayStopIcon = ({ playing, ...props }: PlayStopIconProps) => {
   const Icon = useMemo(() => {
     if (playing) {
-      return Square
+      return Stop;
     }
-    return Play
-  }, [playing])
+    return PlayArrow;
+  }, [playing]);
   return (
-    <div className={'play-stop-icon'}><Icon /></div>
-  )
-}
+    <IconButton {...props}>
+      <Icon />
+    </IconButton>
+  );
+};
 
 export default PlayStopIcon;
-

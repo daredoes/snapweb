@@ -10,12 +10,16 @@ class WebAudioController {
   private _audio?: HTMLAudioElement;
 
   private constructor(baseUrl: string = window.location.href) {
-    this.snapclientInstance = new SnapclientBrowser(convertHttpToWebsocket(baseUrl));
+    this.snapclientInstance = new SnapclientBrowser(
+      convertHttpToWebsocket(baseUrl)
+    );
     this.buildAudio();
   }
 
   public changeSnapclientUrl(baseUrl: string = window.location.href) {
-    this.snapclientInstance = new SnapclientBrowser(convertHttpToWebsocket(baseUrl));
+    this.snapclientInstance = new SnapclientBrowser(
+      convertHttpToWebsocket(baseUrl)
+    );
   }
 
   public static getInstance(): WebAudioController {

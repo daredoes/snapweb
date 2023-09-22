@@ -200,7 +200,7 @@ export type StreamRemoveStreamResponse = {
   };
 };
 
-export type Property = "loopStatus" | "shuffle" | "volume" | "rate"
+export type Property = "loopStatus" | "shuffle" | "volume" | "rate";
 
 export interface SetPropertyParams {
   id: string;
@@ -345,7 +345,7 @@ export type NotificationMethods = {
   "Client.OnDisconnect"?: (response: ClientOnDisconnectResponse) => void;
   "Client.OnVolumeChanged"?: (response: ClientOnVolumeChangedResponse) => void;
   "Client.OnLatencyChanged"?: (
-    response: ClientOnLatencyChangedResponse,
+    response: ClientOnLatencyChangedResponse
   ) => void;
   "Client.OnNameChanged"?: (response: ClientOnNameChangedResponse) => void;
   "Group.OnMute"?: (response: GroupOnMuteResponse) => void;
@@ -356,7 +356,9 @@ export type NotificationMethods = {
   "Stream.OnProperties"?: (response: StreamOnProperties) => void;
 };
 
-export type ServerRequestMethodIds = keyof MessageMethods | keyof NotificationMethods
+export type ServerRequestMethodIds =
+  | keyof MessageMethods
+  | keyof NotificationMethods;
 
 export interface ServerRequest {
   id: number | ServerRequestMethodIds | string;

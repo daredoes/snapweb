@@ -6,7 +6,7 @@ class AudioStream {
   constructor(
     public timeProvider: TimeProvider,
     public sampleFormat: SampleFormat,
-    public bufferMs: number,
+    public bufferMs: number
   ) {}
 
   chunks: Array<PcmChunkMessage> = new Array<PcmChunkMessage>();
@@ -15,7 +15,7 @@ class AudioStream {
     // let base = 10;
     this.volume = percent / 100; // (Math.pow(base, percent / 100) - 1) / (base - 1);
     console.log(
-      "setVolume: " + percent + " => " + this.volume + ", muted: " + this.muted,
+      "setVolume: " + percent + " => " + this.volume + ", muted: " + this.muted
     );
     this.muted = muted;
   }
@@ -37,7 +37,7 @@ class AudioStream {
           "Dropping old chunk: " +
             age.toFixed(2) +
             ", left: " +
-            this.chunks.length,
+            this.chunks.length
         );
       } else break;
     }
@@ -73,7 +73,7 @@ class AudioStream {
             ", chunk.startMs: " +
             this.chunk.startMs().toFixed(2) +
             ", timestamp: " +
-            this.chunk.timestamp.getMilliseconds().toFixed(2),
+            this.chunk.timestamp.getMilliseconds().toFixed(2)
         );
         console.log("Chunk too young, returning silence");
       } else {
@@ -86,7 +86,7 @@ class AudioStream {
                 age.toFixed(2) +
                 " > " +
                 this.chunk.duration().toFixed(2) +
-                ")",
+                ")"
             );
             this.chunk = this.chunks.shift();
             if (!this.chunk) break;
@@ -96,12 +96,12 @@ class AudioStream {
             if (age > 0) {
               console.log("Fast forwarding " + age.toFixed(2) + "ms");
               this.chunk.readFrames(
-                Math.floor(age * this.chunk.sampleFormat.msRate()),
+                Math.floor(age * this.chunk.sampleFormat.msRate())
               );
             } else if (age < 0) {
               console.log("Playing silence " + -age.toFixed(2) + "ms");
               let silentFrames = Math.floor(
-                -age * this.chunk.sampleFormat.msRate(),
+                -age * this.chunk.sampleFormat.msRate()
               );
               left.fill(0, 0, silentFrames);
               right.fill(0, 0, silentFrames);
@@ -142,7 +142,7 @@ class AudioStream {
         let readFrames = frames + addFrames - read;
         if (addFrames != 0)
           everyN = Math.ceil(
-            (frames + addFrames - read) / (Math.abs(addFrames) + 1),
+            (frames + addFrames - read) / (Math.abs(addFrames) + 1)
           );
 
         // addFrames = 0;
@@ -182,7 +182,7 @@ class AudioStream {
               ", add: " +
               addFrames +
               ", everyN: " +
-              everyN,
+              everyN
           );
         if (read == readFrames) read = frames;
       }
@@ -195,7 +195,7 @@ class AudioStream {
           "/" +
           frames +
           ", chunks left: " +
-          this.chunks.length,
+          this.chunks.length
       );
       left.fill(0, pos);
       right.fill(0, pos);
