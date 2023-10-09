@@ -66,7 +66,7 @@ const AudioController = ({}: AudioControllerProps) => {
 
   const saveSettings = useCallback(() => {
     try {
-      const newUrl = new URL(internalUrl)
+      new URL(internalUrl)
       setStreamUrl(internalUrl)
     } catch {
       return false;

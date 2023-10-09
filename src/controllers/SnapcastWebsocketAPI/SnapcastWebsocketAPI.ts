@@ -38,6 +38,12 @@ class SnapcastWebsocketAPI {
   private _handleOpen?: () => void;
   private _handleClose?: () => void;
 
+  public close() {
+    if (this.connection) {
+      this.connection.close()
+    }
+  }
+
   constructor() {}
 
   public connect(
