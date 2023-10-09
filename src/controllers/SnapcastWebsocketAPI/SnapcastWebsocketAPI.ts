@@ -48,7 +48,6 @@ class SnapcastWebsocketAPI {
 
   public connect(
     url: string,
-    preventAutomaticReconnect?: boolean,
     handleError?: (event: Event) => void,
     handleOpen?: () => void,
     handleClose?: () => void,
@@ -67,11 +66,15 @@ class SnapcastWebsocketAPI {
     this.handleMessageMethods = handleMessageMethods || {};
     this.handleNotificationMethods = handleNotificationMethods || {};
 
-    this._connect(preventAutomaticReconnect);
+    this._connect();
   }
 
   private openSocket() {
     if (this.url) {
+      if (this.connection) {
+        this.connection.onclose = null;
+        this.connection.close()
+      }
       try {
         console.info("Opening connection to", this.url);
         this.connection = new WebSocket(this.url);
@@ -84,49 +87,54 @@ class SnapcastWebsocketAPI {
     return false;
   }
 
-  private _connect(preventAutomaticReconnect?: boolean) {
+  private _connect() {
     if (!this.url) {
       console.error("No URL to connect to");
       return;
     }
     if (this.openSocket() && this.connection) {
       this.connection.onmessage = (msg: MessageEvent) => {
-        const msgData = JSON.parse(msg.data);
-        const isResponse: boolean = msgData.id != undefined;
-        if (isResponse) {
-          console.info("Received message", msgData);
-          if (this.pending_response[msgData.id]) {
-            const func =
-              this.handleMessageMethods[
-                this.pending_response[msgData.id] as keyof MessageMethods
-              ];
-            if (func) {
-              console.info(
-                `Calling function ${
+        try {
+
+          const msgData = JSON.parse(msg.data);
+          const isResponse: boolean = msgData.id != undefined;
+          if (isResponse) {
+            console.info("Received message", msgData);
+            if (this.pending_response[msgData.id]) {
+              const func =
+                this.handleMessageMethods[
                   this.pending_response[msgData.id] as keyof MessageMethods
-                }`,
-                {
+                ];
+              if (func) {
+                console.info(
+                  `Calling function ${
+                    this.pending_response[msgData.id] as keyof MessageMethods
+                  }`,
+                  {
+                    request: this.pending_response_requests[msgData.id] as any,
+                    result: msgData["result"],
+                  }
+                );
+                func({
                   request: this.pending_response_requests[msgData.id] as any,
                   result: msgData["result"],
-                }
-              );
-              func({
-                request: this.pending_response_requests[msgData.id] as any,
-                result: msgData["result"],
-              });
+                });
+              }
+              delete this.pending_response[msgData.id];
+              delete this.pending_response_requests[msgData.id];
             }
-            delete this.pending_response[msgData.id];
-            delete this.pending_response_requests[msgData.id];
+          } else {
+            console.info("Received notification", msgData);
+            const func =
+              this.handleNotificationMethods[
+                msgData["method"] as keyof NotificationMethods
+              ];
+            if (func) {
+              func(msgData["params"]);
+            }
           }
-        } else {
-          console.info("Received notification", msgData);
-          const func =
-            this.handleNotificationMethods[
-              msgData["method"] as keyof NotificationMethods
-            ];
-          if (func) {
-            func(msgData["params"]);
-          }
+        } catch (e) {
+          console.error(e)
         }
       };
       this.connection.onopen = () => {
@@ -142,12 +150,8 @@ class SnapcastWebsocketAPI {
         }
       };
       this.connection.onclose = () => {
-        console.info("connection lost, reconnecting in 1s");
         if (this._handleClose) {
           this._handleClose();
-        }
-        if (!preventAutomaticReconnect) {
-          setTimeout(() => this._connect(preventAutomaticReconnect), 1000);
         }
       };
     } else {
