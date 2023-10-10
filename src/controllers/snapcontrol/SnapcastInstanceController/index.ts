@@ -1,1 +1,1 @@
-export { default } from "./WebAudioController";
+export { default } from "./SnapcastInstanceController";

@@ -36,7 +36,7 @@ class SnapcastWebsocketAPI {
 
   private _handleError?: (event: Event) => void;
   private _handleOpen?: () => void;
-  private _handleClose?: () => void;
+  private _handleClose?: () => boolean;
 
   public close() {
     if (this.connection) {
@@ -51,9 +51,10 @@ class SnapcastWebsocketAPI {
     url: string,
     handleError?: (event: Event) => void,
     handleOpen?: () => void,
-    handleClose?: () => void,
+    handleClose?: () => boolean,
     handleMessageMethods?: MessageMethods,
-    handleNotificationMethods?: NotificationMethods
+    handleNotificationMethods?: NotificationMethods,
+    maxDepth?: number
   ) {
     if (this.connection) {
       this.connection.close();
@@ -66,8 +67,7 @@ class SnapcastWebsocketAPI {
     this._handleError = handleError;
     this.handleMessageMethods = handleMessageMethods || {};
     this.handleNotificationMethods = handleNotificationMethods || {};
-    console.log(url, handleMessageMethods)
-    this._connect();
+    this._connect(maxDepth);
   }
 
   private openSocket() {
@@ -88,7 +88,7 @@ class SnapcastWebsocketAPI {
     return false;
   }
 
-  private _connect() {
+  private _connect(maxDepth = 0, depth = 0) {
     if (!this.url) {
       console.error("No URL to connect to");
       return;
@@ -152,7 +152,14 @@ class SnapcastWebsocketAPI {
       };
       this.connection.onclose = () => {
         if (this._handleClose) {
-          this._handleClose();
+          // False means retry connection
+          console.log("Trying to close")
+          if (!this._handleClose() && maxDepth != ++depth) {
+            console.log("Reconnecting in 1s")
+            setTimeout(() => {
+              this._connect(maxDepth, depth)
+            }, 1000)
+          };
         }
       };
     } else {
