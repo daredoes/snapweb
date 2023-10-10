@@ -23,8 +23,8 @@ import {
 
 // A Wrapper for the JSON RPC Websocket API
 class SnapcastWebsocketAPI {
-  private url?: string;
-  private connection?: WebSocket;
+  public url?: string;
+  public connection?: WebSocket;
   private msg_id: number = 0;
   // Links numeric request ID to ID used to match method handling
   private pending_response: Record<string, any> = {};
@@ -134,7 +134,7 @@ class SnapcastWebsocketAPI {
             }
           }
         } catch (e) {
-          console.error(e)
+          console.error(e, "onmessage")
         }
       };
       this.connection.onopen = () => {

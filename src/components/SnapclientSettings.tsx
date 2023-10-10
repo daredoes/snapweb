@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, FormControlLabel, FormGroup, InputAdornment, Switch, TextField, useTheme } from "@mui/material";
 import { Link } from "@mui/icons-material";
@@ -18,20 +18,28 @@ const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onCl
   const [url, setUrl] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Url'], DEFAULT_SNAPCAST_URL)
   const [preventAutomaticReconnect, setPreventAutomaticReconnect] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
   const [showOfflineClients, setShowOfflineClients] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Show Offline Clients'], false)
+  const [_showSettings, setShowSettings] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Settings'], false)
   const [settings, setSettings] = useState(false)
 
   useEffect(() => {
     setSettings((originalSettings) => {
       if (originalSettings && open === false) {
+        setShowSettings(false)
         onClose()
       }
       return open
     })
-  }, [setSettings, open])
+  }, [setSettings, open, setShowSettings])
 
   useEffect(() => {
     setInternalUrl(url)
   }, [setInternalUrl, url])
+
+  // useLayoutEffect(() => {
+  //   if (_showSettings === false) {
+  //     setShowSettings(true)
+  //   }
+  // }, [_showSettings, setShowSettings])
 
   const saveStreamUrl = useCallback(async (url: string) => {
     try {
@@ -49,11 +57,12 @@ const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onCl
   const closeSettings = useCallback(() => {
     setSettings((originalSettings) => {
       if (originalSettings) {
+        setShowSettings(false)
         onClose()
       }
       return false
     })
-  }, [setSettings])
+  }, [setSettings, setShowSettings])
 
   return (
       <Dialog fullScreen={fullScreen} onClose={closeSettings} open={settings} fullWidth={fullWidth} {...props}>
