@@ -40,6 +40,7 @@ class SnapcastWebsocketAPI {
 
   public close() {
     if (this.connection) {
+      this.connection.onclose = null;
       this.connection.close()
     }
   }
@@ -65,7 +66,7 @@ class SnapcastWebsocketAPI {
     this._handleError = handleError;
     this.handleMessageMethods = handleMessageMethods || {};
     this.handleNotificationMethods = handleNotificationMethods || {};
-
+    console.log(url, handleMessageMethods)
     this._connect();
   }
 
