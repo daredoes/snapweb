@@ -1,9 +1,9 @@
-import Client from "types/snapcast/Client";
-import Group from "types/snapcast/Group";
-import Server from "types/snapcast/Server";
-import Volume from "types/snapcast/Volume";
-import Properties from "types/snapcast/Properties";
-import Stream from "types/snapcast/Stream";
+import Client from "src/types/snapcast/Client";
+import Group from "src/types/snapcast/Group";
+import Server from "src/types/snapcast/Server";
+import Volume from "src/types/snapcast/Volume";
+import Properties from "src/types/snapcast/Properties";
+import Stream from "src/types/snapcast/Stream";
 
 export type GroupGetStatus = {
   id: string;

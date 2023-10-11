@@ -1,6 +1,6 @@
-import Stream from "types/snapcast/Stream";
-import Group from "types/snapcast/Group";
-import Host from "types/snapcast/Host";
+import Stream from "src/types/snapcast/Stream";
+import Group from "src/types/snapcast/Group";
+import Host from "src/types/snapcast/Host";
 
 export interface ServerDetails {
   host: Host;

@@ -101,6 +101,7 @@ class SnapcastWebsocketAPI {
           const isResponse: boolean = msgData.id != undefined;
           if (isResponse) {
             console.info("Received message", msgData);
+            console.log(this.pending_response)
             if (this.pending_response[msgData.id]) {
               const func =
                 this.handleMessageMethods[
@@ -241,6 +242,7 @@ class SnapcastWebsocketAPI {
     if (this.connection) {
       const originalMethodId = msg.id;
       const newMsgId = ++this.msg_id;
+      msg.id = newMsgId;
       const msgJson = JSON.stringify(msg);
       this.connection.send(msgJson);
       this.pending_response[newMsgId] = originalMethodId;

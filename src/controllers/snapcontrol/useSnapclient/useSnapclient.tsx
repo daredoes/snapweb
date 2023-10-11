@@ -1,9 +1,9 @@
-import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useLocalStorage } from '@uidotdev/usehooks';
 import SnapcastWebsocketAPI from "src/controllers/SnapcastWebsocketAPI";
 import { convertHttpToWebsocket } from "src/helpers";
 import { LOCAL_STORAGE_KEYS } from 'src/types/localStorage';
-import { MessageMethods, NotificationMethods } from 'src/types/snapcast';
+import { ServerDetails } from 'src/types/snapcast';
 
 export const useSnapclient = () => {
   const [preventAutomaticReconnect, _setPreventAutomaticReconnect] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
@@ -12,18 +12,7 @@ export const useSnapclient = () => {
   }, [])
 
   const [connected, setConnected] = useState<boolean | undefined>(false)
-
-  const messageCallbacks: MessageMethods = useMemo(() => {
-    return {
-      "Server.GetStatus": (r) => {
-        console.log(r)
-      }
-    }
-  }, [])
-
-  const notificationCallbacks: NotificationMethods = useMemo(() => {
-    return {}
-  }, [])
+  const [serverDetails, setServerDetails] = useState<Record<string, ServerDetails>>({})
 
   const handleConnectionError = useCallback((e: Event) => {
     // setConnected(true)
@@ -48,22 +37,38 @@ export const useSnapclient = () => {
       handleConnectionError,
       handleConnected,
       handleConnectionClosed,
-      messageCallbacks,
-      notificationCallbacks,
+      {
+        "Server.GetStatus": (r) => {
+          const server = r.result.server.server
+          setServerDetails((oldDetails) => {
+            return {...oldDetails, [httpUrl]: server}
+          })
+        }
+      },
+      {
+        "Server.OnUpdate": (r) => {
+          const server = r.server.server
+          setServerDetails((oldDetails) => {
+            return {...oldDetails, [httpUrl]: server}
+          })
+        }
+      },
       0 // Max Retries (0 or less == unlimited)
     )
-  }, [api])
+  }, [api, setServerDetails])
 
   return useMemo(() => {
     return {
       api,
       connected,
-      connect
+      connect,
+      serverDetails
     }
   }, [
     api,
     connected,
-    connect
+    connect,
+    serverDetails
   ])
 }
 
