@@ -30,7 +30,7 @@ const SnapclientController = ({}: SnapclientController) => {
         </Typography>
         <Box display={'flex'} flexDirection={'row'} minHeight={'200px'} maxWidth={'100%'} width={'100%'} sx={{overflowX: 'scroll'}} flexWrap={'wrap'} justifyContent={'space-evenly'} alignItems={'center'}>
           {Object.values(groups).map((g) => {
-            return <GroupDisplay key={g.id} group={g} />
+            return <GroupDisplay justifyContent={'center'} alignItems={'center'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
           })}
         </Box>
       </Box>
