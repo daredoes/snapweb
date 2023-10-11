@@ -13,7 +13,7 @@ const SnapclientController = ({}: SnapclientController) => {
   const info = useRenderInfo("Snapclient Controller")
   const [url, _setStreamUrl] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Url'], "") // This is set elsewhere
   const debouncedUrl = useDebounce(url, 1000);
-  const { connect, connected, serverDetails, groups } = useSnapclient()
+  const { connect, groups } = useSnapclient()
 
   const httpUrl = useMemo(() => {
     return debouncedUrl || DEFAULT_SNAPCAST_URL
@@ -28,10 +28,6 @@ const SnapclientController = ({}: SnapclientController) => {
         <Typography>
           {info?.name}: {info?.renders}
         </Typography>
-        <Typography fontWeight={'bolder'} fontStyle={connected === undefined ? 'italic' : ''}>
-          {connected === undefined ? "Loading..." : connected ? "Connected" : "Disconnected"}
-        </Typography>
-        <div>{serverDetails?.host.name}</div>
         <Box display={'flex'} flexDirection={'row'} minHeight={'200px'} maxWidth={'100%'} width={'100%'} sx={{overflowX: 'scroll'}} flexWrap={'wrap'} justifyContent={'space-evenly'} alignItems={'center'}>
           {Object.values(groups).map((g) => {
             return <GroupDisplay key={g.id} group={g} />

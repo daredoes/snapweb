@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocalStorage } from '@uidotdev/usehooks';
-import SnapcastWebsocketAPI from "src/controllers/SnapcastWebsocketAPI";
 import { convertHttpToWebsocket } from "src/helpers";
 import { LOCAL_STORAGE_KEYS } from 'src/types/localStorage';
-import { Server, ServerDetails, ClientlessGroup, GroupedClient } from 'src/types/snapcast';
+import { Server } from 'src/types/snapcast';
 import { useAtom } from 'jotai';
 import { apiAtom, clientsAtom, connctedAtom, groupsAtom, serverAtom } from 'src/atoms/snapclient';
 
 export const useSnapclient = () => {
   const [preventAutomaticReconnect, _setPreventAutomaticReconnect] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
+  const [showOfflineClients, _setShowOfflineClients] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Show Offline Clients'], false)
   const [api] = useAtom(apiAtom)
 
   const [connected, setConnected] = useAtom(connctedAtom)
@@ -102,7 +102,8 @@ export const useSnapclient = () => {
       connect,
       clients,
       groups,
-      serverDetails
+      serverDetails,
+      showOfflineClients
     }
   }, [
     api,
@@ -110,7 +111,8 @@ export const useSnapclient = () => {
     connect,
     clients,
     groups,
-    serverDetails
+    serverDetails,
+    showOfflineClients
   ])
 }
 

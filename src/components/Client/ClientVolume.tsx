@@ -10,19 +10,21 @@ function valuetext(value: number) {
 export interface ClientVolumeProps {
   volume: number
   muted: boolean
+  disabled?: boolean
   onVolumeChange?: (volume: number, muted: boolean) => void
 }
 
-export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () => {}, volume: _volume, muted, ...props}) => {
+export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () => {}, volume: _volume, muted, disabled, ...props}) => {
   const [internalVolume, setVolume] = useState(0)
   const [userInput, setUserInput] = useState(false)
   useEffect(() => {
     setVolume(_volume)
   }, [_volume, setVolume])
 
-  const volume = useDebounce(internalVolume, 250)
+  const volume = useDebounce(internalVolume, 100)
 
   useEffect(() => {
+    // Could be better, has a delay that sometimes makes it not take effect
     if (userInput) {
       setUserInput(false)
       onVolumeChange(volume, muted)
@@ -42,11 +44,10 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
     return VolumeMute
   }, [volume, muted])
 
-  console.log(volume, muted)
-
   return (
-    <Box flexGrow={1} height={'100%'} display={'flex'} flexDirection={'column'} gap={'0.5rem'} justifyContent={'flex-start'} alignItems={'center'}>
+    <Box display={'flex'} flexDirection={'column'} gap={'0.5rem'} justifyContent={'flex-start'} alignItems={'center'}>
       <Slider
+          disabled={disabled}
           aria-label="Volume"
           orientation="vertical"
           getAriaValueText={valuetext}
@@ -56,11 +57,10 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
             setVolume(v as number)
           }}
           value={internalVolume}
-          sx={{ flexGrow: 1}}
+          sx={{ height: '20em' }}
         />
-        <IconButton onClick={() => {
-          console.log("click", volume, muted)
-          onVolumeChange(volume, !muted)
+        <IconButton disabled={disabled} onClick={() => {
+            onVolumeChange(volume, !muted)
           }}>
           <VolumeIcon />
         </IconButton>

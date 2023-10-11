@@ -66,7 +66,7 @@ const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onCl
 
   return (
       <Dialog fullScreen={fullScreen} onClose={closeSettings} open={settings} fullWidth={fullWidth} {...props}>
-        <DialogTitle>Snapclient Settings</DialogTitle>
+        <DialogTitle>Snapclient Browser Settings</DialogTitle>
         <Box display={'flex'} alignItems={'flex-start'} justifyContent={'center'} height={'100%'} p={2} flexDirection={'column'} gap={3}>
           <TextField label="Server URL (http[s])" InputProps={{
           startAdornment: (

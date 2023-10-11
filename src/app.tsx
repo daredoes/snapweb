@@ -3,11 +3,23 @@ import { useRenderInfo } from "@uidotdev/usehooks";
 import AudioController from "src/components/AudioController";
 import SnapclientController from "src/components/SnapclientController";
 import SnapclientSettingsIcon from "./components/SnapclientSettingsIcon";
+import useSnapclient from "./controllers/snapcontrol/useSnapclient";
+import { useMemo } from "react";
 
 function App() {
   const pageRenderInfo = useRenderInfo('Main App')
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const { serverDetails } = useSnapclient()
+
+  const title = useMemo(() => {
+    if (serverDetails) {
+      if (serverDetails.host.name) {
+        return `Snapcast: ${serverDetails.host.name}`
+      }
+    }
+    return "Snapcast: Browser Edition"
+  }, [serverDetails])
 
   return (
     <Box component={'main'}>
@@ -21,8 +33,9 @@ function App() {
             aria-label="menu"
             sx={{ mr: 2 }}
            />
-           <Typography>
-           {pageRenderInfo?.name}: {pageRenderInfo?.renders}
+           <Typography title={`${pageRenderInfo?.name}: ${pageRenderInfo?.renders}`}>
+            {title}
+           
            </Typography>
         </Toolbar>
       </AppBar>
