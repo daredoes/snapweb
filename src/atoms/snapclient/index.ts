@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import SnapcastWebsocketAPI from 'src/controllers/SnapcastWebsocketAPI'
 import { Client, Group, GroupedClient, ServerDetails, Volume } from 'src/types/snapcast'
 
 interface UpdateClient {
@@ -13,6 +14,8 @@ interface UpdateClient {
 }
 
 export const serverAtom = atom<ServerDetails | undefined>(undefined)
+export const apiAtom = atom<SnapcastWebsocketAPI>(new SnapcastWebsocketAPI())
+export const connctedAtom = atom(false)
 
 export const groupsAtom = atom<Record<string, Group>>({})
 export const clientsAtom = atom((get) => {
@@ -48,6 +51,7 @@ export const clientsAtom = atom((get) => {
           clientGroup.config.latency = newClient.details.latency
         }
         if (newClient.details?.volume !== undefined) {
+          console.log("setting volume", newClient.details)
           if (newClient.details.volume.percent !== undefined) {
             clientGroup.config.volume.percent = newClient.details.volume.percent
           }
@@ -63,10 +67,16 @@ export const clientsAtom = atom((get) => {
   }
   if (clientGroup !== undefined && clientIndex !== -1 && groupId) {
     const groupClients = groups[groupId].clients
-    groupClients[clientIndex] = clientGroup
+    if (newClient.details === undefined) {
+      delete groupClients[clientIndex]
+    } else {
+      groupClients[clientIndex] = clientGroup
+    }
     
     set(groupsAtom, {...groups, [groupId]: { ...groups[groupId], clients: groupClients}})
-  } else if (newClient.newData !== undefined) {
-    
+  } 
+  if (newClient.newData !== undefined) {
+    // Inject new clients
+
   }
 })

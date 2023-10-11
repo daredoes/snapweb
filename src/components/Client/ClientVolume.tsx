@@ -15,6 +15,7 @@ export interface ClientVolumeProps {
 
 export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () => {}, volume: _volume, muted, ...props}) => {
   const [internalVolume, setVolume] = useState(0)
+  const [userInput, setUserInput] = useState(false)
   useEffect(() => {
     setVolume(_volume)
   }, [_volume, setVolume])
@@ -22,8 +23,11 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
   const volume = useDebounce(internalVolume, 250)
 
   useEffect(() => {
-    onVolumeChange(volume, muted)
-  }, [onVolumeChange, volume, muted])
+    if (userInput) {
+      setUserInput(false)
+      onVolumeChange(volume, muted)
+    }
+  }, [onVolumeChange, volume, muted, userInput, setUserInput])
 
   const VolumeIcon = useMemo(() => {
     if (muted) {
@@ -38,6 +42,8 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
     return VolumeMute
   }, [volume, muted])
 
+  console.log(volume, muted)
+
   return (
     <Box flexGrow={1} height={'100%'} display={'flex'} flexDirection={'column'} gap={'0.5rem'} justifyContent={'flex-start'} alignItems={'center'}>
       <Slider
@@ -45,11 +51,17 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
           orientation="vertical"
           getAriaValueText={valuetext}
           valueLabelDisplay="auto"
-          onChange={(e, v) => {setVolume(v as number)}}
+          onChange={(e, v) => {
+            setUserInput(true)
+            setVolume(v as number)
+          }}
           value={internalVolume}
           sx={{ flexGrow: 1}}
         />
-        <IconButton onClick={() => {onVolumeChange(volume, !muted)}}>
+        <IconButton onClick={() => {
+          console.log("click", volume, muted)
+          onVolumeChange(volume, !muted)
+          }}>
           <VolumeIcon />
         </IconButton>
     </Box>

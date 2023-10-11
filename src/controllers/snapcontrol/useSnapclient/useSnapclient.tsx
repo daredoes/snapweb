@@ -5,15 +5,13 @@ import { convertHttpToWebsocket } from "src/helpers";
 import { LOCAL_STORAGE_KEYS } from 'src/types/localStorage';
 import { Server, ServerDetails, ClientlessGroup, GroupedClient } from 'src/types/snapcast';
 import { useAtom } from 'jotai';
-import { clientsAtom, groupsAtom, serverAtom } from 'src/atoms/snapclient';
+import { apiAtom, clientsAtom, connctedAtom, groupsAtom, serverAtom } from 'src/atoms/snapclient';
 
 export const useSnapclient = () => {
   const [preventAutomaticReconnect, _setPreventAutomaticReconnect] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
-  const api = useMemo(() => {
-    return new SnapcastWebsocketAPI()
-  }, [])
+  const [api] = useAtom(apiAtom)
 
-  const [connected, setConnected] = useState<boolean | undefined>(false)
+  const [connected, setConnected] = useAtom(connctedAtom)
   const [serverDetails, setServerDetails] = useAtom(serverAtom)
   const [clients, setClients] = useAtom(clientsAtom)
   const [groups, setGroups] = useAtom(groupsAtom)
@@ -59,7 +57,19 @@ export const useSnapclient = () => {
       {
         "Server.GetStatus": (r) => {
           serverStatusUpdate(r.result.server)
-        }
+        },
+        "Client.SetVolume": (r) => {
+          setClients({id: r.request.id, details: {volume: r.result.volume}})
+        },
+        "Client.SetName": (r) => {
+          setClients({id: r.request.id, details: {name: r.result.name}})
+        },
+        "Client.SetLatency": (r) => {
+          setClients({id: r.request.id, details: {latency: r.result.latency}})
+        },
+        "Client.GetStatus": (r) => {
+          setClients({id: r.request.id, newData: r.result.client})
+        },
       },
       {
         "Server.OnUpdate": (r) => {
@@ -67,6 +77,12 @@ export const useSnapclient = () => {
         },
         "Client.OnVolumeChanged": (r) => {
           setClients({id: r.id, details: {volume: r.volume}})
+        },
+        "Client.OnNameChanged": (r) => {
+          setClients({id: r.id, details: {name: r.name}})
+        },
+        "Client.OnLatencyChanged": (r) => {
+          setClients({id: r.id, details: {latency: r.latency}})
         },
         "Client.OnConnect": (r) => {
           api.serverGetStatus()
