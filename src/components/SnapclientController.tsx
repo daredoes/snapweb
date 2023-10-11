@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo } from "react";
 import { useDebounce, useLocalStorage, useRenderInfo } from "@uidotdev/usehooks";
 import { LOCAL_STORAGE_KEYS } from "src/types/localStorage";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient/useSnapclient";
-import { ServerDetails } from "src/types/snapcast";
+import {  Box, Typography } from "@mui/material";
 
 const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/jsonrpc"
 
@@ -31,11 +31,15 @@ const SnapclientController = ({}: SnapclientController) => {
   }, [serverDetails])
 
   return (
-    <div className={""}>
-      {info?.renders}&nbsp;
-      {connected === undefined ? "Loading..." : connected ? "Connected" : "Disconnected"}
-      {serverDetailElements}
-    </div>
+      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+        <Typography>
+          {info?.name}: {info?.renders}
+        </Typography>
+        <Typography fontWeight={'bolder'} fontStyle={connected === undefined ? 'italic' : ''}>
+          {connected === undefined ? "Loading..." : connected ? "Connected" : "Disconnected"}
+        </Typography>
+        {serverDetailElements}
+      </Box>
   );
 };
 

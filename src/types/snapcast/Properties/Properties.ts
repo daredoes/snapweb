@@ -1,5 +1,5 @@
-import Metadata from "types/snapcast/Metadata";
-import PlaybackStatus from "types/snapcast/PlaybackStatus";
+import Metadata from "src/types/snapcast/Metadata";
+import PlaybackStatus from "src/types/snapcast/PlaybackStatus";
 
 interface Properties {
   loopStatus?: string;

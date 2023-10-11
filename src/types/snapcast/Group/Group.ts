@@ -1,4 +1,4 @@
-import Client from "types/snapcast/Client";
+import Client from "src/types/snapcast/Client";
 
 interface Group {
   name: string;

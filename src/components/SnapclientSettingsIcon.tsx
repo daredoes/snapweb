@@ -1,24 +1,25 @@
 import { useCallback, useMemo, useState } from "react";
 import SettingsIcon from "./Icons/SettingsIcon";
 import SnapclientSettings from "./SnapclientSettings";
+import { IconButtonProps } from "@mui/material";
 
-export interface SnapclientSettingsIconProps {}
+export interface SnapclientSettingsIconProps extends IconButtonProps {}
 
-const SnapclientSettingsIcon = ({}: SnapclientSettingsIconProps) => {
+const SnapclientSettingsIcon = (props: SnapclientSettingsIconProps) => {
   const [showSettings, setShowSettings] = useState(false)
   const handleClickSettings = useCallback(() => {
     setShowSettings(true)
   }, [setShowSettings])
 
   const icon = useMemo(() => {
-    return <SettingsIcon disabled={showSettings} onClick={handleClickSettings} />
+    return <SettingsIcon {...props} disabled={showSettings} onClick={handleClickSettings} />
   }, [showSettings, handleClickSettings])
 
   return (
-    <div className={""}>
+    <>
       {icon}
       <SnapclientSettings open={showSettings} onClose={() => {setShowSettings(false)}} />
-    </div>
+    </>
   );
 };
 
