@@ -66,14 +66,13 @@ export const useSnapclient = () => {
           serverStatusUpdate(r.server)
         },
         "Client.OnVolumeChanged": (r) => {
-          console.log("Setting client", r.id)
           setClients({id: r.id, details: {volume: r.volume}})
-          // Causes a bug that makes the client send an api command after this
-          // setClients((oldClients) => {
-          //   const newClients = {...oldClients}
-          //   newClients[r.id].config.volume = r.volume
-          //   return newClients
-          // })
+        },
+        "Client.OnConnect": (r) => {
+          api.serverGetStatus()
+        },
+        "Client.OnDisconnect": (r) => {
+          setClients({id: r.id, details: {connected: r.client.connected}})
         }
       },
       0 // Max Retries (0 or less == unlimited)

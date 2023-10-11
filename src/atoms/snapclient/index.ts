@@ -9,6 +9,7 @@ interface UpdateClient {
     volume?: Partial<Volume>
     connected?: boolean 
   }
+  newData?: Client
 }
 
 export const serverAtom = atom<ServerDetails | undefined>(undefined)
@@ -65,5 +66,7 @@ export const clientsAtom = atom((get) => {
     groupClients[clientIndex] = clientGroup
     
     set(groupsAtom, {...groups, [groupId]: { ...groups[groupId], clients: groupClients}})
+  } else if (newClient.newData !== undefined) {
+    
   }
 })
