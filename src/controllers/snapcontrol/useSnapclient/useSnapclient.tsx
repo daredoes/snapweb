@@ -3,7 +3,9 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import SnapcastWebsocketAPI from "src/controllers/SnapcastWebsocketAPI";
 import { convertHttpToWebsocket } from "src/helpers";
 import { LOCAL_STORAGE_KEYS } from 'src/types/localStorage';
-import { ServerDetails } from 'src/types/snapcast';
+import { Server, ServerDetails, ClientlessGroup, GroupedClient } from 'src/types/snapcast';
+import { useAtom } from 'jotai';
+import { clientsAtom, groupsAtom, serverAtom } from 'src/atoms/snapclient';
 
 export const useSnapclient = () => {
   const [preventAutomaticReconnect, _setPreventAutomaticReconnect] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
@@ -12,7 +14,9 @@ export const useSnapclient = () => {
   }, [])
 
   const [connected, setConnected] = useState<boolean | undefined>(false)
-  const [serverDetails, setServerDetails] = useState<Record<string, ServerDetails>>({})
+  const [serverDetails, setServerDetails] = useAtom(serverAtom)
+  const [clients, setClients] = useAtom(clientsAtom)
+  const [groups, setGroups] = useAtom(groupsAtom)
 
   const handleConnectionError = useCallback((e: Event) => {
     // setConnected(true)
@@ -32,6 +36,21 @@ export const useSnapclient = () => {
     if (api.connection) {
       api.close()
     }
+    const serverStatusUpdate = (server: Server) => {
+      setServerDetails(server.server)
+      const resultGroups = server.groups
+      // const resultClients: typeof clients = {}
+      const clientlessGroups: typeof groups = {}
+      resultGroups.forEach((group) => {
+        group.clients.forEach((client) => {
+          // resultClients[client.id] = {...client, groupId: group.id}
+          return client.id
+        })
+        clientlessGroups[group.id] = group
+      })
+      setGroups(clientlessGroups)
+      // setClients(resultClients)
+    }
     api.connect(
       convertHttpToWebsocket(httpUrl),
       handleConnectionError,
@@ -39,35 +58,43 @@ export const useSnapclient = () => {
       handleConnectionClosed,
       {
         "Server.GetStatus": (r) => {
-          const server = r.result.server.server
-          setServerDetails((oldDetails) => {
-            return {...oldDetails, [httpUrl]: server}
-          })
+          serverStatusUpdate(r.result.server)
         }
       },
       {
         "Server.OnUpdate": (r) => {
-          const server = r.server.server
-          setServerDetails((oldDetails) => {
-            return {...oldDetails, [httpUrl]: server}
-          })
+          serverStatusUpdate(r.server)
+        },
+        "Client.OnVolumeChanged": (r) => {
+          console.log("Setting client", r.id)
+          setClients({id: r.id, details: {volume: r.volume}})
+          // Causes a bug that makes the client send an api command after this
+          // setClients((oldClients) => {
+          //   const newClients = {...oldClients}
+          //   newClients[r.id].config.volume = r.volume
+          //   return newClients
+          // })
         }
       },
       0 // Max Retries (0 or less == unlimited)
     )
-  }, [api, setServerDetails])
+  }, [api, setServerDetails, setGroups, setClients])
 
   return useMemo(() => {
     return {
       api,
       connected,
       connect,
+      clients,
+      groups,
       serverDetails
     }
   }, [
     api,
     connected,
     connect,
+    clients,
+    groups,
     serverDetails
   ])
 }
