@@ -39,14 +39,14 @@ const SnapclientController = ({}: SnapclientController) => {
     return makeGroupElements(Object.values(groups))
   }, [groups, makeGroupElements])
 
-  // const streamElements = useMemo(() => {
-  //   return Object.values(streams).map((stream) => {
-  //     const innerElements = stream.groups?.map((g) => {
-  //       return <GroupDisplay justifyContent={'center'} alignItems={'center'} display={'flex'} flexDirection={'column'} key={g.id} group={groups[g.id]} />
-  //     })
-  //     return <Paper sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap', overflowX: 'scroll', minHeight: '200px', maxWidth: '100%', alignItems: 'center', m: fullScreen ? '0.25rem' : '0.5rem'}} key={stream.id}>{innerElements}</Paper>
-  //   })
-  // }, [streams, groups, fullScreen])
+  const streamElements = useMemo(() => {
+    return Object.values(streams).map((stream) => {
+      const innerElements = stream.groups?.map((g) => {
+        return <GroupDisplay justifyContent={'center'} alignItems={'center'} display={'flex'} flexDirection={'column'} key={g.id} group={groups[g.id]} />
+      })
+      return <Paper sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap', overflowX: 'scroll', minHeight: '200px', maxWidth: '100%', alignItems: 'center', m: fullScreen ? '0.25rem' : '0.5rem'}} key={stream.id}>{innerElements}</Paper>
+    })
+  }, [streams, groups, fullScreen])
 
   return (
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
@@ -54,7 +54,7 @@ const SnapclientController = ({}: SnapclientController) => {
           {info?.name}: {info?.renders}
         </Typography>
         <Box display={'flex'} gap={2} flexDirection={'row'} minHeight={'200px'} maxWidth={'100%'} width={'100%'} flexWrap={'wrap'} justifyContent={'center'} alignItems={'center'}>
-          {groupElements}
+          {streamElements}
         </Box>
       </Box>
   );

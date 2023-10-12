@@ -14,13 +14,30 @@ export const apiAtom = atom<SnapcastWebsocketAPI>(new SnapcastWebsocketAPI())
 
 export const serverAtom = atom<ServerDetails | undefined>(undefined)
 export const connectedAtom = atom<boolean | undefined>(undefined)
-export const streamsAtom = atom<Record<string, Stream>>({})
+export const internalStreamsAtom = atom<Record<string, Stream>>({})
+
 const internalGroupsAtom = atom<Record<string, Group>>({})
 export const groupsAtom = atom((get) => {
   console.log("Getting internal groups")
   return get(internalGroupsAtom)
 }, (get, set, data: Record<string, Group>) => {
   set(internalGroupsAtom, data)
+})
+export const streamsAtom = atom((get) => {
+  const streams =  get(internalStreamsAtom)
+  const groups = get(groupsAtom)
+  const returnData: Record<string, StreamGroups> = {}
+  Object.values(streams).forEach((stream) => {
+    returnData[stream.id] = {...stream, groups: []}
+  })
+  Object.values(groups).forEach((group) => {
+    if (returnData[group.stream_id]) {
+      returnData[group.stream_id].groups!.push(group)
+    }
+  })
+  return returnData
+}, (get, set, data: Record<string, Stream>) => {
+  set(internalStreamsAtom, data)
 })
 export const clientsAtom = atom<Record<string, GroupedClient>>((get) => {
   const groups = get(groupsAtom)
