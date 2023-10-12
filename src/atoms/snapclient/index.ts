@@ -1,140 +1,121 @@
-import { atom } from 'jotai'
-import SnapcastWebsocketAPI from 'src/controllers/SnapcastWebsocketAPI'
-import { Client, Group, GroupedClient, ServerDetails, Stream, Volume } from 'src/types/snapcast'
-import { StreamGroups } from 'src/types/snapcast/Stream/Stream'
+import { atom, Getter, Setter } from "jotai";
+import SnapcastWebsocketAPI from "src/controllers/SnapcastWebsocketAPI";
+import { Client, Group, GroupedClient, Properties, ServerDetails, Volume } from "src/types/snapcast";
+import Stream, { StreamGroups } from "src/types/snapcast/Stream/Stream";
 
-interface UpdateClient {
-  id: string
-  details?: {
-    name?: string
-    latency?: number
-    volume?: Partial<Volume>
-    connected?: boolean 
-  }
-  newData?: Client
+type Details = {
+  name?: string
+  latency?: number
+  volume?: Partial<Volume>
+  connected?: boolean,
+  client?: Client
 }
 
-export const serverAtom = atom<ServerDetails | undefined>(undefined)
 export const apiAtom = atom<SnapcastWebsocketAPI>(new SnapcastWebsocketAPI())
-export const connctedAtom = atom(false)
-export const groupsAtom = atom<Record<string, Group>>({})
 
-export const internalStreamsAtom = atom<Record<string, StreamGroups>>({})
+export const serverAtom = atom<ServerDetails | undefined>(undefined)
+export const connectedAtom = atom<boolean | undefined>(undefined)
+export const internalStreamsAtom = atom<Record<string, Stream>>({})
+
+const internalGroupsAtom = atom<Record<string, Group>>({})
+export const groupsAtom = atom((get) => {
+  console.log("Getting internal groups")
+  return get(internalGroupsAtom)
+}, (get, set, data: Record<string, Group>) => {
+  set(internalGroupsAtom, data)
+})
 export const streamsAtom = atom((get) => {
-  return get(internalStreamsAtom)
-}, (get, set, streams: Record<string, StreamGroups>) => {
+  const streams =  get(internalStreamsAtom)
   const groups = get(groupsAtom)
-  const streamGroups: Record<string, Group[]> = {}
-  Object.values(groups).forEach((group) => {
-    const stream = streams[group.stream_id]
-    if (stream) {
-      if (!streamGroups[group.stream_id]) {
-        streamGroups[group.stream_id] = []
-      }
-      streamGroups[group.stream_id].push(group)
-    }
-  })
-  const newStreams = {...streams}
+  const returnData: Record<string, StreamGroups> = {}
   Object.values(streams).forEach((stream) => {
-    if (streamGroups[stream.id]) {
-      newStreams[stream.id].groups = streamGroups[stream.id]
-    }
+    returnData[stream.id] = {...stream, groups: []}
   })
-  set(internalStreamsAtom, newStreams)
-  return newStreams
-})
-
-// Modify groups atom to set streams atom when changing and inject groups into stream
-
-export const sgroupsAtom = atom((get) => {
-  return get(groupsAtom)
-}, (get, set, newData: Record<string, Group>) => {
-  const streams = get(internalStreamsAtom)
-  const streamGroups: Record<string, Group[]> = {}
-  Object.values(newData).forEach((group) => {
-    const stream = streams[group.stream_id]
-    if (stream) {
-      if (!streamGroups[group.stream_id]) {
-        streamGroups[group.stream_id] = []
-      }
-      streamGroups[group.stream_id].push(group)
-    }
-  })
-  const newStreams = {...streams}
-  Object.values(streams).forEach((stream) => {
-    if (streamGroups[stream.id]) {
-      newStreams[stream.id].groups = streamGroups[stream.id]
-    }
-  })
-  set(internalStreamsAtom, newStreams)
-  // Object.values(streams).forEach((stream) => {
-  //   streams[stream.id].groups = []
-  // })
-  set(groupsAtom, newData)
-  return newData
-})
-
-export const clientsAtom = atom((get) => {
-  const groups = get(sgroupsAtom)
-  const clients: Record<string, GroupedClient> = {}
   Object.values(groups).forEach((group) => {
-    group.clients.forEach((client) => {
-      clients[client.id] = {...client, groupId: group.id}
+    if (returnData[group.stream_id]) {
+      returnData[group.stream_id].groups!.push(group)
+    }
+  })
+  return returnData
+}, (get, set, data: Record<string, Stream>) => {
+  set(internalStreamsAtom, data)
+})
+export const clientsAtom = atom<Record<string, GroupedClient>>((get) => {
+  const groups = get(groupsAtom)
+  const returnData: Record<string, GroupedClient> = {}
+  Object.values(groups).forEach((g) => {
+    g.clients.forEach((c) => {
+      returnData[c.id] = {...c, groupId: g.id}
     })
   })
-  return clients
-}, (get, set, newClient: UpdateClient) => {
-  const groups = get(sgroupsAtom)
-  let clientGroup: Client | undefined;
-  let clientIndex = -1;
-  let groupId: string = "";
-  try {
-    Object.values(groups).forEach((group) => {
-      clientIndex = group.clients.findIndex((client) => {
-        return client.id === newClient.id
-      })
-      if (clientIndex !== -1) {
-        clientGroup = group.clients[clientIndex]
-        groupId = group.id
-        if (newClient.details?.connected !== undefined) {
-          clientGroup.connected = newClient.details.connected
+  return returnData
+})
+
+const setClientField = (get: Getter, set: Setter, id: string, details: Details) => {
+  const groups = get(groupsAtom)
+  const clients = get(clientsAtom)
+  if (clients[id]) {
+    const group = groups[clients[id].groupId]
+    if (group) {
+      const cIndex = group.clients.findIndex((c) => c.id === id)
+      if (cIndex !== -1) {
+        const newClient = details.client !== undefined ? details.client : {...group.clients[cIndex]}
+        if (details.connected !== undefined) {
+          newClient.connected = details.connected
         }
-        if (newClient.details?.name !== undefined) {
-          clientGroup.config.name = newClient.details.name
+        if (details.name !== undefined) {
+          newClient.config.name = details.name
         }
-        if (newClient.details?.latency !== undefined) {
-          clientGroup.config.latency = newClient.details.latency
+        if (details.latency !== undefined) {
+          newClient.config.latency = details.latency
         }
-        if (newClient.details?.volume !== undefined) {
-          console.log("setting volume", newClient.details)
-          if (newClient.details.volume.percent !== undefined) {
-            clientGroup.config.volume.percent = newClient.details.volume.percent
+        if (details.volume !== undefined) {
+          console.log("setting volume", details)
+          if (details.volume.percent !== undefined) {
+            newClient.config.volume.percent = details.volume.percent
           }
-          if (newClient.details.volume.muted !== undefined) {
-            clientGroup.config.volume.muted = newClient.details.volume.muted
+          if (details.volume.muted !== undefined) {
+            newClient.config.volume.muted = details.volume.muted
           }
         }
-        throw new Error("Found Client")
+        const newClients = [...group.clients]
+        newClients[cIndex] = newClient
+        const newGroup = { ...group, clients: newClients}
+        const newGroups = {...groups, [clients[id].groupId]: newGroup}
+        set(groupsAtom, newGroups)
       }
-    })
-  } catch {
-    // break loop
-  }
-  if (clientGroup !== undefined && clientIndex !== -1 && groupId) {
-    const groupClients = groups[groupId].clients
-    if (newClient.details === undefined) {
-      delete groupClients[clientIndex]
-    } else {
-      groupClients[clientIndex] = clientGroup
     }
-
-    console.log(groups, groupClients, "setting client", groupId)
-    console.log({...groups, [groupId]: { ...groups[groupId], clients: groupClients}})
-    
-    set(sgroupsAtom, {...groups, [groupId]: { ...groups[groupId], clients: groupClients}})
-  } 
-  if (newClient.newData !== undefined) {
-    // Inject new clients
-
   }
+}
+
+export const updateClientAtom = atom(null, (get, set, id: string, client: Client) => {
+  setClientField(get, set, id, {client})
+} )
+
+export const updateClientVolumeAtom = atom(null, (get, set, id: string, volume: Volume) => {
+  setClientField(get, set, id, {volume})
+} )
+
+export const updateClientNameAtom = atom(null, (get, set, id: string, name: string) => {
+  setClientField(get, set, id, {name})
+} )
+
+export const updateClientLatencyAtom = atom(null, (get, set, id: string, latency: number) => {
+  setClientField(get, set, id, {latency})
+} )
+
+export const updateClientConnectedAtom = atom(null, (get, set, id: string, connected: boolean) => {
+  setClientField(get, set, id, {connected})
+} )
+
+export const updateStreamAtom = atom(null, (get, set, id: string, stream: Stream) => {
+  const oldStreams = get(internalStreamsAtom)
+  const newStreams = {...oldStreams, [id]: stream}
+  set(internalStreamsAtom, newStreams)
+})
+
+export const updateStreamPropertiesAtom = atom(null, (get, set, id: string, properties: Properties) => {
+  const oldStreams = get(internalStreamsAtom)
+  const newStreams = {...oldStreams, [id]: {...oldStreams[id], properties}}
+  set(internalStreamsAtom, newStreams)
 })

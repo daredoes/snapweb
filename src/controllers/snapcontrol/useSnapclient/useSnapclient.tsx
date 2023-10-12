@@ -5,7 +5,7 @@ import { convertHttpToWebsocket } from "src/helpers";
 import { LOCAL_STORAGE_KEYS } from 'src/types/localStorage';
 import { Server, Stream } from 'src/types/snapcast';
 import { useAtom } from 'jotai';
-import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom } from 'src/atoms/snapclient/v2';
+import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom } from 'src/atoms/snapclient';
 
 export const useSnapclient = () => {
   const [preventAutomaticReconnect, _setPreventAutomaticReconnect] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
@@ -21,6 +21,9 @@ export const useSnapclient = () => {
   const [, updateClientConnected] = useAtom(updateClientConnectedAtom)
   const [, updateClientName] = useAtom(updateClientNameAtom)
   const [, updateClientLatency] = useAtom(updateClientLatencyAtom)
+  const [, updateClient] = useAtom(updateClientAtom)
+  const [, updateStream] = useAtom(updateStreamAtom)
+  const [, updateStreamProperties] = useAtom(updateStreamPropertiesAtom)
 
   const handleConnectionError = useCallback((e: Event) => {
     // setConnected(true)
@@ -43,13 +46,8 @@ export const useSnapclient = () => {
     const serverStatusUpdate = (server: Server) => {
       setServerDetails(server.server)
       const resultGroups = server.groups
-      // const resultClients: typeof clients = {}
       const clientlessGroups: typeof groups = {}
       resultGroups.forEach((group) => {
-        // group.clients.forEach((client) => {
-        //   // resultClients[client.id] = {...client, groupId: group.id}
-        //   return client.id
-        // })
         clientlessGroups[group.id] = group
       })
       setGroups(clientlessGroups)
@@ -79,7 +77,7 @@ export const useSnapclient = () => {
           updateClientLatency(r.request.id, r.result.latency)
         },
         "Client.GetStatus": (r) => {
-          // setClients({id: r.request.id, newData: r.result.client})
+          updateClient(r.request.id, r.result.client)
         },
       },
       {
@@ -101,19 +99,12 @@ export const useSnapclient = () => {
         "Client.OnDisconnect": (r) => {
           updateClientConnected(r.id, r.client.connected)
         },
-        // "Stream.OnUpdate": (r) => {
-        //   setStreams((oldStreams) => {
-        //     const newStreams = {...oldStreams, [r.id]: r.stream}
-        //     return newStreams
-        //   })
-        // },
-        // "Stream.OnProperties": (r) => {
-        //   const { id: rId } = r;
-        //   setStreams((oldStreams) => {
-        //     const newStreams = {...oldStreams, [rId]: {...oldStreams[rId], properties: {...r}}}
-        //     return newStreams
-        //   })
-        // }
+        "Stream.OnUpdate": (r) => {
+          updateStream(r.id, r.stream)
+        },
+        "Stream.OnProperties": (r) => {
+          updateStreamProperties(r.id, r)
+        }
       },
       0 // Max Retries (0 or less == unlimited)
     )
