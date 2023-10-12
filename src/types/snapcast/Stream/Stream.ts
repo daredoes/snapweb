@@ -1,4 +1,5 @@
 import Properties from "src/types/snapcast/Properties";
+import { Group } from "..";
 
 export interface StreamUri {
   raw: string;
@@ -15,6 +16,10 @@ interface Stream {
   uri: StreamUri;
 
   properties: Properties;
+}
+
+export interface StreamGroups extends Stream {
+  groups?: Group[]
 }
 
 export default Stream;

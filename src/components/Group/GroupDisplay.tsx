@@ -24,6 +24,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
 
   const clientElements = useMemo(() => {
     return connectedClients.map((c) => {
+      console.log(c)
       return <Box gap={'1rem'} key={c.id} minHeight={'450px'} width={'75px'} px={1} pt={4} pb={1} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <ClientVolume disabled={!connected} key={c.id} onVolumeChange={(volume, muted) => {
           api.clientSetVolume({

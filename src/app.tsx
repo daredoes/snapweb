@@ -8,8 +8,6 @@ import { useMemo } from "react";
 
 function App() {
   const pageRenderInfo = useRenderInfo('Main App')
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const { serverDetails } = useSnapclient()
 
   const title = useMemo(() => {
@@ -39,10 +37,10 @@ function App() {
            </Typography>
         </Toolbar>
       </AppBar>
-      <Paper sx={{m: fullScreen ? '0.25rem' : '0.5rem'}}>
+      <Box>
         {/* <AudioController /> */}
         <SnapclientController />
-      </Paper>
+      </Box>
     </Box>
   );
 }
