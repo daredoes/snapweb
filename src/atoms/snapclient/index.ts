@@ -19,7 +19,6 @@ export const internalStreamsAtom = atom<Record<string, Stream>>({})
 
 const internalGroupsAtom = atom<Record<string, Group>>({})
 export const groupsAtom = atom((get) => {
-  console.log("Getting internal groups")
   return get(internalGroupsAtom)
 }, (get, set, data: Record<string, Group>) => {
   set(internalGroupsAtom, data)
@@ -70,7 +69,6 @@ const setClientField = (get: Getter, set: Setter, id: string, details: Details) 
           newClient.config.latency = details.latency
         }
         if (details.volume !== undefined) {
-          console.log("setting volume", details)
           if (details.volume.percent !== undefined) {
             newClient.config.volume.percent = details.volume.percent
           }
@@ -116,6 +114,9 @@ export const updateStreamAtom = atom(null, (get, set, id: string, stream: Stream
 
 export const updateStreamPropertiesAtom = atom(null, (get, set, id: string, properties: Properties) => {
   const oldStreams = get(internalStreamsAtom)
-  const newStreams = {...oldStreams, [id]: {...oldStreams[id], properties}}
+  const newStream = {...oldStreams[id]}
+  newStream.properties = properties
+  const newStreams = {...oldStreams}
+  newStreams[id] = newStream
   set(internalStreamsAtom, newStreams)
 })

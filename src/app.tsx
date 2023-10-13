@@ -20,7 +20,7 @@ function App() {
   }, [serverDetails])
 
   return (
-    <Box height={'100%'} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} component={'main'}>
+    <Box height={'100%'} display={'flex'} flexWrap={'wrap'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'} component={'main'}>
       
       <AppBar sx={{alignSelf: 'flex-start'}} position="sticky">
         <Toolbar>
@@ -37,7 +37,7 @@ function App() {
            </Typography>
         </Toolbar>
       </AppBar>
-      <Box maxHeight={'100%'} overflow={'scroll'} flexGrow={1} width={'100%'} display={'flex'} flexDirection={'row'} alignContent={'center'} justifyContent={'center'}>
+      <Box p={1} gap={1} overflow={'scroll'} width={'100%'} display={'flex'} flexDirection={'row'} alignContent={'center'} justifyContent={'center'}>
         {/* <AudioController /> */}
         <SnapclientController />
       </Box>
