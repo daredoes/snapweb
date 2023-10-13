@@ -1,8 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Box, BoxProps, Typography } from '@mui/material';
+import { Box, BoxProps, Button, IconButton, Paper, Slider, Typography } from '@mui/material';
 import { Client, Group } from 'src/types/snapcast';
 import ClientVolume from '../Client/ClientVolume';
 import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
+import { Divider } from '../generic';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export interface GroupDisplayProps extends BoxProps {
   group: Group
@@ -42,27 +44,50 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
   }, [connectedClients, connected])
 
   const groupName = useMemo(() => {
-    if ((group.clients || []).length === 1) {
+    const clientCount = (group.clients || []).length 
+    if (clientCount === 1) {
       return undefined
     }
-    return group.name || group.id.split('-')[0]
+    const disconnectedClientCount = (group.clients || []).filter((c) => !c.connected).length
+    return `${group.name ? `${group.name}: ` : ''}${disconnectedClientCount}/${clientCount} Connected`
   }, [group, group.clients])
 
   const hiddenClientCount = useMemo(() => {
     return (group.clients || []).length - clientElements.length
   }, [group.clients, clientElements])
 
+  const averageGroupVolume = useMemo(() => {
+    const clientCount = connectedClients.length
+    let v = 0;
+    connectedClients.forEach((c) => {
+      v += c.config.volume.percent
+    })
+    return v / clientCount;
+  }, [connectedClients])
+
   if (clientElements.length === 0) {
     return null
   }
   if (groupName) {
     return (
-      <Box {...props}>
-          {groupName && <Typography onClick={() => {
+      <Box component={Paper} elevation={10} {...props}>
+        <Button title={!internalShowOffline ? 'Show Connected Clients ' : 'Show All Clients'} fullWidth={true} onClick={() => {
             setInternalShowOffline((o) => !o)
           }}>
-            {groupName}{hiddenClientCount > 0 ? `: ${hiddenClientCount} Hidden` : ''}
-          </Typography>}
+            {!internalShowOffline ? <Visibility /> : <VisibilityOff />}
+          <Typography variant="subtitle2" px={1} py={1} >
+            {groupName}
+          </Typography>
+        </Button>
+        <Box width={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+          <Box width={'90%'}>
+            <Slider valueLabelDisplay="auto" aria-label="Group Volume" title="This is an average of the clients volume" value={averageGroupVolume} min={0} max={100} />
+          </Box>
+          <Typography variant='subtitle2' px={1} pb={1}>
+            All Client Volume
+          </Typography>
+        </Box>
+          <Divider />
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
           {clientElements}
         </Box>
@@ -72,7 +97,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
 
   
   return (
-    <Box {...props}>
+    <Box component={Paper} elevation={10} {...props}>
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
         {groupName && <Typography onClick={() => {
           setInternalShowOffline((o) => !o)

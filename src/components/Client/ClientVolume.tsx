@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, IconButton, Slider } from '@mui/material';
+import { Box, IconButton, Slider, SliderProps } from '@mui/material';
 import { useDebounce } from '@uidotdev/usehooks';
 import { VolumeDown, VolumeMute, VolumeOff, VolumeUp } from '@mui/icons-material';
 
@@ -7,7 +7,7 @@ function valuetext(value: number) {
   return `${value}`;
 }
 
-export interface ClientVolumeProps {
+export interface ClientVolumeProps extends Omit<SliderProps, 'onVolumeChange'> {
   volume: number
   muted: boolean
   disabled?: boolean
@@ -58,6 +58,7 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
           }}
           value={internalVolume}
           sx={{ height: '20em' }}
+          {...props}
         />
         <IconButton disabled={disabled} onClick={() => {
             onVolumeChange(volume, !muted)

@@ -2,21 +2,9 @@ import React, { useCallback, useMemo } from 'react';
 import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
 import { Group } from 'src/types/snapcast';
 import GroupDisplay from '../Group/GroupDisplay';
-import { Box, IconButton, Paper, Slider, Typography, styled, useMediaQuery, useTheme } from '@mui/material';
+import { Box, IconButton, Paper, Slider, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Forward10, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/icons-material';
-
-const Divider = styled('hr')(() => {
-  return {
-    width: '90%'
-  }
-})
-
-const StreamImg = styled('img')(() => {
-  return {
-    height: '25px',
-    width: 'auto'
-  }
-})
+import { Divider, StreamImg } from '../generic';
 
 const StreamDisplay = () => {
   const { streams } = useSnapclient()
@@ -25,7 +13,7 @@ const StreamDisplay = () => {
 
   const makeGroupElements = useCallback((theGroups: Group[]) => {
     return theGroups.map((g) => {
-        return <GroupDisplay justifyContent={'center'} alignItems={'center'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
+        return <GroupDisplay flexGrow={1} justifyContent={'flex-end'} alignItems={'flex'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
       })
   }, [])
 
@@ -44,7 +32,7 @@ const StreamDisplay = () => {
         audioValue = `${minutes}:${remainingSeconds.toFixed(0)}`
       }
       return (
-        <Paper key={stream.id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        <Paper key={stream.id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 1}}>
           <Box width={'100%'} px={1} py={2} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} flexDirection={'row'}>
             
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
@@ -83,7 +71,7 @@ const StreamDisplay = () => {
             </Box>
           </Box>
           <Divider />
-          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap', overflowX: 'scroll', minHeight: '200px', maxWidth: '100%', alignItems: 'center'}} key={stream.id}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap', overflowX: 'scroll', minHeight: '200px', maxWidth: '100%', alignItems: 'stretch'}} gap={1} p={1} key={stream.id}>
             {innerElements}
           </Box>
         </Paper>
