@@ -37,7 +37,7 @@ function App() {
            </Typography>
         </Toolbar>
       </AppBar>
-      <Box p={1} gap={1} overflow={'scroll'} width={'100%'} display={'flex'} flexDirection={'row'} alignContent={'center'} justifyContent={'center'}>
+      <Box p={1} gap={1} overflow={'scroll'} display={'flex'} flexDirection={'row'} flexWrap={'wrap'} alignContent={'center'} justifyContent={'center'}>
         {/* <AudioController /> */}
         <SnapclientController />
       </Box>
