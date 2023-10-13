@@ -8,17 +8,18 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export interface GroupDisplayProps extends BoxProps {
   group: Group
+  externalShowOffline?: boolean
 }
 
-export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) => {
+export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, externalShowOffline, ...props }) => {
   const { api, showOfflineClients, connected } = useSnapclient()
   const [internalShowOffline, setInternalShowOffline] = useState<boolean | undefined>(undefined)
   const connectedClients = useMemo(() => {
-    if (showOfflineClients || (typeof internalShowOffline !== 'undefined' && internalShowOffline)) {
+    if (showOfflineClients || externalShowOffline || (typeof internalShowOffline !== 'undefined' && internalShowOffline)) {
       return (group.clients || [])  
     }
     return (group.clients || []).filter((c) => c.connected)
-  }, [group.clients, showOfflineClients, internalShowOffline])
+  }, [group.clients, showOfflineClients, internalShowOffline, externalShowOffline])
 
   const clientName = useCallback((c: Client) => {
     return c.config.name || c.host.name
@@ -26,8 +27,8 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
 
   const clientElements = useMemo(() => {
     return connectedClients.map((c) => {
-      return <Box gap={'1rem'} key={c.id} minHeight={'450px'} width={'75px'} px={1} pt={4} pb={1} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-        <ClientVolume disabled={!connected} key={c.id} onVolumeChange={(volume, muted) => {
+      return <Box gap={'1rem'} key={c.id} width={'75px'} px={1} pt={4} pb={1} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
+        <ClientVolume color={c.connected ? 'primary': 'secondary'} disabled={!connected} key={c.id} onVolumeChange={(volume, muted) => {
           api.clientSetVolume({
             id: c.id,
             volume: {
@@ -49,8 +50,8 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
       return undefined
     }
     const disconnectedClientCount = (group.clients || []).filter((c) => !c.connected).length
-    return `${group.name ? `${group.name}: ` : ''}${disconnectedClientCount}/${clientCount} Connected`
-  }, [group, group.clients])
+    return `${group.name ? `${group.name}: ` : ''}${internalShowOffline ? clientCount : disconnectedClientCount}/${clientCount}`
+  }, [group, group.clients, internalShowOffline])
 
   const hiddenClientCount = useMemo(() => {
     return (group.clients || []).length - clientElements.length
@@ -70,17 +71,17 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
   }
   if (groupName) {
     return (
-      <Box component={Paper} elevation={10} {...props}>
-        <Button title={!internalShowOffline ? 'Show Connected Clients ' : 'Show All Clients'} fullWidth={true} onClick={() => {
+      <Box component={Paper} variant='outlined' {...props}>
+        {!externalShowOffline && <Button title={internalShowOffline ? 'Hide Disconnected ' : 'Show Disconnected'} fullWidth={true} onClick={() => {
             setInternalShowOffline((o) => !o)
           }}>
-            {!internalShowOffline ? <Visibility /> : <VisibilityOff />}
+            {internalShowOffline ? <Visibility /> : <VisibilityOff />}
           <Typography variant="subtitle2" px={1} py={1} >
             {groupName}
           </Typography>
-        </Button>
+        </Button>}
         <Box width={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-          <Box width={'90%'}>
+          <Box pt={1} width={'90%'}>
             <Slider valueLabelDisplay="auto" aria-label="Group Volume" title="This is an average of the clients volume" value={averageGroupVolume} min={0} max={100} />
           </Box>
           <Typography variant='subtitle2' px={1} pb={1}>
@@ -97,7 +98,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
 
   
   return (
-    <Box component={Paper} elevation={10} {...props}>
+    <Box component={Paper} variant='outlined' {...props}>
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
         {groupName && <Typography onClick={() => {
           setInternalShowOffline((o) => !o)

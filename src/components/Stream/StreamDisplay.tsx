@@ -7,15 +7,15 @@ import { Forward10, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/ico
 import { Divider, StreamImg } from '../generic';
 
 const StreamDisplay = () => {
-  const { streams } = useSnapclient()
+  const { streams, showOfflineClients } = useSnapclient()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const makeGroupElements = useCallback((theGroups: Group[]) => {
     return theGroups.map((g) => {
-        return <GroupDisplay flexGrow={1} justifyContent={'flex-end'} alignItems={'flex'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
+        return <GroupDisplay externalShowOffline={showOfflineClients} flexGrow={1} justifyContent={'flex-end'} alignItems={'flex'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
       })
-  }, [])
+  }, [showOfflineClients])
 
   const streamElements = useMemo(() => {
     return Object.values(streams).map((stream) => {
@@ -32,7 +32,7 @@ const StreamDisplay = () => {
         audioValue = `${minutes}:${remainingSeconds.toFixed(0)}`
       }
       return (
-        <Paper key={stream.id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 1}}>
+        <Paper variant={'elevation'} elevation={4} key={stream.id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 1}}>
           <Box width={'100%'} px={1} py={2} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} flexDirection={'row'}>
             
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>

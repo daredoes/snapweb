@@ -20,9 +20,9 @@ function App() {
   }, [serverDetails])
 
   return (
-    <Box component={'main'}>
+    <Box height={'100%'} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} component={'main'}>
       
-      <AppBar position="sticky">
+      <AppBar sx={{alignSelf: 'flex-start'}} position="sticky">
         <Toolbar>
           <SnapclientSettingsIcon
             size="large"
@@ -37,7 +37,7 @@ function App() {
            </Typography>
         </Toolbar>
       </AppBar>
-      <Box>
+      <Box maxHeight={'100%'} overflow={'scroll'} flexGrow={1} width={'100%'} display={'flex'} flexDirection={'row'} alignContent={'center'} justifyContent={'center'}>
         {/* <AudioController /> */}
         <SnapclientController />
       </Box>

@@ -27,10 +27,7 @@ const SnapclientController = ({}: SnapclientController) => {
   }, [httpUrl])
 
   return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <Typography>
-          {info?.name}: {info?.renders}
-        </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}title={`${info?.name}: ${info?.renders}`}>
         <Box display={'flex'} gap={2} flexDirection={'row'} minHeight={'200px'} maxWidth={'100%'} width={'100%'} flexWrap={'wrap'} justifyContent={'center'} alignItems={'center'}>
           <StreamDisplay />
         </Box>

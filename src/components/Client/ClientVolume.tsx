@@ -57,7 +57,7 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () 
             setVolume(v as number)
           }}
           value={internalVolume}
-          sx={{ height: '20em' }}
+          sx={{ height: '25vh' }}
           {...props}
         />
         <IconButton disabled={disabled} onClick={() => {
