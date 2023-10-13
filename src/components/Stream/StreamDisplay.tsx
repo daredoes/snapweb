@@ -3,7 +3,7 @@ import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
 import { Group } from 'src/types/snapcast';
 import GroupDisplay from '../Group/GroupDisplay';
 import { Box, IconButton, Paper, Slider, Typography } from '@mui/material';
-import { Forward10, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/icons-material';
+import { Forward10, Pause, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Divider, StreamImg } from '../generic';
 import { convertSecondsToTimestamp } from 'src/helpers';
 import { StreamGroups } from 'src/types/snapcast/Stream/Stream';
@@ -13,7 +13,7 @@ export interface StreamDisplayProps {
 }
 
 const StreamDisplay: React.FC<StreamDisplayProps> = ({stream, ...props}) => {
-  const { showOfflineClients } = useSnapclient()
+  const { showOfflineClients, api } = useSnapclient()
   const makeGroupElements = useCallback((theGroups: Group[]) => {
     return theGroups.map((g) => {
         return <GroupDisplay externalShowOffline={showOfflineClients} flexGrow={1} justifyContent={'flex-end'} alignItems={'flex'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
@@ -26,6 +26,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({stream, ...props}) => {
   const lastPositionTime = useMemo(() => Date.now(), [stream.properties.position])
   const [time, setTime] = useState(Date.now());
   const [playtime, setPlaytime] = useState(0)
+  const [internalPlaytime, setInternalPlaytime] = useState(0)
   useEffect(() => {
     setPlaytime((o) => {
       if (stream.properties.playbackStatus === 'playing') {
@@ -47,11 +48,17 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({stream, ...props}) => {
     return stream.properties.position ? stream.properties.position + playtime : 0
   }, [stream.properties.position, playtime])
 
-  const positionLabel = useMemo(() => convertSecondsToTimestamp(totalPlaytime), [totalPlaytime])
+  const positionLabel = useMemo(() => convertSecondsToTimestamp(internalPlaytime || totalPlaytime), [totalPlaytime, internalPlaytime])
+  
 
   const sliderElement = useMemo(() => {
-    return <Slider disabled={!stream.properties.canSeek} size={'small'} color={'secondary'} min={0} value={totalPlaytime} max={stream.properties.metadata?.duration || 2} />
-  }, [stream.properties.canSeek, totalPlaytime, stream.properties.metadata?.duration])
+    return <Slider onChangeCommitted={(e, v) => {
+      api.streamControlSetPosition({id: stream.id, params: {position: v as number}})
+      setInternalPlaytime(0)
+    }} disabled={!stream.properties.canSeek} size={'small'} color={'secondary'} min={0} onChange={(e, v) => {
+      setInternalPlaytime(v as number)
+    }} value={internalPlaytime || totalPlaytime} max={stream.properties.metadata?.duration || 2} />
+  }, [stream.properties.canSeek, totalPlaytime, stream.properties.metadata?.duration, internalPlaytime, setInternalPlaytime, api])
 
   const innerElements = useMemo(() => makeGroupElements(stream.groups || []), [stream.groups])
   if (innerElements.length === 0) {
@@ -78,19 +85,29 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({stream, ...props}) => {
           <Typography variant='caption' alignSelf={'flex-end'}>{durationLabel}</Typography>
         </Box>
         <Box width={'100%'} display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
-          <IconButton title="Seek Previous 10 Seconds" disabled={!stream.properties.canSeek}>
+          <IconButton onClick={() => {
+            api.streamControlSeek({id: stream.id, params: {offset: -10}})
+          }} title="Seek Previous 10 Seconds" disabled={!stream.properties.canSeek}>
             <Replay10 />
           </IconButton>
-          <IconButton title="Previous Song" disabled={!stream.properties.canGoPrevious}>
+          <IconButton title="Previous Song" onClick={() => {
+            api.streamControlPrevious({id: stream.id})
+          }} disabled={!stream.properties.canGoPrevious}>
             <SkipPrevious />
           </IconButton>
-          <IconButton title="Pause/Play" disabled={!(stream.properties.canPause || stream.properties.canPlay)}>
-            <PlayArrow />
+          <IconButton title={stream.properties.playbackStatus === 'playing' ? "Pause" : "Play"} onClick={() => {
+            api.streamControlPlayPause({id: stream.id})
+          }} disabled={!(stream.properties.canPause || stream.properties.canPlay)}>
+            {stream.properties.playbackStatus === 'playing' ? <Pause /> : <PlayArrow />}
           </IconButton>
-          <IconButton title="Next Song" disabled={!stream.properties.canGoNext}>
+          <IconButton title="Next Song" onClick={() => {
+            api.streamControlNext({id: stream.id})
+          }} disabled={!stream.properties.canGoNext}>
             <SkipNext />
           </IconButton>
-          <IconButton title="Seek Forward 10 Seconds" disabled={!stream.properties.canSeek}>
+          <IconButton onClick={() => {
+            api.streamControlSeek({id: stream.id, params: {offset: 10}})
+          }} title="Seek Forward 10 Seconds" disabled={!stream.properties.canSeek}>
             <Forward10 />
           </IconButton>
         </Box>

@@ -33,7 +33,6 @@ function App() {
            />
            <Typography title={`${pageRenderInfo?.name}: ${pageRenderInfo?.renders}`}>
             {title}
-           
            </Typography>
         </Toolbar>
       </AppBar>

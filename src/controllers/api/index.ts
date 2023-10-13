@@ -15,6 +15,11 @@ import {
   StreamControlSeekParams,
   StreamControlSetPositionParams,
   StreamControlStopParams,
+  SetPropertyLoopStatus,
+  SetPropertyMute,
+  SetPropertyRate,
+  SetPropertyShuffle,
+  SetPropertyVolume,
   ServerRequest,
   StreamControlPayload,
 } from "src/types/snapcast/api";
@@ -109,6 +114,26 @@ export const streamControlPlay = (
     params: options.params,
   };
   return makeRequest("Stream.Control", payload);
+};
+
+export const streamSetLoopStatus = (options: SetPropertyLoopStatus): ServerRequest => {
+  return makeRequest("Stream.SetProperty", options);
+};
+
+export const streamSetMute = (options: SetPropertyMute): ServerRequest => {
+  return makeRequest("Stream.SetProperty", options);
+};
+
+export const streamSetShuffle = (options: SetPropertyShuffle): ServerRequest => {
+  return makeRequest("Stream.SetProperty", options);
+};
+
+export const streamSetRate = (options: SetPropertyRate): ServerRequest => {
+  return makeRequest("Stream.SetProperty", options);
+};
+
+export const streamSetVolume = (options: SetPropertyVolume): ServerRequest => {
+  return makeRequest("Stream.SetProperty", options);
 };
 
 export const clientSetVolume = (options: ClientSetVolume): ServerRequest => {

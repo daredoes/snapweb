@@ -14,7 +14,7 @@ export function getDefaultBaseUrl(): string {
 
 export function convertSecondsToTimestamp(floatSeconds?: number): string {
   let audioValue = "-:--"
-  if (floatSeconds) {
+  if (floatSeconds !== undefined) {
     const minutes = Math.floor(floatSeconds / 60)
     const remainingSeconds = floatSeconds - (minutes * 60)
     audioValue = `${minutes.toLocaleString('en-US', {

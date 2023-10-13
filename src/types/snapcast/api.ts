@@ -200,7 +200,7 @@ export type StreamRemoveStreamResponse = {
   };
 };
 
-export type Property = "loopStatus" | "shuffle" | "volume" | "rate";
+export type Property = "loopStatus" | "shuffle" | "volume" | "rate" | "mute";
 
 export interface SetPropertyParams {
   id: string;
@@ -228,11 +228,17 @@ export interface SetPropertyRate extends SetPropertyParams {
   value: number;
 }
 
+export interface SetPropertyMute extends SetPropertyParams {
+  property: "mute";
+  value: boolean;
+}
+
 export type SetPropertyResponse = {
   request:
     | SetPropertyRate
     | SetPropertyVolume
     | SetPropertyShuffle
+    | SetPropertyMute
     | SetPropertyLoopStatus;
   result: string;
 };
@@ -273,6 +279,7 @@ export type MessageMethods = {
   "Stream.SetProperty.shuffle"?: (response: SetPropertyResponse) => void;
   "Stream.SetProperty.volume"?: (response: SetPropertyResponse) => void;
   "Stream.SetProperty.rate"?: (response: SetPropertyResponse) => void;
+  "Stream.SetProperty.mute"?: (response: SetPropertyResponse) => void;
   "Player.Control.play"?: (response: SetControlResponse) => void;
   "Player.Control.pause"?: (response: SetControlResponse) => void;
   "Player.Control.playPause"?: (response: SetControlResponse) => void;
@@ -379,4 +386,18 @@ export interface StreamControlPayload {
     | "playPause"
     | "pause"
     | "play";
+}
+
+export interface StreamPropertyPayload {
+  id: string | number;
+  value?: any;
+  property:
+    | "rate"
+    | "mute"
+    | "volume"
+    | "shuffle"
+    | "loopStatus"
+    | "none"
+    | "track"
+    | "playlist";
 }
