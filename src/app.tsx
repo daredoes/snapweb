@@ -20,7 +20,7 @@ function App() {
   }, [serverDetails])
 
   return (
-    <Box height={'100%'} display={'flex'} flexWrap={'wrap'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'} component={'main'}>
+    <Box height={'100%'} display={'flex'} flexWrap={'wrap'} flexDirection={'row'} alignItems={'flex-start'} justifyContent={'center'} component={'main'}>
       
       <AppBar sx={{alignSelf: 'flex-start'}} position="sticky">
         <Toolbar>
