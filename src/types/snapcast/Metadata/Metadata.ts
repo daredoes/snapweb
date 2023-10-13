@@ -3,6 +3,10 @@ interface Metadata {
   artist?: string[];
   album?: string;
   artUrl?: string;
+  artData?: {
+    data: string
+    extension: string
+  }
   duration?: number;
 }
 
