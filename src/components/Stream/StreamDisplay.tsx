@@ -1,30 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
 import { Group } from 'src/types/snapcast';
 import GroupDisplay from '../Group/GroupDisplay';
-import { Box, IconButton, Paper, Slider, Typography } from '@mui/material';
-import { Forward10, Pause, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/icons-material';
-import { Divider, StreamImg } from '../generic';
-import { convertSecondsToTimestamp } from 'src/helpers';
-import NextTrackButton from '../Buttons/NextTrackButton';
-import SeekForwardTenButton from '../Buttons/SeekForwardTenButton';
-import PreviousTrackButton from '../Buttons/PreviousTrackButton';
-import SeekPreviousTenButton from '../Buttons/SeekPreviousTenButton';
-import PlayPauseButton from '../Buttons/PlayPauseButton';
+import { Box, Paper } from '@mui/material';
+import { Divider } from '../generic';
 import MediaControlsBar from '../Buttons/MediaControlsBar';
-import SongTitle from '../Metadata/SongTitle';
-import SongArtist from '../Metadata/SongArtist';
-import SongAlbum from '../Metadata/SongAlbum';
-import MetadataBox from '../Metadata/MetadataBox';
-import StreamSource from './StreamSource';
 import StreamMetadata from './StreamMetadata';
+import StreamSlider from './StreamSlider';
 
 export interface StreamDisplayProps {
   id: string
 }
 
 const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
-  const { showOfflineClients, api, streams } = useSnapclient()
+  const { showOfflineClients, streams } = useSnapclient()
 
   const stream = useMemo(() => {
     return streams[id]
@@ -35,46 +24,6 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
         return <GroupDisplay flexGrow={1} justifyContent={'flex-end'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
       })
   }, [])
-
-  
-  const durationLabel = useMemo(() => convertSecondsToTimestamp(stream.properties.metadata?.duration), [stream.properties.metadata?.duration])
-
-  const lastPositionTime = useMemo(() => Date.now(), [stream.properties.position])
-  const [time, setTime] = useState(Date.now());
-  const [playtime, setPlaytime] = useState(0)
-  const [internalPlaytime, setInternalPlaytime] = useState(0)
-  useEffect(() => {
-    setPlaytime((o) => {
-      if (stream.properties.playbackStatus === 'playing') {
-        return Math.abs(time - lastPositionTime)/1000
-      }
-      return o
-    })
-  }, [time, lastPositionTime, stream.properties.playbackStatus, setPlaytime])
-
-
-  useEffect(() => {
-    const interval = setInterval(() => setTime(Date.now()), 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const totalPlaytime = useMemo(() => {
-    return stream.properties.position ? stream.properties.position + playtime : 0
-  }, [stream.properties.position, playtime])
-
-  const positionLabel = useMemo(() => convertSecondsToTimestamp(internalPlaytime || totalPlaytime), [totalPlaytime, internalPlaytime])
-  
-
-  const sliderElement = useMemo(() => {
-    return <Slider onChangeCommitted={(e, v) => {
-      api.streamControlSetPosition({id: stream.id, params: {position: v as number}})
-      setInternalPlaytime(0)
-    }} disabled={!stream.properties.canSeek} size={'small'} color={'secondary'} min={0} onChange={(e, v) => {
-      setInternalPlaytime(v as number)
-    }} value={internalPlaytime || totalPlaytime} max={stream.properties.metadata?.duration || 2} />
-  }, [stream.properties.canSeek, totalPlaytime, stream.properties.metadata?.duration, internalPlaytime, setInternalPlaytime, api])
 
   const connectedGroups = useMemo(() => {
     const g  = stream.groups || []
@@ -93,11 +42,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
       <StreamMetadata streamId={id} />
       <Divider />
       <Box width={'90%'} px={1} pt={2} pb={1} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} flexDirection={'column'}>
-          {sliderElement}
-        <Box width={'100%'} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
-          <Typography variant='caption'>{positionLabel}</Typography>
-          <Typography variant='caption' alignSelf={'flex-end'}>{durationLabel}</Typography>
-        </Box>
+        <StreamSlider streamId={id} />
         <MediaControlsBar streamId={id} />
       </Box>
       <Divider />
