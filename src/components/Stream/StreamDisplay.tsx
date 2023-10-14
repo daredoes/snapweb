@@ -60,7 +60,15 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({stream, ...props}) => {
     }} value={internalPlaytime || totalPlaytime} max={stream.properties.metadata?.duration || 2} />
   }, [stream.properties.canSeek, totalPlaytime, stream.properties.metadata?.duration, internalPlaytime, setInternalPlaytime, api])
 
-  const innerElements = useMemo(() => makeGroupElements(stream.groups || []), [stream.groups])
+  const connectedGroups = useMemo(() => {
+    const g  = stream.groups || []
+    if (showOfflineClients) {
+      return g
+    }
+    return g.filter((gg) => (gg.clients).filter((c) => c.connected).length !== 0)
+  }, [stream.groups, showOfflineClients])
+
+  const innerElements = useMemo(() => makeGroupElements(connectedGroups), [connectedGroups])
   if (innerElements.length === 0) {
     return null
   }
