@@ -86,6 +86,45 @@ const setClientField = (get: Getter, set: Setter, id: string, details: Details) 
   }
 }
 
+const setGroupStream = (get: Getter, set: Setter, id: string, stream_id: string) => {
+  const groups = get(groupsAtom)
+  const group = groups[id]
+  if (group) {
+    const newGroup = { ...group}
+    newGroup.stream_id = stream_id
+    const newGroups = {...groups, [newGroup.id]: newGroup}
+    set(groupsAtom, newGroups)
+  }
+}
+
+const setStreamOffset = (get: Getter, set: Setter, id: string, offset: number) => {
+  const streams = get(internalStreamsAtom)
+  const stream = streams[id]
+  if (stream) {
+    const newItem = { ...stream}
+    newItem.properties.position = (stream.properties.position || 0) + offset
+    const newItems = {...streams, [newItem.id]: newItem}
+    set(internalStreamsAtom, newItems)
+  }
+}
+
+const setStreamProperties = (get: Getter, set: Setter, id: string, properties: Properties) => {
+  const streams = get(internalStreamsAtom)
+  const stream = streams[id]
+  console.log("Updating stream", id, stream)
+  if (stream) {
+    const newItem = { ...stream}
+    newItem.properties = properties
+    const newItems = {...streams, [newItem.id]: newItem}
+    console.log(stream.properties, newItem.properties)
+    set(internalStreamsAtom, newItems)
+  }
+}
+
+export const updateGroupStreamAtom = atom(null, (get, set, id: string, stream_id: string) => {
+  setGroupStream(get, set, id, stream_id)
+} )
+
 export const updateClientAtom = atom(null, (get, set, id: string, client: Client) => {
   setClientField(get, set, id, {client})
 } )
@@ -106,6 +145,10 @@ export const updateClientConnectedAtom = atom(null, (get, set, id: string, conne
   setClientField(get, set, id, {connected})
 } )
 
+export const updateStreamSeekAtom = atom(null, (get, set, id: string, offset: number) => {
+  setStreamOffset(get, set, id, offset)
+} )
+
 export const updateStreamAtom = atom(null, (get, set, id: string, stream: Stream) => {
   const oldStreams = get(internalStreamsAtom)
   const newStreams = {...oldStreams, [id]: stream}
@@ -113,10 +156,5 @@ export const updateStreamAtom = atom(null, (get, set, id: string, stream: Stream
 })
 
 export const updateStreamPropertiesAtom = atom(null, (get, set, id: string, properties: Properties) => {
-  const oldStreams = get(internalStreamsAtom)
-  const newStream = {...oldStreams[id]}
-  newStream.properties = properties
-  const newStreams = {...oldStreams}
-  newStreams[id] = newStream
-  set(internalStreamsAtom, newStreams)
+  setStreamProperties(get, set, id, properties)
 })

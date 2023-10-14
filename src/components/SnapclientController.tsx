@@ -3,6 +3,7 @@ import { useDebounce, useLocalStorage, useRenderInfo } from "@uidotdev/usehooks"
 import { LOCAL_STORAGE_KEYS } from "src/types/localStorage";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient/useSnapclient";
 import Streams from "./Stream/Streams";
+import SwitchStreams from "./Dialogs/SwitchStream";
 
 const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/jsonrpc"
 
@@ -20,7 +21,12 @@ const SnapclientController = ({ }: SnapclientController) => {
   useLayoutEffect(() => {
     connect(httpUrl)
   }, [httpUrl])
-  return (<Streams />)
+  return (
+    <>
+      <Streams />
+      <SwitchStreams />
+    </>
+  )
 };
 
 export default SnapclientController;

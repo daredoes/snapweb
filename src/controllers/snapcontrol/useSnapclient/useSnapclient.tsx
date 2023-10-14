@@ -5,11 +5,12 @@ import { convertHttpToWebsocket } from "src/helpers";
 import { LOCAL_STORAGE_KEYS } from 'src/types/localStorage';
 import { Server, Stream } from 'src/types/snapcast';
 import { useAtom } from 'jotai';
-import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom } from 'src/atoms/snapclient';
+import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom, updateGroupStreamAtom, updateStreamSeekAtom } from 'src/atoms/snapclient';
+import { switchStreamAtom } from 'src/atoms/snapclient/switchStream';
 
 export const useSnapclient = () => {
   const [preventAutomaticReconnect, _setPreventAutomaticReconnect] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
-  const [showOfflineClients, _setShowOfflineClients] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Show Offline Clients'], false)
+  const [showOfflineClients, setShowOfflineClients] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Show Offline Clients'], false)
   const [api] = useAtom(apiAtom)
 
   const [connected, setConnected] = useAtom(connectedAtom)
@@ -17,6 +18,7 @@ export const useSnapclient = () => {
   const [streams, setStreams] = useAtom(streamsAtom)
   const [groups, setGroups] = useAtom(groupsAtom)
   const [clients] = useAtom(clientsAtom)
+  const [selectStream, setSelectStream] = useAtom(switchStreamAtom)
   const [, updateClientVolume] = useAtom(updateClientVolumeAtom)
   const [, updateClientConnected] = useAtom(updateClientConnectedAtom)
   const [, updateClientName] = useAtom(updateClientNameAtom)
@@ -24,6 +26,8 @@ export const useSnapclient = () => {
   const [, updateClient] = useAtom(updateClientAtom)
   const [, updateStream] = useAtom(updateStreamAtom)
   const [, updateStreamProperties] = useAtom(updateStreamPropertiesAtom)
+  const [, updateGroupStream] = useAtom(updateGroupStreamAtom)
+  const [, updateStreamSeek] = useAtom(updateStreamSeekAtom)
 
   const handleConnectionError = useCallback((e: Event) => {
     // setConnected(true)
@@ -33,6 +37,10 @@ export const useSnapclient = () => {
     setConnected(true)
     api.serverGetStatus()
   }, [setConnected, api])
+
+  const toggleShowOfflineClients = useCallback(() => {
+    setShowOfflineClients((o) => !o)
+  }, [setShowOfflineClients])
 
   const handleConnectionClosed = useCallback(() => {
     setConnected(false)
@@ -79,6 +87,15 @@ export const useSnapclient = () => {
         "Client.GetStatus": (r) => {
           updateClient(r.request.id, r.result.client)
         },
+        "Group.SetStream": (r) => {
+          updateGroupStream(r.request.id, r.result.stream_id)
+          setSelectStream(undefined)
+        },
+        "Stream.Control.seek": (r) => {
+          const streamId = r.request.id
+          const streamOffset = r.request.params?.offset || 0
+          updateStreamSeek(streamId, streamOffset)
+        }
       },
       {
         "Server.OnUpdate": (r) => {
@@ -108,7 +125,7 @@ export const useSnapclient = () => {
       },
       0 // Max Retries (0 or less == unlimited)
     )
-  }, [api, setServerDetails, setGroups, updateClientConnected, updateClientLatency, updateClientName, updateClientVolume, setStreams])
+  }, [api, setServerDetails, setGroups, updateClientConnected, updateClientLatency, updateClientName, updateClientVolume, setStreams, setSelectStream, updateGroupStream, updateStreamSeek])
 
   return useMemo(() => {
     return {
@@ -119,7 +136,10 @@ export const useSnapclient = () => {
       groups,
       streams,
       serverDetails,
-      showOfflineClients
+      showOfflineClients,
+      selectStream,
+      setSelectStream,
+      toggleShowOfflineClients,
     }
   }, [
     api,
@@ -129,7 +149,10 @@ export const useSnapclient = () => {
     groups,
     streams,
     serverDetails,
-    showOfflineClients
+    showOfflineClients,
+    selectStream,
+    setSelectStream,
+    toggleShowOfflineClients,
   ])
 }
 

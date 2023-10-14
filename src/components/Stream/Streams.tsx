@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
 import StreamDisplay from './StreamDisplay';
 
@@ -6,8 +6,8 @@ const Stream = () => {
   const { streams } = useSnapclient()
 
   const streamElements = useMemo(() => {
-    return Object.values(streams).map((stream) => {
-      return <StreamDisplay stream={stream} key={stream.id} />
+    return Object.keys(streams).map((streamId) => {
+      return <StreamDisplay id={streamId} key={streamId} />
     })
   }, [streams])
 

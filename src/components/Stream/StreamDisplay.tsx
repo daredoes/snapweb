@@ -9,14 +9,19 @@ import { convertSecondsToTimestamp } from 'src/helpers';
 import { StreamGroups } from 'src/types/snapcast/Stream/Stream';
 
 export interface StreamDisplayProps {
-  stream: StreamGroups
+  id: string
 }
 
-const StreamDisplay: React.FC<StreamDisplayProps> = ({stream, ...props}) => {
-  const { showOfflineClients, api } = useSnapclient()
+const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
+  const { showOfflineClients, api, streams } = useSnapclient()
+
+  const stream = useMemo(() => {
+    return streams[id]
+  }, [streams, id])
+  
   const makeGroupElements = useCallback((theGroups: Group[]) => {
     return theGroups.map((g) => {
-        return <GroupDisplay externalShowOffline={showOfflineClients} flexGrow={1} justifyContent={'flex-end'} alignItems={'flex'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
+        return <GroupDisplay externalShowOffline={showOfflineClients} flexGrow={1} justifyContent={'flex-end'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
       })
   }, [showOfflineClients])
 
