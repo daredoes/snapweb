@@ -6,6 +6,15 @@ import { Box, IconButton, Paper, Slider, Typography } from '@mui/material';
 import { Forward10, Pause, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Divider, StreamImg } from '../generic';
 import { convertSecondsToTimestamp } from 'src/helpers';
+import NextTrackButton from '../Buttons/NextTrackButton';
+import SeekForwardTenButton from '../Buttons/SeekForwardTenButton';
+import PreviousTrackButton from '../Buttons/PreviousTrackButton';
+import SeekPreviousTenButton from '../Buttons/SeekPreviousTenButton';
+import PlayPauseButton from '../Buttons/PlayPauseButton';
+import MediaControlsBar from '../Buttons/MediaControlsBar';
+import SongTitle from '../Metadata/SongTitle';
+import SongArtist from '../Metadata/SongArtist';
+import SongAlbum from '../Metadata/SongAlbum';
 
 export interface StreamDisplayProps {
   id: string
@@ -77,16 +86,16 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
     return null
   }
   return (
-    <Paper variant={'elevation'} elevation={4} key={stream.id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 1}}>
+    <Paper variant={'elevation'} elevation={4} key={id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 1}}>
       <Box width={'100%'} px={1} py={2} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} flexDirection={'row'}>
-      <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
+      <Box px={2} display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
           <StreamImg alt="" src={stream.properties.metadata?.artData?.data ? `data:image/svg+xml;base64,${stream.properties.metadata?.artData?.data}` : stream.properties.metadata?.artUrl} />
-          <Typography  textAlign={'center'}>{stream.id}</Typography>
+          <Typography  textAlign={'center'}>{id}</Typography>
         </Box>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'flex-end'} gap={0}>
-          <Typography title={stream.properties.metadata?.title || "Song Not Provided"} px={1} variant={'subtitle1'}  textAlign={'center'}>{stream.properties.metadata?.title || "Song Not Provided"}</Typography>
-          <Typography title={stream.properties.metadata?.artist?.join(", ") || "Artist Not Provided"} px={2} variant='subtitle2' textAlign={'center'}>{stream.properties.metadata?.artist?.join(", ") || "Artist Not Provided"}</Typography>
-          <Typography title={stream.properties.metadata?.album || "Album Not Provided"} px={2} variant='subtitle2' textAlign={'center'}>{stream.properties.metadata?.album || "Album Not Provided"}</Typography>
+          <SongTitle streamId={id} />
+          <SongArtist streamId={id}/>
+          <SongAlbum streamId={id} />
         </Box>
       </Box>
       <Divider />
@@ -96,33 +105,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
           <Typography variant='caption'>{positionLabel}</Typography>
           <Typography variant='caption' alignSelf={'flex-end'}>{durationLabel}</Typography>
         </Box>
-        <Box width={'100%'} display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
-          <IconButton onClick={() => {
-            api.streamControlSeek({id: stream.id, params: {offset: -10}})
-          }} title="Seek Previous 10 Seconds" disabled={!stream.properties.canSeek}>
-            <Replay10 />
-          </IconButton>
-          <IconButton title="Previous Song" onClick={() => {
-            api.streamControlPrevious({id: stream.id})
-          }} disabled={!stream.properties.canGoPrevious}>
-            <SkipPrevious />
-          </IconButton>
-          <IconButton title={stream.properties.playbackStatus === 'playing' ? "Pause" : "Play"} onClick={() => {
-            api.streamControlPlayPause({id: stream.id})
-          }} disabled={!(stream.properties.canPause || stream.properties.canPlay)}>
-            {stream.properties.playbackStatus === 'playing' ? <Pause /> : <PlayArrow />}
-          </IconButton>
-          <IconButton title="Next Song" onClick={() => {
-            api.streamControlNext({id: stream.id})
-          }} disabled={!stream.properties.canGoNext}>
-            <SkipNext />
-          </IconButton>
-          <IconButton onClick={() => {
-            api.streamControlSeek({id: stream.id, params: {offset: 10}})
-          }} title="Seek Forward 10 Seconds" disabled={!stream.properties.canSeek}>
-            <Forward10 />
-          </IconButton>
-        </Box>
+        <MediaControlsBar streamId={id} />
       </Box>
       <Divider />
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap', overflowX: 'scroll', maxWidth: '100%', alignItems: 'stretch'}} gap={1} p={1} key={stream.id}>
