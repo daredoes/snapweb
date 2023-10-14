@@ -3,43 +3,26 @@ import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, FormContr
 import { Link } from "@mui/icons-material";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAtom } from "jotai";
-import { preventAutomaticReconnectAtom, serverUrlAtom, showOfflineClientsAtom, showSettingsAtom } from "src/atoms/snapclient/localStorage";
+import { preventAutomaticReconnectAtom, serverUrlAtom, showOfflineClientsAtom } from "src/atoms/snapclient/localStorage";
+import { showSettingsAtom } from "src/atoms/snapclient/settings";
 
 const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream"
 
-export interface SnapclientSettingsProps extends DialogProps {
+export interface SnapclientSettingsProps extends Omit<DialogProps, 'open'> {
   onClose?: () => void
 }
 
-const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onClose = () => {}, ...props}: SnapclientSettingsProps) => {
+const SnapclientSettings = ({fullWidth = true, fullScreen: _, onClose = () => {}, ...props}: SnapclientSettingsProps) => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [internalUrl, setInternalUrl] = useState("")
   const [url, setUrl] = useAtom(serverUrlAtom)
   const [preventAutomaticReconnect, setPreventAutomaticReconnect] =  useAtom(preventAutomaticReconnectAtom)
-  const [showOfflineClients, setShowOfflineClients] =  useAtom(showOfflineClientsAtom)
-  const [_showSettings, setShowSettings] =  useAtom(showSettingsAtom)
-  const [settings, setSettings] = useState(false)
-
-  useEffect(() => {
-    setSettings((originalSettings) => {
-      if (originalSettings && open === false) {
-        setShowSettings(false)
-        onClose()
-      }
-      return open
-    })
-  }, [setSettings, open, setShowSettings])
-
+  const [open, setSettings] = useAtom(showSettingsAtom)
+  
   useEffect(() => {
     setInternalUrl(url)
   }, [setInternalUrl, url])
-
-  // useLayoutEffect(() => {
-  //   if (_showSettings === false) {
-  //     setShowSettings(true)
-  //   }
-  // }, [_showSettings, setShowSettings])
 
   const saveStreamUrl = useCallback(async (url: string) => {
     try {
@@ -55,17 +38,11 @@ const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onCl
   }, [setUrl])
 
   const closeSettings = useCallback(() => {
-    setSettings((originalSettings) => {
-      if (originalSettings) {
-        setShowSettings(false)
-        onClose()
-      }
-      return false
-    })
-  }, [setSettings, setShowSettings])
+    setSettings(false)
+  }, [setSettings])
 
   return (
-      <Dialog fullScreen={fullScreen} onClose={closeSettings} open={settings} fullWidth={fullWidth} {...props}>
+      <Dialog fullScreen={fullScreen} onClose={closeSettings} open={open} fullWidth={fullWidth} {...props}>
         <DialogTitle>Snapclient Browser Settings</DialogTitle>
         <Box display={'flex'} alignItems={'flex-start'} justifyContent={'center'} height={'100%'} p={2} flexDirection={'column'} gap={3}>
           <TextField label="Server URL (http[s])" InputProps={{
@@ -83,11 +60,6 @@ const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onCl
           <FormControlLabel control={<Switch checked={!preventAutomaticReconnect} value={!preventAutomaticReconnect} aria-label="Automatic Reconnect?" onChange={(e, checked) => {
             setPreventAutomaticReconnect(!checked)
           }} />} label="Automatic Reconnect?" />
-        </FormGroup>
-        <FormGroup>
-          <FormControlLabel control={<Switch checked={showOfflineClients} value={showOfflineClients} aria-label="Show Offline Clients?" onChange={(e, checked) => {
-            setShowOfflineClients(checked)
-          }} />} label="Show Offline Clients?" />
         </FormGroup>
         </Box>
         <DialogActions>

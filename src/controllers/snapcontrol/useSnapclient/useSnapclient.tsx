@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { convertHttpToWebsocket } from "src/helpers";
 import { Server, Stream } from 'src/types/snapcast';
 import { useAtom } from 'jotai';
-import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom, updateGroupStreamAtom, updateStreamSeekAtom } from 'src/atoms/snapclient';
+import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom, updateGroupStreamAtom, updateStreamSeekAtom, hostAtom } from 'src/atoms/snapclient';
 import { switchStreamAtom } from 'src/atoms/snapclient/switchStream';
 import { preventAutomaticReconnectAtom, showOfflineClientsAtom } from 'src/atoms/snapclient/localStorage';
 

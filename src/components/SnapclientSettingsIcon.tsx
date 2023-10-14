@@ -1,26 +1,18 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback } from "react";
 import SettingsIcon from "./Icons/SettingsIcon";
-import SnapclientSettings from "./SnapclientSettings";
 import { IconButtonProps } from "@mui/material";
+import { useAtom } from "jotai";
+import { showSettingsAtom } from "src/atoms/snapclient/settings";
 
 export interface SnapclientSettingsIconProps extends IconButtonProps {}
 
 const SnapclientSettingsIcon = (props: SnapclientSettingsIconProps) => {
-  const [showSettings, setShowSettings] = useState(false)
+  const [showSettings, setShowSettings] = useAtom(showSettingsAtom)
   const handleClickSettings = useCallback(() => {
     setShowSettings(true)
   }, [setShowSettings])
 
-  const icon = useMemo(() => {
-    return <SettingsIcon {...props} disabled={showSettings} onClick={handleClickSettings} />
-  }, [showSettings, handleClickSettings])
-
-  return (
-    <>
-      {icon}
-      <SnapclientSettings open={showSettings} onClose={() => {setShowSettings(false)}} />
-    </>
-  );
+  return (<SettingsIcon {...props} disabled={showSettings} onClick={handleClickSettings} />)
 };
 
 export default SnapclientSettingsIcon;

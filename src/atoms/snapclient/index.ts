@@ -1,6 +1,6 @@
 import { atom, Getter, Setter } from "jotai";
 import SnapcastWebsocketAPI from "src/controllers/SnapcastWebsocketAPI";
-import { Client, Group, GroupedClient, Properties, ServerDetails, Volume } from "src/types/snapcast";
+import { Client, Group, GroupedClient, Host, Properties, ServerDetails, Volume } from "src/types/snapcast";
 import Stream, { StreamGroups } from "src/types/snapcast/Stream/Stream";
 
 type Details = {
@@ -14,6 +14,9 @@ type Details = {
 export const apiAtom = atom<SnapcastWebsocketAPI>(new SnapcastWebsocketAPI())
 
 export const serverAtom = atom<ServerDetails | undefined>(undefined)
+export const hostAtom = atom<Host | undefined>((get) => {
+  return get(serverAtom)?.host
+})
 export const connectedAtom = atom<boolean | undefined>(undefined)
 export const internalStreamsAtom = atom<Record<string, Stream>>({})
 

@@ -22,7 +22,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
     return theGroups.map((g) => {
         return <GroupDisplay flexGrow={1} justifyContent={'flex-end'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
       })
-  }, [showOfflineClients])
+  }, [])
 
   
   const durationLabel = useMemo(() => convertSecondsToTimestamp(stream.properties.metadata?.duration), [stream.properties.metadata?.duration])

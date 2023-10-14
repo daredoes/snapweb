@@ -2,7 +2,6 @@ import { useLayoutEffect, useMemo } from "react";
 import { useDebounce } from "@uidotdev/usehooks";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient/useSnapclient";
 import Streams from "./Stream/Streams";
-import SwitchStreams from "./Dialogs/SwitchStream";
 import { useAtom } from "jotai";
 import { serverUrlAtom } from "src/atoms/snapclient/localStorage";
 
@@ -22,12 +21,7 @@ const SnapclientController = ({ }: SnapclientController) => {
   useLayoutEffect(() => {
     connect(httpUrl)
   }, [httpUrl])
-  return (
-    <>
-      <Streams />
-      <SwitchStreams />
-    </>
-  )
+  return (<Streams />)
 };
 
 export default SnapclientController;

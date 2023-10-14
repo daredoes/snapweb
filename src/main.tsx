@@ -9,6 +9,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "./index.css";
+import SnapclientSettings from "./components/SnapclientSettings.tsx";
+import SwitchStreams from "./components/Dialogs/SwitchStream.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -25,6 +27,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     })}>
       <CssBaseline enableColorScheme={true} />
       <App />
+      {/* Dialogs Go Here */}
+      <SnapclientSettings />
+      <SwitchStreams />
     </ThemeProvider>
   </React.StrictMode>
 );

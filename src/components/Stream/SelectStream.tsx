@@ -9,7 +9,7 @@ export interface SelectStreamProps extends SelectProps {
 }
 
 const SelectStream: React.FC<SelectStreamProps> = ({ stream, ...props}) => {
-  const { streams} = useSnapclient()
+  const { streams } = useSnapclient()
 
   const streamMenuItems: Record<string, React.ReactNode> = useMemo(() => {
     const newItems: Record<string, React.ReactNode> = {}
