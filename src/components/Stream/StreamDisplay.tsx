@@ -15,6 +15,9 @@ import MediaControlsBar from '../Buttons/MediaControlsBar';
 import SongTitle from '../Metadata/SongTitle';
 import SongArtist from '../Metadata/SongArtist';
 import SongAlbum from '../Metadata/SongAlbum';
+import MetadataBox from '../Metadata/MetadataBox';
+import StreamSource from './StreamSource';
+import StreamMetadata from './StreamMetadata';
 
 export interface StreamDisplayProps {
   id: string
@@ -87,17 +90,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
   }
   return (
     <Paper variant={'elevation'} elevation={4} key={id} sx={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 1}}>
-      <Box width={'100%'} px={1} py={2} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} flexDirection={'row'}>
-      <Box px={2} display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
-          <StreamImg alt="" src={stream.properties.metadata?.artData?.data ? `data:image/svg+xml;base64,${stream.properties.metadata?.artData?.data}` : stream.properties.metadata?.artUrl} />
-          <Typography  textAlign={'center'}>{id}</Typography>
-        </Box>
-        <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'flex-end'} gap={0}>
-          <SongTitle streamId={id} />
-          <SongArtist streamId={id}/>
-          <SongAlbum streamId={id} />
-        </Box>
-      </Box>
+      <StreamMetadata streamId={id} />
       <Divider />
       <Box width={'90%'} px={1} pt={2} pb={1} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} flexDirection={'column'}>
           {sliderElement}
