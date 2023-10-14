@@ -1,13 +1,8 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
-import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, FormControlLabel, FormGroup, InputAdornment, MenuItem, Switch, TextField, Typography, useTheme } from "@mui/material";
-import { Link } from "@mui/icons-material";
+import { useCallback, useMemo } from "react";
+import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, Typography, useTheme } from "@mui/material";
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { LOCAL_STORAGE_KEYS } from "src/types/localStorage";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { StreamImg } from "../generic";
-
-const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream"
 
 export interface SwitchStreamsProps extends Omit<DialogProps, 'open'> {
   onClose?: () => void

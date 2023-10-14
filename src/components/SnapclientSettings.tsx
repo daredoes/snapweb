@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { useCallback, useEffect, useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, FormControlLabel, FormGroup, InputAdornment, Switch, TextField, useTheme } from "@mui/material";
 import { Link } from "@mui/icons-material";
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { LOCAL_STORAGE_KEYS } from "src/types/localStorage";
+import { useAtom } from "jotai";
+import { preventAutomaticReconnectAtom, serverUrlAtom, showOfflineClientsAtom, showSettingsAtom } from "src/atoms/snapclient/localStorage";
 
 const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream"
 
@@ -15,10 +15,10 @@ const SnapclientSettings = ({open = false, fullWidth = true, fullScreen: _, onCl
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [internalUrl, setInternalUrl] = useState("")
-  const [url, setUrl] = useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Url'], DEFAULT_SNAPCAST_URL)
-  const [preventAutomaticReconnect, setPreventAutomaticReconnect] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Prevent Automatic Reconnect'], false)
-  const [showOfflineClients, setShowOfflineClients] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Show Offline Clients'], false)
-  const [_showSettings, setShowSettings] =  useLocalStorage(LOCAL_STORAGE_KEYS['Snapcast Server Settings'], false)
+  const [url, setUrl] = useAtom(serverUrlAtom)
+  const [preventAutomaticReconnect, setPreventAutomaticReconnect] =  useAtom(preventAutomaticReconnectAtom)
+  const [showOfflineClients, setShowOfflineClients] =  useAtom(showOfflineClientsAtom)
+  const [_showSettings, setShowSettings] =  useAtom(showSettingsAtom)
   const [settings, setSettings] = useState(false)
 
   useEffect(() => {

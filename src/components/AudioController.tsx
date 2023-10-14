@@ -3,11 +3,13 @@ import PlayIcon from "./Icons/PlayIcon";
 import StopIcon from "./Icons/StopIcon";
 import SnapclientBrowser from "src/controllers/snapcontrol/SnapclientBrowser";
 import { convertHttpToWebsocket } from "src/helpers";
-import { useLocalStorage, useLongPress } from "@uidotdev/usehooks";
+import { useLongPress } from "@uidotdev/usehooks";
 import { Box, Button, Dialog, DialogActions, DialogTitle, InputAdornment, TextField, useTheme } from "@mui/material";
 import { Link } from "@mui/icons-material";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useMediaMeta, useMediaSession } from "use-media-session";
+import { useAtom } from "jotai";
+import { streamUrlAtom } from "src/atoms/snapclient/localStorage";
 
 const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream"
 
@@ -17,7 +19,7 @@ const AudioController = ({}: AudioControllerProps) => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [internalUrl, setInternalUrl] = useState("")
-  const [streamUrl, setStreamUrl] = useLocalStorage("snapcast_stream_url", "")
+  const [streamUrl, setStreamUrl] = useAtom(streamUrlAtom)
   const [snapclient, setSnapclient] = useState(new SnapclientBrowser())
   const [audioSource, setAudioSource] = useState<MediaElementAudioSourceNode | null>(null)
 
@@ -27,7 +29,6 @@ const AudioController = ({}: AudioControllerProps) => {
 
   useLayoutEffect(() => {
     if (!audioSource) {
-      console.log("LNINK")
       try {
         const source = snapclient.ctx.createMediaElementSource(document.querySelector("audio") || document.createElement("audio"));
         setAudioSource(source)

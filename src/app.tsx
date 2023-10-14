@@ -6,10 +6,11 @@ import SnapclientSettingsIcon from "./components/SnapclientSettingsIcon";
 import useSnapclient from "./controllers/snapcontrol/useSnapclient";
 import { useMemo } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import ToggleShowOfflineClients from "./components/ToggleShowOfflineClients";
 
 function App() {
   const pageRenderInfo = useRenderInfo('Main App')
-  const { serverDetails, showOfflineClients, toggleShowOfflineClients } = useSnapclient()
+  const { serverDetails } = useSnapclient()
 
   const title = useMemo(() => {
     if (serverDetails) {
@@ -35,11 +36,7 @@ function App() {
            <Typography title={`${pageRenderInfo?.name}: ${pageRenderInfo?.renders}`}>
             {title}
            </Typography>
-           <IconButton color="inherit" sx={{marginLeft: 'auto'}} title={showOfflineClients ? "Hide Disconnected Clients" : "Show Disconnected Clients"} onClick={() => {
-            toggleShowOfflineClients()
-           }}>
-            {showOfflineClients ? <Visibility  aria-label="hide" /> : <VisibilityOff  aria-label="show" />}
-           </IconButton>
+           <ToggleShowOfflineClients sx={{marginLeft: 'auto'}} />
         </Toolbar>
       </AppBar>
       <Box p={1} gap={1} overflow={'scroll'} display={'flex'} flexDirection={'row'} flexWrap={'wrap'} alignContent={'center'} justifyContent={'center'}>

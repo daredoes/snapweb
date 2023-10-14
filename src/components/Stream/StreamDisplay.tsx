@@ -6,7 +6,6 @@ import { Box, IconButton, Paper, Slider, Typography } from '@mui/material';
 import { Forward10, Pause, PlayArrow, Replay10, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Divider, StreamImg } from '../generic';
 import { convertSecondsToTimestamp } from 'src/helpers';
-import { StreamGroups } from 'src/types/snapcast/Stream/Stream';
 
 export interface StreamDisplayProps {
   id: string
@@ -21,7 +20,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({id, ...props}) => {
   
   const makeGroupElements = useCallback((theGroups: Group[]) => {
     return theGroups.map((g) => {
-        return <GroupDisplay externalShowOffline={showOfflineClients} flexGrow={1} justifyContent={'flex-end'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
+        return <GroupDisplay flexGrow={1} justifyContent={'flex-end'} display={'flex'} flexDirection={'column'} key={g.id} group={g} />
       })
   }, [showOfflineClients])
 
