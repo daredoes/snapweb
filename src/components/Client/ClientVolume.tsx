@@ -1,70 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, IconButton, Slider, SliderProps } from '@mui/material';
-import { useDebounce } from '@uidotdev/usehooks';
-import { VolumeDown, VolumeMute, VolumeOff, VolumeUp } from '@mui/icons-material';
+import React from 'react';
+import { Box, BoxProps } from '@mui/material';
+import ClientSlider from './ClientSlider';
+import ClientMute from './ClientMute';
 
-function valuetext(value: number) {
-  return `${value}`;
+export interface ClientVolumeProps extends Omit<BoxProps, 'children'> {
+  clientId: string
 }
 
-export interface ClientVolumeProps extends Omit<SliderProps, 'onVolumeChange'> {
-  volume: number
-  muted: boolean
-  disabled?: boolean
-  onVolumeChange?: (volume: number, muted: boolean) => void
-}
-
-export const ClientVolume: React.FC<ClientVolumeProps> = ({ onVolumeChange = () => {}, volume: _volume, muted, disabled, ...props}) => {
-  const [internalVolume, setVolume] = useState(0)
-  const [userInput, setUserInput] = useState(false)
-  useEffect(() => {
-    setVolume(_volume)
-  }, [_volume, setVolume])
-
-  const volume = useDebounce(internalVolume, 100)
-
-  useEffect(() => {
-    // Could be better, has a delay that sometimes makes it not take effect
-    if (userInput) {
-      setUserInput(false)
-      onVolumeChange(volume, muted)
-    }
-  }, [onVolumeChange, volume, muted, userInput, setUserInput])
-
-  const VolumeIcon = useMemo(() => {
-    if (muted) {
-      return VolumeOff
-    }
-    if (volume > 25) {
-      return VolumeUp
-    }
-    if (volume > 0) {
-      return VolumeDown
-    }
-    return VolumeMute
-  }, [volume, muted])
-
+export const ClientVolume: React.FC<ClientVolumeProps> = ({ 
+  clientId,
+  display = 'flex',
+  flexDirection = 'column',
+  gap = '0.5rem',
+  justifyContent='flex-start',
+  alignItems='center',
+  ...props
+}) => {
   return (
-    <Box display={'flex'} flexDirection={'column'} gap={'0.5rem'} justifyContent={'flex-start'} alignItems={'center'}>
-      <Slider
-          disabled={disabled}
-          aria-label="Volume"
-          orientation="vertical"
-          getAriaValueText={valuetext}
-          valueLabelDisplay="auto"
-          onChange={(e, v) => {
-            setUserInput(true)
-            setVolume(v as number)
-          }}
-          value={internalVolume}
-          sx={{ height: '25vh' }}
-          {...props}
-        />
-        <IconButton disabled={disabled} onClick={() => {
-            onVolumeChange(volume, !muted)
-          }}>
-          <VolumeIcon />
-        </IconButton>
+    <Box {...props} display={display} flexDirection={flexDirection} gap={gap} justifyContent={justifyContent} alignItems={alignItems}>
+      <ClientSlider clientId={clientId} />
+      <ClientMute  clientId={clientId} />
     </Box>
   )
 }

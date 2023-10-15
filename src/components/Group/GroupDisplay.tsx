@@ -27,15 +27,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
   const clientElements = useMemo(() => {
     return connectedClients.map((c) => {
       return <Box gap={1} key={c.id} width={'75px'} px={1} py={1} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-        <ClientVolume color={c.connected ? 'primary' : 'secondary'} disabled={!connected} key={c.id} onVolumeChange={(volume, muted) => {
-          api.clientSetVolume({
-            id: c.id,
-            volume: {
-              percent: volume,
-              muted
-            }
-          })
-        }} volume={c.config.volume.percent} muted={c.config.volume.muted} />
+        <ClientVolume clientId={c.id} />
         <Box flexGrow={1} display={'flex'} sx={{ overflowX: 'scroll' }} flexDirection={'column'} alignContent={'center'} alignItems={'center'} maxWidth={'100%'} >
           <Typography title={clientName(c)} noWrap={true} component={'span'} maxWidth={'100%'} overflow={'visible'}>
             {clientName(c)}

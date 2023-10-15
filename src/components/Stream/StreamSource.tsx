@@ -3,6 +3,7 @@ import { useAtom } from "jotai"
 import { useMemo } from "react"
 import { streamsAtom } from "src/atoms/snapclient"
 import { StreamImg } from "../generic"
+import { Input } from "@mui/icons-material"
 
 export interface StreamSourceProps extends BoxProps {
   streamId: string
@@ -27,9 +28,16 @@ const StreamSource: React.FC<StreamSourceProps> = ({
     const streamSrc = stream.properties.metadata?.artData?.data ? `data:image/svg+xml;base64,${stream.properties.metadata?.artData?.data}` : stream.properties.metadata?.artUrl
     return streamSrc
   }, [stream.properties.metadata?.artData?.data, stream.properties.metadata?.artUrl])
+
+  const img = useMemo(() => {
+    if (artSrc) {
+      return <StreamImg alt="" src={artSrc} />
+    }
+    return <Input />
+  }, [artSrc])
   return (
     <Box {...props} px={px} display={display} flexDirection={flexDirection} justifyContent={justifyContent} alignItems={alignItems} gap={gap}>
-      <StreamImg alt="" src={artSrc} />
+      {img}
       <Typography  textAlign={'center'}>{id}</Typography>
     </Box>
   )
