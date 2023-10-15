@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, Typography, useTheme } from "@mui/material";
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { Box, Button, Dialog, DialogActions, DialogProps, DialogTitle, Typography } from "@mui/material";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { StreamImg } from "../generic";
 
@@ -9,8 +8,6 @@ export interface SwitchStreamsProps extends Omit<DialogProps, 'open'> {
 }
 
 const SwitchStreams = ({ fullWidth = true, fullScreen: _, onClose = () => { }, ...props }: SwitchStreamsProps) => {
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const { selectStream, setSelectStream, streams, api } = useSnapclient()
 
   const closeSettings = useCallback(() => {
@@ -37,7 +34,7 @@ const SwitchStreams = ({ fullWidth = true, fullScreen: _, onClose = () => { }, .
   }, [streams, selectStream, setSelectStream])
 
   return (
-    <Dialog fullScreen={fullScreen} onClose={closeSettings} open={selectStream !== undefined} fullWidth={fullWidth} {...props}>
+    <Dialog fullScreen={false} onClose={closeSettings} open={selectStream !== undefined} fullWidth={fullWidth} {...props}>
       <DialogTitle>Select New Stream</DialogTitle>
       <Box display={'flex'} alignItems={'flex-start'} justifyContent={'center'} height={'100%'} p={2} flexDirection={'column'} gap={3}>
         {streamMenuItems}

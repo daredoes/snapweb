@@ -17,6 +17,7 @@ const StreamSource: React.FC<StreamSourceProps> = ({
   alignItems = 'center',
   gap = 1,
   px = 2,
+  title = 'Current Source',
   ...props
 }) => {
   const [streams] = useAtom(streamsAtom)
@@ -36,7 +37,7 @@ const StreamSource: React.FC<StreamSourceProps> = ({
     return <Input />
   }, [artSrc])
   return (
-    <Box {...props} px={px} display={display} flexDirection={flexDirection} justifyContent={justifyContent} alignItems={alignItems} gap={gap}>
+    <Box title={title} {...props} px={px} display={display} flexDirection={flexDirection} justifyContent={justifyContent} alignItems={alignItems} gap={gap}>
       {img}
       <Typography  textAlign={'center'}>{id}</Typography>
     </Box>
