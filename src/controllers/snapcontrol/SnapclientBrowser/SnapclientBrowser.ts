@@ -79,7 +79,7 @@ class SnapclientBrowser {
 
   public async setPlaying(playing: boolean): Promise<void> {
     if (this.onPlay) {
-      this.onPlay(playing)
+      this.onPlay(playing);
     }
     this.playing = playing;
   }
@@ -96,11 +96,11 @@ class SnapclientBrowser {
       this.streamsocket = new WebSocket(this.baseUrl);
       this.streamsocket.binaryType = "arraybuffer";
       this.streamsocket.onmessage = (ev) => this.onMessage(ev);
-  
+
       this.streamsocket.onopen = async () => {
         console.log("on open");
         let hello = new HelloMessage();
-  
+
         hello.mac = mac;
         hello.arch = arch;
         hello.os = os;
@@ -108,12 +108,12 @@ class SnapclientBrowser {
         hello.uniqueId = uniqueId;
         // const versionElem = null // document.getElementsByTagName("meta").namedItem("version");
         hello.version = version;
-  
+
         this.sendMessage(hello);
         this.syncTime();
         this.syncHandle = window.setInterval(() => this.syncTime(), 1000);
         if (this.onConnect) {
-          this.onConnect()
+          this.onConnect();
         }
       };
       this.streamsocket.onerror = (ev) => {
@@ -126,19 +126,11 @@ class SnapclientBrowser {
         window.clearInterval(this.syncHandle);
         console.info("connection lost, reconnecting in 1s");
         if (this.onDisconnect) {
-          this.onDisconnect()
+          this.onDisconnect();
         }
         setTimeout(
-          () =>
-            this.connect(
-              hostname,
-              mac,
-              arch,
-              os,
-              uniqueId,
-              version,
-            ),
-          1000
+          () => this.connect(hostname, mac, arch, os, uniqueId, version),
+          1000,
         );
       };
     }
@@ -166,12 +158,12 @@ class SnapclientBrowser {
         if (this.sampleFormat.channels != 2 || this.sampleFormat.bits != 16) {
           alert(
             "Stream must be stereo with 16 bit depth, actual format: " +
-              this.sampleFormat.toString()
+              this.sampleFormat.toString(),
           );
         } else {
           if (this.bufferDurationMs != 0) {
             this.bufferFrameCount = Math.floor(
-              this.bufferDurationMs * this.sampleFormat.msRate()
+              this.bufferDurationMs * this.sampleFormat.msRate(),
             );
           }
 
@@ -191,7 +183,7 @@ class SnapclientBrowser {
           this.stream = new AudioStream(
             this.timeProvider,
             this.sampleFormat,
-            this.bufferMs
+            this.bufferMs,
           );
           this.latency =
             (this.ctx.baseLatency !== undefined ? this.ctx.baseLatency : 0) +
@@ -202,7 +194,7 @@ class SnapclientBrowser {
               ", output latency: " +
               this.ctx.outputLatency +
               ", latency: " +
-              this.latency
+              this.latency,
           );
           this.play();
         }
@@ -210,7 +202,7 @@ class SnapclientBrowser {
     } else if (type == 2) {
       let pcmChunk = new PcmChunkMessage(
         msg.data,
-        this.sampleFormat as SampleFormat
+        this.sampleFormat as SampleFormat,
       );
       if (this.decoder) {
         let decoded = this.decoder.decode(pcmChunk);
@@ -233,14 +225,14 @@ class SnapclientBrowser {
           ", volume: " +
           this.serverSettings.volumePercent +
           ", muted: " +
-          this.serverSettings.muted
+          this.serverSettings.muted,
       );
     } else if (type == 4) {
       if (this.timeProvider) {
         let time = new TimeMessage(msg.data);
         this.timeProvider.setDiff(
           time.latency.getMilliseconds(),
-          this.timeProvider.now() - time.sent.getMilliseconds()
+          this.timeProvider.now() - time.sent.getMilliseconds(),
         );
       }
       // console.log("Time sec: " + time.latency.sec + ", usec: " + time.latency.usec + ", diff: " + this.timeProvider.diff);
@@ -253,7 +245,10 @@ class SnapclientBrowser {
     msg.sent = new TV(0, 0);
     msg.sent.setMilliseconds(this.timeProvider.now());
     msg.id = ++this.msgId;
-    if (this.streamsocket && this.streamsocket.readyState == this.streamsocket.OPEN) {
+    if (
+      this.streamsocket &&
+      this.streamsocket.readyState == this.streamsocket.OPEN
+    ) {
       this.streamsocket.send(msg.serialize());
     }
   }
@@ -284,13 +279,13 @@ class SnapclientBrowser {
     this.setPlaying(false);
     window.clearInterval(this.syncHandle);
     this.stopAudio();
-    if (this.streamsocket && 
+    if (
+      this.streamsocket &&
       ([WebSocket.OPEN, WebSocket.CONNECTING] as number[]).includes(
-        this.streamsocket.readyState
+        this.streamsocket.readyState,
       )
     ) {
-      this.streamsocket.onclose = () => {
-      };
+      this.streamsocket.onclose = () => {};
       this.streamsocket.close();
     }
   }
@@ -309,7 +304,7 @@ class SnapclientBrowser {
       this.ctx!.createBuffer(
         this.sampleFormat!.channels,
         this.bufferFrameCount,
-        this.sampleFormat!.rate
+        this.sampleFormat!.rate,
       );
     let playTimeMs = (this.playTime + this.latency) * 1000 - this.bufferMs;
     this.stream!.getNextBuffer(buffer, playTimeMs);
@@ -319,14 +314,15 @@ class SnapclientBrowser {
       buffer,
       this.playTime,
       source,
-      this.gainNode!
+      this.gainNode!,
     );
     this.audioBuffers.push(playBuffer);
     playBuffer.num = ++this.bufferNum;
     playBuffer.onended = (buffer: PlayBuffer) => {
       // let diff = this.timeProvider.nowSec() - buffer.playTime;
       this.freeBuffers.push(
-        this.audioBuffers.splice(this.audioBuffers.indexOf(buffer), 1)[0].buffer
+        this.audioBuffers.splice(this.audioBuffers.indexOf(buffer), 1)[0]
+          .buffer,
       );
       // console.debug("PlayBuffer " + playBuffer.num + " ended after: " + (diff * 1000) + ", in flight: " + this.audioBuffers.length);
       this.playNext();

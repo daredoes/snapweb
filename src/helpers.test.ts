@@ -11,17 +11,17 @@ test("convertHttpToWebsocket converts http", () => {
 
 test("convertHttpToWebsocket keeps path", () => {
   expect(convertHttpToWebsocket("http://test.com/dropme")).toEqual(
-    "ws://test.com/dropme"
+    "ws://test.com/dropme",
   );
 });
 
 test("convertHttpToWebsocket drops params", () => {
   expect(convertHttpToWebsocket("http://test.com?param=test")).toEqual(
-    "ws://test.com/"
+    "ws://test.com/",
   );
 });
 test("convertHttpToWebsocket drops port", () => {
   expect(convertHttpToWebsocket("http://test.com:1780")).toEqual(
-    "ws://test.com:1780/"
+    "ws://test.com:1780/",
   );
 });

@@ -9,12 +9,12 @@ import Host from "./Host";
 import Group from "./Group";
 import Client, { Config } from "./Client";
 
-export interface ClientlessGroup extends Omit<Group, 'clients'> {
-  clientIds?: string[]
+export interface ClientlessGroup extends Omit<Group, "clients"> {
+  clientIds?: string[];
 }
 
 export interface GroupedClient extends Client {
-  groupId: string
+  groupId: string;
 }
 export type * from "./api";
 

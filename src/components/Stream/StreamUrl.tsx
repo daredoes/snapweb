@@ -5,10 +5,9 @@ import { useAtom } from "jotai";
 import { serverUrlAtom } from "src/atoms/snapclient/localStorage";
 // import { useIsFirstRender } from "@uidotdev/usehooks";
 
-const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream"
+const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream";
 
-export interface StreamUrlProps extends BaseTextFieldProps {
-}
+export interface StreamUrlProps extends BaseTextFieldProps {}
 
 const StreamUrl: React.FC<StreamUrlProps> = ({
   label = "Server URL (http[s])",
@@ -16,14 +15,19 @@ const StreamUrl: React.FC<StreamUrlProps> = ({
   placeholder = DEFAULT_SNAPCAST_URL,
   ...props
 }) => {
-  const [url, setUrl] = useAtom(serverUrlAtom)
+  const [url, setUrl] = useAtom(serverUrlAtom);
 
   // const isFirstRender = useIsFirstRender()
 
-  const handleClick: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useCallback((e) => {
-    const newValue = e.currentTarget.value;
-    setUrl(newValue)
-  }, [setUrl])
+  const handleClick: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = useCallback(
+    (e) => {
+      const newValue = e.currentTarget.value;
+      setUrl(newValue);
+    },
+    [setUrl],
+  );
 
   // useLayoutEffect(() => {
   //   if (isFirstRender) {
@@ -36,13 +40,21 @@ const StreamUrl: React.FC<StreamUrlProps> = ({
   // }, [isFirstRender, setUrl])
 
   return (
-    <TextField {...props} label={label} InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <Link />
-        </InputAdornment>
-      ),
-    }} value={url} onChange={handleClick} placeholder={placeholder} fullWidth={fullWidth} />
+    <TextField
+      {...props}
+      label={label}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Link />
+          </InputAdornment>
+        ),
+      }}
+      value={url}
+      onChange={handleClick}
+      placeholder={placeholder}
+      fullWidth={fullWidth}
+    />
   );
 };
 

@@ -1,49 +1,61 @@
-import { useAtom } from "jotai"
-import { useCallback, useMemo } from "react"
-import { groupsAtom } from "src/atoms/snapclient"
-import { Box, BoxProps, IconButton } from "@mui/material"
-import { MoreVert, Input } from "@mui/icons-material"
-import { switchStreamAtom } from "src/atoms/snapclient/switchStream"
-import { groupIdSettingsAtom } from "src/atoms/snapclient/settings"
+import { useAtom } from "jotai";
+import { useCallback, useMemo } from "react";
+import { groupsAtom } from "src/atoms/snapclient";
+import { Box, BoxProps, IconButton } from "@mui/material";
+import { MoreVert, Input } from "@mui/icons-material";
+import { switchStreamAtom } from "src/atoms/snapclient/switchStream";
+import { groupIdSettingsAtom } from "src/atoms/snapclient/settings";
 
 export interface GroupActionsProps extends BoxProps {
-  groupId: string
+  groupId: string;
 }
 
-const GroupActions: React.FC<GroupActionsProps> = ({ 
+const GroupActions: React.FC<GroupActionsProps> = ({
   groupId,
   px = 1,
-  display = 'flex',
-  flexDirection = 'row',
-  justifyContent = 'center',
-  alignItems = 'center',
+  display = "flex",
+  flexDirection = "row",
+  justifyContent = "center",
+  alignItems = "center",
   ...props
- }) => {
-  const [groups] = useAtom(groupsAtom)
-  const [_, setSelectStream] = useAtom(switchStreamAtom)
-  const [__, setGroupId] = useAtom(groupIdSettingsAtom)
+}) => {
+  const [groups] = useAtom(groupsAtom);
+  const [_, setSelectStream] = useAtom(switchStreamAtom);
+  const [__, setGroupId] = useAtom(groupIdSettingsAtom);
   const group = useMemo(() => {
-    return groups[groupId]
-  }, [groupId, groups])
+    return groups[groupId];
+  }, [groupId, groups]);
 
   const handleClick = useCallback(() => {
-    setSelectStream(group)
-  }, [setSelectStream, group])
+    setSelectStream(group);
+  }, [setSelectStream, group]);
 
   const handleSettingsClick = useCallback(() => {
-    setGroupId(groupId)
-  }, [setGroupId, groupId])
+    setGroupId(groupId);
+  }, [setGroupId, groupId]);
 
   return (
-    <Box {...props} px={px} display={display} flexDirection={flexDirection} justifyContent={justifyContent} alignItems={alignItems}>
+    <Box
+      {...props}
+      px={px}
+      display={display}
+      flexDirection={flexDirection}
+      justifyContent={justifyContent}
+      alignItems={alignItems}
+    >
       <IconButton title="Select Group Source" onClick={handleClick}>
         <Input />
       </IconButton>
-      <IconButton onClick={handleSettingsClick} title="Group Settings" edge='start' size='small'>
+      <IconButton
+        onClick={handleSettingsClick}
+        title="Group Settings"
+        edge="start"
+        size="small"
+      >
         <MoreVert />
       </IconButton>
     </Box>
-  )
-}
+  );
+};
 
-export default GroupActions
+export default GroupActions;

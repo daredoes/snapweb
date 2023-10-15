@@ -4,9 +4,9 @@ interface Metadata {
   album?: string;
   artUrl?: string;
   artData?: {
-    data: string
-    extension: string
-  }
+    data: string;
+    extension: string;
+  };
   duration?: number;
 }
 

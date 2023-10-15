@@ -19,7 +19,7 @@ interface Stream {
 }
 
 export interface StreamGroups extends Stream {
-  groups?: Group[]
+  groups?: Group[];
 }
 
 export default Stream;

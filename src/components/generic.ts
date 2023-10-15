@@ -1,14 +1,14 @@
-import { styled } from '@mui/material';
+import { styled } from "@mui/material";
 
-export const Divider = styled('hr')(() => {
+export const Divider = styled("hr")(() => {
   return {
-    width: '90%'
-  }
-})
+    width: "90%",
+  };
+});
 
-export const StreamImg = styled('img')(() => {
+export const StreamImg = styled("img")(() => {
   return {
-    height: '25px',
-    width: 'auto'
-  }
-})
+    height: "25px",
+    width: "auto",
+  };
+});

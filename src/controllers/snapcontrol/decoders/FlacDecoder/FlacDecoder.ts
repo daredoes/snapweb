@@ -15,7 +15,7 @@ class FlacDecoder extends Decoder {
           this.write_callback_fn.bind(this),
           this.error_callback_fn.bind(this),
           this.metadata_callback_fn.bind(this),
-          false
+          false,
         );
         console.log("Flac init: " + init_status);
         Flac.setOptions(this.decoder, {
@@ -53,14 +53,14 @@ class FlacDecoder extends Decoder {
       let diffMs = this.cacheInfo.cachedBlocks / this.sampleFormat.msRate();
       // console.log("Cached: " + this.cacheInfo.cachedBlocks + ", " + diffMs + "ms");
       this.pcmChunk!.timestamp.setMilliseconds(
-        this.pcmChunk!.timestamp.getMilliseconds() - diffMs
+        this.pcmChunk!.timestamp.getMilliseconds() - diffMs,
       );
     }
     return this.pcmChunk!;
   }
 
   read_callback_fn(
-    bufferSize: number
+    bufferSize: number,
   ): Flac.ReadResult | Flac.CompletedReadResult {
     // console.log('  decode read callback, buffer bytes max=', bufferSize);
     if (this.header) {
@@ -73,7 +73,10 @@ class FlacDecoder extends Decoder {
       // a fresh read => next call to write will not be from cached data
       this.cacheInfo.isCachedChunk = false;
       let data = new Uint8Array(
-        this.flacChunk.slice(0, Math.min(bufferSize, this.flacChunk.byteLength))
+        this.flacChunk.slice(
+          0,
+          Math.min(bufferSize, this.flacChunk.byteLength),
+        ),
       );
       this.flacChunk = this.flacChunk.slice(data.byteLength);
       return { buffer: data, readDataLength: data.byteLength, error: false };
@@ -88,21 +91,21 @@ class FlacDecoder extends Decoder {
       this.cacheInfo.cachedBlocks += frameInfo.blocksize;
     }
     let payload = new ArrayBuffer(
-      (frameInfo.bitsPerSample / 8) * frameInfo.channels * frameInfo.blocksize
+      (frameInfo.bitsPerSample / 8) * frameInfo.channels * frameInfo.blocksize,
     );
     let view = new DataView(payload);
     for (let channel: number = 0; channel < frameInfo.channels; ++channel) {
       let channelData = new DataView(
         data[channel].buffer,
         0,
-        data[channel].buffer.byteLength
+        data[channel].buffer.byteLength,
       );
       // console.log("channelData: " + channelData.byteLength + ", blocksize: " + frameInfo.blocksize);
       for (let i: number = 0; i < frameInfo.blocksize; ++i) {
         view.setInt16(
           2 * (frameInfo.channels * i + channel),
           channelData.getInt16(2 * i, true),
-          true
+          true,
         );
       }
     }
@@ -118,7 +121,7 @@ class FlacDecoder extends Decoder {
     this.sampleFormat.channels = data.channels;
     this.sampleFormat.bits = data.bitsPerSample;
     console.log(
-      "metadata_callback_fn, sampleformat: " + this.sampleFormat.toString()
+      "metadata_callback_fn, sampleformat: " + this.sampleFormat.toString(),
     );
   }
 

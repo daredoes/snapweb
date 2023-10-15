@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { BaseTextFieldProps, InputAdornment, TextField } from "@mui/material";
 import { Info } from "@mui/icons-material";
 
-export interface ClientDisabledTextProps extends Omit<BaseTextFieldProps, 'disabled'> {
-  externalValue?: string
-  Icon?: React.FC<any>
+export interface ClientDisabledTextProps
+  extends Omit<BaseTextFieldProps, "disabled"> {
+  externalValue?: string;
+  Icon?: React.FC<any>;
 }
 
 const ClientDisabledText: React.FC<ClientDisabledTextProps> = ({
@@ -12,29 +13,47 @@ const ClientDisabledText: React.FC<ClientDisabledTextProps> = ({
   externalValue,
   Icon,
   placeholder = "Field",
-  size = 'small',
+  size = "small",
   ...props
 }) => {
-  const [internalValue, setInternalValue] = useState("")
+  const [internalValue, setInternalValue] = useState("");
   useEffect(() => {
     if (externalValue) {
-      setInternalValue(externalValue)
+      setInternalValue(externalValue);
     }
-  }, [externalValue, setInternalValue])
+  }, [externalValue, setInternalValue]);
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useCallback((e) => {
-    const newValue = e.currentTarget.value;
-    setInternalValue(newValue)
-  }, [setInternalValue])
+  const handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = useCallback(
+    (e) => {
+      const newValue = e.currentTarget.value;
+      setInternalValue(newValue);
+    },
+    [setInternalValue],
+  );
 
   return (
-    <TextField {...props} size={size} InputProps={Icon ? {
-      startAdornment: (
-        <InputAdornment position="start">
-          <Icon />
-        </InputAdornment>
-      ),
-    } : {}} disabled={true} placeholder={placeholder} value={internalValue} onChange={handleChange} fullWidth={fullWidth} />
+    <TextField
+      {...props}
+      size={size}
+      InputProps={
+        Icon
+          ? {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Icon />
+                </InputAdornment>
+              ),
+            }
+          : {}
+      }
+      disabled={true}
+      placeholder={placeholder}
+      value={internalValue}
+      onChange={handleChange}
+      fullWidth={fullWidth}
+    />
   );
 };
 

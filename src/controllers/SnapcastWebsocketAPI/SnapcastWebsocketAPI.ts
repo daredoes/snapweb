@@ -41,7 +41,7 @@ class SnapcastWebsocketAPI {
   public close() {
     if (this.connection) {
       this.connection.onclose = null;
-      this.connection.close()
+      this.connection.close();
     }
   }
 
@@ -54,7 +54,7 @@ class SnapcastWebsocketAPI {
     handleClose?: () => boolean,
     handleMessageMethods?: MessageMethods,
     handleNotificationMethods?: NotificationMethods,
-    maxDepth?: number
+    maxDepth?: number,
   ) {
     if (this.connection) {
       this.connection.close();
@@ -74,7 +74,7 @@ class SnapcastWebsocketAPI {
     if (this.url) {
       if (this.connection) {
         this.connection.onclose = null;
-        this.connection.close()
+        this.connection.close();
       }
       try {
         console.info("Opening connection to", this.url);
@@ -96,12 +96,11 @@ class SnapcastWebsocketAPI {
     if (this.openSocket() && this.connection) {
       this.connection.onmessage = (msg: MessageEvent) => {
         try {
-
           const msgData = JSON.parse(msg.data);
           const isResponse: boolean = msgData.id != undefined;
           if (isResponse) {
             console.info("Received message", msgData);
-            console.log(this.pending_response)
+            console.log(this.pending_response);
             if (this.pending_response[msgData.id]) {
               const func =
                 this.handleMessageMethods[
@@ -115,7 +114,7 @@ class SnapcastWebsocketAPI {
                   {
                     request: this.pending_response_requests[msgData.id] as any,
                     result: msgData["result"],
-                  }
+                  },
                 );
                 func({
                   request: this.pending_response_requests[msgData.id] as any,
@@ -136,7 +135,7 @@ class SnapcastWebsocketAPI {
             }
           }
         } catch (e) {
-          console.error(e, "onmessage")
+          console.error(e, "onmessage");
         }
       };
       this.connection.onopen = () => {
@@ -154,13 +153,13 @@ class SnapcastWebsocketAPI {
       this.connection.onclose = () => {
         if (this._handleClose) {
           // False means retry connection
-          console.log("Trying to close")
+          console.log("Trying to close");
           if (!this._handleClose() && maxDepth != ++depth) {
-            console.log("Reconnecting in 1s")
+            console.log("Reconnecting in 1s");
             setTimeout(() => {
-              this._connect(maxDepth, depth)
-            }, 1000)
-          };
+              this._connect(maxDepth, depth);
+            }, 1000);
+          }
         }
       };
     } else {
@@ -173,7 +172,7 @@ class SnapcastWebsocketAPI {
   }
 
   public streamControlSetPosition(
-    options: StreamControlSetPositionParams
+    options: StreamControlSetPositionParams,
   ): number {
     return this.sendServerRequest(API.streamControlSetPosition(options));
   }

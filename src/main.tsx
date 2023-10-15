@@ -12,19 +12,21 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider theme={createTheme({
-      components: {
-        MuiCssBaseline: {
-          styleOverrides: (themeParam) => `
+    <ThemeProvider
+      theme={createTheme({
+        components: {
+          MuiCssBaseline: {
+            styleOverrides: (themeParam) => `
             body {
               background-color: ${themeParam.palette.grey[400]};
             }
           `,
+          },
         },
-      }
-    })}>
+      })}
+    >
       <CssBaseline enableColorScheme={true} />
       <App />
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

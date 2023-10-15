@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { BaseTextFieldProps, InputAdornment, TextField } from "@mui/material";
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 export interface ClientNameProps extends BaseTextFieldProps {
-  externalValue?: string
+  externalValue?: string;
 }
 
 const ClientName: React.FC<ClientNameProps> = ({
@@ -13,26 +13,40 @@ const ClientName: React.FC<ClientNameProps> = ({
   externalValue,
   ...props
 }) => {
-  const [name, setName] = useState("")
+  const [name, setName] = useState("");
   useEffect(() => {
     if (externalValue) {
-      setName(externalValue)
+      setName(externalValue);
     }
-  }, [externalValue, setName])
+  }, [externalValue, setName]);
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useCallback((e) => {
-    const newValue = e.currentTarget.value;
-    setName(newValue)
-  }, [setName])
+  const handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = useCallback(
+    (e) => {
+      const newValue = e.currentTarget.value;
+      setName(newValue);
+    },
+    [setName],
+  );
 
   return (
-    <TextField {...props} label={label} InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <DriveFileRenameOutlineIcon />
-        </InputAdornment>
-      ),
-    }} value={name} name="name" onChange={handleChange} placeholder={placeholder} fullWidth={fullWidth} />
+    <TextField
+      {...props}
+      label={label}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <DriveFileRenameOutlineIcon />
+          </InputAdornment>
+        ),
+      }}
+      value={name}
+      name="name"
+      onChange={handleChange}
+      placeholder={placeholder}
+      fullWidth={fullWidth}
+    />
   );
 };
 

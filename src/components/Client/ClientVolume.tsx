@@ -1,28 +1,35 @@
-import React from 'react';
-import { Box, BoxProps } from '@mui/material';
-import ClientSlider from './ClientSlider';
-import ClientMute from './ClientMute';
-import ClientActions from './ClientActions';
+import React from "react";
+import { Box, BoxProps } from "@mui/material";
+import ClientSlider from "./ClientSlider";
+import ClientMute from "./ClientMute";
+import ClientActions from "./ClientActions";
 
-export interface ClientVolumeProps extends Omit<BoxProps, 'children'> {
-  clientId: string
+export interface ClientVolumeProps extends Omit<BoxProps, "children"> {
+  clientId: string;
 }
 
-export const ClientVolume: React.FC<ClientVolumeProps> = ({ 
+export const ClientVolume: React.FC<ClientVolumeProps> = ({
   clientId,
-  display = 'flex',
-  flexDirection = 'column',
-  gap = '0.5rem',
-  justifyContent='flex-start',
-  alignItems='center',
+  display = "flex",
+  flexDirection = "column",
+  gap = "0.5rem",
+  justifyContent = "flex-start",
+  alignItems = "center",
   ...props
 }) => {
   return (
-    <Box {...props} display={display} flexDirection={flexDirection} gap={gap} justifyContent={justifyContent} alignItems={alignItems}>
+    <Box
+      {...props}
+      display={display}
+      flexDirection={flexDirection}
+      gap={gap}
+      justifyContent={justifyContent}
+      alignItems={alignItems}
+    >
       <ClientSlider clientId={clientId} />
       <ClientActions clientId={clientId} />
     </Box>
-  )
-}
+  );
+};
 
-export default ClientVolume
+export default ClientVolume;

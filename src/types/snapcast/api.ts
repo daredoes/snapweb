@@ -352,7 +352,7 @@ export type NotificationMethods = {
   "Client.OnDisconnect"?: (response: ClientOnDisconnectResponse) => void;
   "Client.OnVolumeChanged"?: (response: ClientOnVolumeChangedResponse) => void;
   "Client.OnLatencyChanged"?: (
-    response: ClientOnLatencyChangedResponse
+    response: ClientOnLatencyChangedResponse,
   ) => void;
   "Client.OnNameChanged"?: (response: ClientOnNameChangedResponse) => void;
   "Group.OnMute"?: (response: GroupOnMuteResponse) => void;
