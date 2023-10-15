@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { convertHttpToWebsocket } from "src/helpers";
 import { Server, Stream } from 'src/types/snapcast';
 import { useAtom } from 'jotai';
-import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom, updateGroupStreamAtom, updateStreamSeekAtom, hostAtom } from 'src/atoms/snapclient';
+import { apiAtom, connectedAtom, clientsAtom, groupsAtom, serverAtom, streamsAtom, updateClientConnectedAtom, updateClientLatencyAtom, updateClientNameAtom, updateClientVolumeAtom, updateClientAtom, updateStreamAtom, updateStreamPropertiesAtom, updateGroupStreamAtom, updateStreamSeekAtom, hostAtom, updateGroupMuteAtom, updateGroupAtom, updateGroupNameAtom } from 'src/atoms/snapclient';
 import { switchStreamAtom } from 'src/atoms/snapclient/switchStream';
 import { preventAutomaticReconnectAtom, showOfflineClientsAtom } from 'src/atoms/snapclient/localStorage';
 
@@ -26,6 +26,9 @@ export const useSnapclient = () => {
   const [, updateStream] = useAtom(updateStreamAtom)
   const [, updateStreamProperties] = useAtom(updateStreamPropertiesAtom)
   const [, updateGroupStream] = useAtom(updateGroupStreamAtom)
+  const [, updateGroupMute] = useAtom(updateGroupMuteAtom)
+  const [, updateGroupName] = useAtom(updateGroupNameAtom)
+  const [, updateGroup] = useAtom(updateGroupAtom)
   const [, updateStreamSeek] = useAtom(updateStreamSeekAtom)
 
   const handleConnectionError = useCallback((e: Event) => {
@@ -90,11 +93,23 @@ export const useSnapclient = () => {
           updateGroupStream(r.request.id, r.result.stream_id)
           setSelectStream(undefined)
         },
+        "Group.SetMute": (r) => {
+          updateGroupMute(r.request.id, r.result.mute)
+        },
         "Stream.Control.seek": (r) => {
           const streamId = r.request.id
           const streamOffset = r.request.params?.offset || 0
           updateStreamSeek(streamId, streamOffset)
-        }
+        },
+        "Group.GetStatus": (r) => {
+          updateGroup(r.result.group)
+        },
+        "Group.SetClients": (r) => {
+          serverStatusUpdate(r.result.server)
+        },
+        "Group.SetName": (r) => {
+          updateGroupName(r.request.id, r.result.name)
+        },
       },
       {
         "Server.OnUpdate": (r) => {
@@ -120,6 +135,15 @@ export const useSnapclient = () => {
         },
         "Stream.OnProperties": (r) => {
           updateStreamProperties(r.id, r)
+        },
+        "Group.OnStreamChanged": (r) => {
+          updateGroupStream(r.id, r.stream_id)
+        },
+        "Group.OnMute": (r) => {
+          updateGroupMute(r.id, r.mute)
+        },
+        "Group.OnNameChanged": (r) => {
+          updateGroupName(r.id, r.name)
         }
       },
       0 // Max Retries (0 or less == unlimited)

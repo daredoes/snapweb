@@ -1,17 +1,18 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box, BoxProps, Button, IconButton, Paper, Slider, Typography } from '@mui/material';
-import { Client, Group } from 'src/types/snapcast';
-import ClientVolume from '../Client/ClientVolume';
+import { Group } from 'src/types/snapcast';
 import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
 import { Divider } from '../generic';
 import { Input, MoreVert, Visibility, VisibilityOff } from '@mui/icons-material';
+import ClientBox from '../Client/ClientBox';
+import GroupActions from './GroupActions';
 
 export interface GroupDisplayProps extends BoxProps {
   group: Group
 }
 
 export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) => {
-  const { api, showOfflineClients, connected, setSelectStream } = useSnapclient()
+  const { showOfflineClients, connected, setSelectStream } = useSnapclient()
   const [internalShowOffline, setInternalShowOffline] = useState<boolean | undefined>(undefined)
   const connectedClients = useMemo(() => {
     if (showOfflineClients || (typeof internalShowOffline !== 'undefined' && internalShowOffline)) {
@@ -20,20 +21,9 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
     return (group.clients || []).filter((c) => c.connected)
   }, [group.clients, showOfflineClients, internalShowOffline])
 
-  const clientName = useCallback((c: Client) => {
-    return c.config.name || c.host.name
-  }, [])
-
   const clientElements = useMemo(() => {
     return connectedClients.map((c) => {
-      return <Box gap={1} key={c.id} width={'75px'} px={1} py={1} display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-        <ClientVolume clientId={c.id} />
-        <Box flexGrow={1} display={'flex'} sx={{ overflowX: 'scroll' }} flexDirection={'column'} alignContent={'center'} alignItems={'center'} maxWidth={'100%'} >
-          <Typography title={clientName(c)} noWrap={true} component={'span'} maxWidth={'100%'} overflow={'visible'}>
-            {clientName(c)}
-          </Typography>
-        </Box>
-      </Box>
+      return <ClientBox key={c.id} clientId={c.id} />
     })
   }, [connectedClients, connected])
 
@@ -58,20 +48,11 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
   const groupSettingsElements = useMemo(() => {
     return (
       <>
-        <Box px={1} display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-          <IconButton onClick={() => {
-            setSelectStream(group)
-          }} edge={'end'}>
-            <Input />
-          </IconButton>
-          <IconButton size='small'>
-            <MoreVert />
-          </IconButton>
-        </Box>
+        <GroupActions groupId={group.id} />
         <Divider />
       </>
     )
-  }, [setSelectStream])
+  }, [group])
 
   if (clientElements.length === 0) {
     return null

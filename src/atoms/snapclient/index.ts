@@ -100,6 +100,17 @@ const setGroupStream = (get: Getter, set: Setter, id: string, stream_id: string)
   }
 }
 
+const setGroupMute = (get: Getter, set: Setter, id: string, mute: boolean) => {
+  const groups = get(groupsAtom)
+  const group = groups[id]
+  if (group) {
+    const newGroup = { ...group}
+    newGroup.muted = mute
+    const newGroups = {...groups, [newGroup.id]: newGroup}
+    set(groupsAtom, newGroups)
+  }
+}
+
 const setStreamOffset = (get: Getter, set: Setter, id: string, offset: number) => {
   const streams = get(internalStreamsAtom)
   const stream = streams[id]
@@ -119,10 +130,30 @@ const setStreamProperties = (get: Getter, set: Setter, id: string, properties: P
     const newItem = { ...stream}
     newItem.properties = properties
     const newItems = {...streams, [newItem.id]: newItem}
-    console.log(stream.properties, newItem.properties)
     set(internalStreamsAtom, newItems)
   }
 }
+
+export const updateGroupAtom = atom(null, (get, set, group: Group) => {
+  const groups = get(groupsAtom)
+  const newGroups = {...groups, [group.id]: group}
+  set(groupsAtom, newGroups)
+} )
+
+export const updateGroupNameAtom = atom(null, (get, set, id: string, name: string) => {
+  const groups = get(groupsAtom)
+  const group = groups[id]
+  if (group) {
+    const newGroup = { ...group}
+    newGroup.name = name
+    const newGroups = {...groups, [newGroup.id]: newGroup}
+    set(groupsAtom, newGroups)
+  }
+} )
+
+export const updateGroupMuteAtom = atom(null, (get, set, id: string, mute: boolean) => {
+  setGroupMute(get, set, id, mute)
+} )
 
 export const updateGroupStreamAtom = atom(null, (get, set, id: string, stream_id: string) => {
   setGroupStream(get, set, id, stream_id)
