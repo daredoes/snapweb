@@ -57,7 +57,7 @@ const ClientLatencySlider: React.FC<ClientLatencySliderProps> = ({ clientId: id,
           {...props}
         />
         <TextField sx={{width: '12ch'}} size="small" label={"Latency"} value={internalState} onChange={handleTextChange} InputProps={{inputProps: {
-           min: -10000, max: 10000, inputMode: 'numeric', pattern: '-?[0-9]*?'
+           inputMode: 'numeric', pattern: '-?[0-9]*?'
         }}} placeholder={"0"} fullWidth={false} />
     </Box>
   )

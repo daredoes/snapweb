@@ -7,7 +7,7 @@ import ClientName from "../Client/SettingsForm/ClientName";
 import ClientLatencySlider from "../Client/SettingsForm/ClientLatencySlider";
 import ClientDisabledText from "../Client/SettingsForm/ClientDisabledText";
 
-export interface SwitchStreamsProps extends Omit<DialogProps, 'open'> {
+export interface ClientSettingsProp extends Omit<DialogProps, 'open'> {
   onClose?: () => void
 }
 
@@ -20,7 +20,7 @@ interface CustomForm extends HTMLFormElement {
   readonly elements: CustomElements;
 }
 
-const ClientSettings = ({ fullWidth = true, fullScreen: _, onClose = () => { }, ...props }: SwitchStreamsProps) => {
+const ClientSettings = ({ fullWidth = true, fullScreen: _, onClose = () => { }, ...props }: ClientSettingsProp) => {
   const [clientId, setClientId] = useAtom(clientSettingsAtom)
   const [clients] = useAtom(clientsAtom)
   const [api] = useAtom(apiAtom)
@@ -48,7 +48,7 @@ const ClientSettings = ({ fullWidth = true, fullScreen: _, onClose = () => { }, 
         api.clientSetLatency({id: clientId, latency: newLatency})
       }
     }
-  }, [api, clientId])
+  }, [api, clientId, client])
   
 
   return (

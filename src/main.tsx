@@ -12,6 +12,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "./index.css";
 import ClientSettings from "./components/Dialogs/ClientSettings.tsx";
+import GroupClientsSettings from "./components/Dialogs/GroupClientsSettings.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <SnapclientSettings />
       <SwitchStreams />
       <ClientSettings />
+      <GroupClientsSettings />
     </ThemeProvider>
   </React.StrictMode>
 );

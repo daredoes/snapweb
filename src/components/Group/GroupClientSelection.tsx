@@ -6,11 +6,11 @@ import { MoreVert, Input } from "@mui/icons-material"
 import { switchStreamAtom } from "src/atoms/snapclient/switchStream"
 import { groupIdSettingsAtom } from "src/atoms/snapclient/settings"
 
-export interface GroupActionsProps extends BoxProps {
+export interface GroupClientSelectionProps extends BoxProps {
   groupId: string
 }
 
-const GroupActions: React.FC<GroupActionsProps> = ({ 
+const GroupClientSelection: React.FC<GroupClientSelectionProps> = ({ 
   groupId,
   px = 1,
   display = 'flex',
@@ -25,6 +25,10 @@ const GroupActions: React.FC<GroupActionsProps> = ({
   const group = useMemo(() => {
     return groups[groupId]
   }, [groupId, groups])
+
+  const clientCount = useMemo(() => {
+    return group.clients.length
+  }, [group.clients])
 
   const handleClick = useCallback(() => {
     setSelectStream(group)
@@ -46,4 +50,4 @@ const GroupActions: React.FC<GroupActionsProps> = ({
   )
 }
 
-export default GroupActions
+export default GroupClientSelection
