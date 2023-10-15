@@ -4,15 +4,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material";
 
 import App from "./app";
-import SnapclientSettings from "./components/SnapclientSettings";
-import SwitchStreams from "./components/Dialogs/SwitchStream";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "./index.css";
-import ClientSettings from "./components/Dialogs/ClientSettings.tsx";
-import GroupClientsSettings from "./components/Dialogs/GroupClientsSettings.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -29,11 +25,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     })}>
       <CssBaseline enableColorScheme={true} />
       <App />
-      {/* Dialogs Go Here */}
-      <SnapclientSettings />
-      <SwitchStreams />
-      <ClientSettings />
-      <GroupClientsSettings />
     </ThemeProvider>
   </React.StrictMode>
 );

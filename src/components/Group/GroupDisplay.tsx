@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { Box, BoxProps, Button, IconButton, Paper, Slider, Typography } from '@mui/material';
+import { Box, BoxProps, Button, Paper, Slider, Typography } from '@mui/material';
 import { Group } from 'src/types/snapcast';
 import useSnapclient from 'src/controllers/snapcontrol/useSnapclient';
 import { Divider } from '../generic';
-import { Input, MoreVert, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import ClientBox from '../Client/ClientBox';
 import GroupActions from './GroupActions';
 
@@ -12,7 +12,7 @@ export interface GroupDisplayProps extends BoxProps {
 }
 
 export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) => {
-  const { showOfflineClients, connected, setSelectStream } = useSnapclient()
+  const { showOfflineClients, connected } = useSnapclient()
   const [internalShowOffline, setInternalShowOffline] = useState<boolean | undefined>(undefined)
   const connectedClients = useMemo(() => {
     if (showOfflineClients || (typeof internalShowOffline !== 'undefined' && internalShowOffline)) {
@@ -79,7 +79,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
             <Slider valueLabelDisplay="auto" aria-label="Group Volume" title="This is an average of the clients volume" value={averageGroupVolume} min={0} max={100} />
           </Box>
           <Typography variant='subtitle2' px={1} pb={1}>
-            All Client Volume
+            Average Client Volume
           </Typography>
         </Box>
 
