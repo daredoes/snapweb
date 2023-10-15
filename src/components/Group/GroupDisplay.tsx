@@ -106,7 +106,8 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
             <Divider />
           </>
         )}
-        <Box
+        {/* Disabled for the moment because idk */}
+        {/* {connectedClients.length > 1 && <Box
           width={"100%"}
           display={"flex"}
           flexDirection={"column"}
@@ -115,6 +116,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
         >
           <Box pt={1} width={"90%"}>
             <Slider
+              disabled={true}
               valueLabelDisplay="auto"
               aria-label="Group Volume"
               title="This is an average of the clients volume"
@@ -126,7 +128,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
           <Typography variant="subtitle2" px={1} pb={1}>
             Average Client Volume
           </Typography>
-        </Box>
+        </Box>} */}
 
         <Divider />
         {groupSettingsElements}
