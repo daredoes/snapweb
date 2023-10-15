@@ -1,4 +1,4 @@
-import { PlayArrow, VolumeOff } from "@mui/icons-material";
+import { VolumeOff } from "@mui/icons-material";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
@@ -9,9 +9,9 @@ export interface UnMuteIconProps extends Omit<IconButtonProps, 'onClick'|'childr
 }
 
 const UnMuteIcon: React.FC<UnMuteIconProps> = ({ 
-  title = 'Mute', 
+  title = 'Un-mute', 
   clientId,
-  "aria-label": ariaLabel = "Mute the client", 
+  "aria-label": ariaLabel = "Un-mute the client", 
   ...props 
 }) => {
   const [clients] = useAtom(clientsAtom)

@@ -48,7 +48,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({ group, ...props }) =
   const groupSettingsElements = useMemo(() => {
     return (
       <>
-        <GroupActions groupId={group.id} />
+        <GroupActions pt={1} groupId={group.id} />
         <Divider />
       </>
     )

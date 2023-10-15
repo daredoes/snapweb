@@ -38,7 +38,6 @@ const ClientSlider: React.FC<ClientSliderProps> = ({ clientId: id, ...props }) =
   }, [setInternalVolume])
 
   return (
-    <>
       <Slider
           disabled={!connected}
           aria-label="Volume"
@@ -52,7 +51,6 @@ const ClientSlider: React.FC<ClientSliderProps> = ({ clientId: id, ...props }) =
           sx={{ height: '25vh' }}
           {...props}
         />
-    </>
   )
 }
 

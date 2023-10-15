@@ -30,10 +30,10 @@ const GroupActions: React.FC<GroupActionsProps> = ({
 
   return (
     <Box {...props} px={px} display={display} flexDirection={flexDirection} justifyContent={justifyContent} alignItems={alignItems}>
-      <IconButton onClick={handleClick} edge={'end'}>
+      <IconButton title="Select Group Source" onClick={handleClick}>
         <Input />
       </IconButton>
-      <IconButton size='small'>
+      <IconButton title="Group Settings" edge='start' size='small'>
         <MoreVert />
       </IconButton>
     </Box>
