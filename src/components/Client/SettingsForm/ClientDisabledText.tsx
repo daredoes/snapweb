@@ -10,7 +10,7 @@ export interface ClientDisabledTextProps extends Omit<BaseTextFieldProps, 'disab
 const ClientDisabledText: React.FC<ClientDisabledTextProps> = ({
   fullWidth = true,
   externalValue,
-  Icon = Info,
+  Icon,
   placeholder = "Field",
   size = 'small',
   ...props
@@ -28,13 +28,13 @@ const ClientDisabledText: React.FC<ClientDisabledTextProps> = ({
   }, [setInternalValue])
 
   return (
-    <TextField {...props} size={size} InputProps={{
+    <TextField {...props} size={size} InputProps={Icon ? {
       startAdornment: (
         <InputAdornment position="start">
           <Icon />
         </InputAdornment>
       ),
-    }} disabled={true} placeholder={placeholder} value={internalValue} onChange={handleChange} fullWidth={fullWidth} />
+    } : {}} disabled={true} placeholder={placeholder} value={internalValue} onChange={handleChange} fullWidth={fullWidth} />
   );
 };
 

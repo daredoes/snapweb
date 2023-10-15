@@ -67,7 +67,7 @@ const ClientSettings = ({ fullWidth = true, fullScreen: _, onClose = () => { }, 
           <ClientDisabledText label="Version" placeholder="0.0.0" externalValue={client?.snapclient.version} />
         </Box>
         <DialogActions>
-          <Button type="submit">Save</Button>
+          <Button type="submit">Save Changes</Button>
           <Button onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Box>
