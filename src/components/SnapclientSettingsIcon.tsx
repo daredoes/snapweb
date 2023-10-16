@@ -1,21 +1,20 @@
 import { useCallback } from "react";
 import SettingsIcon from "./Icons/SettingsIcon";
 import { IconButtonProps } from "@mui/material";
-import { useAtom } from "jotai";
-import { showSettingsAtom } from "src/atoms/snapclient/settings";
+import { useGlobalModal } from "src/atoms/global-modal";
 
 export interface SnapclientSettingsIconProps extends IconButtonProps {}
 
 const SnapclientSettingsIcon = (props: SnapclientSettingsIconProps) => {
-  const [showSettings, setShowSettings] = useAtom(showSettingsAtom);
+  const { isOpen, openModal } = useGlobalModal()
   const handleClickSettings = useCallback(() => {
-    setShowSettings(true);
-  }, [setShowSettings]);
+    openModal('SETTINGS');
+  }, [openModal]);
 
   return (
     <SettingsIcon
       {...props}
-      disabled={showSettings}
+      disabled={isOpen('SETTINGS')}
       onClick={handleClickSettings}
     />
   );

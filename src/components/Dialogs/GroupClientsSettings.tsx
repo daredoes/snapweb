@@ -48,7 +48,7 @@ const GroupClientsSettings: React.FC<GroupClientsSettingsProps> = ({
   }, [groupId, groups]);
 
   const closeDialog = useCallback(() => {
-    setGroupId(undefined);
+    setGroupId("");
   }, [setGroupId]);
 
   const handleSubmit = useCallback(

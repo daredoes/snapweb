@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { makeRequest, API } from "./index";
-import { ServerRequest } from "types/snapcast";
+import { ServerRequest } from "src/types/snapcast";
 
 const jsonrpc = "2.0";
 

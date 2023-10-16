@@ -41,13 +41,12 @@ class SnapclientBrowser {
   }
 
   private setupAudioContext(): boolean {
-    let AudioContext =
+    let AudioContextClass: any =
       window.AudioContext || // Default
       window["webkitAudioContext" as any] || // Safari and old versions of Chrome
       false;
-    console.log(AudioContext);
 
-    if (AudioContext) {
+    if (AudioContextClass) {
       let options: AudioContextOptions | undefined;
       options = {
         latencyHint: "playback",
@@ -63,7 +62,7 @@ class SnapclientBrowser {
         options = undefined;
       }
 
-      this.ctx = new AudioContext(options);
+      this.ctx = new AudioContextClass(options);
       this.gainNode = this.ctx.createGain();
       this.gainNode.connect(this.ctx.destination);
     } else {

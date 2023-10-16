@@ -1,13 +1,11 @@
-import { Box, Slider, SliderProps, Typography } from "@mui/material";
+import { Slider, SliderProps } from "@mui/material";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   apiAtom,
   clientsAtom,
-  connectedAtom,
-  streamsAtom,
+  connectedAtom
 } from "src/atoms/snapclient";
-import { convertSecondsToTimestamp } from "src/helpers";
 
 export interface ClientSliderProps extends SliderProps {
   clientId: string;
@@ -33,7 +31,7 @@ const ClientSlider: React.FC<ClientSliderProps> = ({
   }, [clients, id, setInternalVolume]);
 
   const handleChangeCommitted = useCallback(
-    (e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       api.clientSetVolume({
         id: id,
         volume: {
@@ -47,7 +45,7 @@ const ClientSlider: React.FC<ClientSliderProps> = ({
   );
 
   const handleChange = useCallback(
-    (e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       setInternalVolume(v as number);
     },
     [setInternalVolume],

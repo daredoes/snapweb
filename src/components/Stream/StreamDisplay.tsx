@@ -12,7 +12,7 @@ export interface StreamDisplayProps {
   id: string;
 }
 
-const StreamDisplay: React.FC<StreamDisplayProps> = ({ id, ...props }) => {
+const StreamDisplay: React.FC<StreamDisplayProps> = ({ id }) => {
   const { showOfflineClients, streams } = useSnapclient();
 
   const stream = useMemo(() => {

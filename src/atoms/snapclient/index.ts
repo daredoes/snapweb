@@ -21,11 +21,14 @@ type Details = {
 
 export const apiAtom = atom<SnapcastWebsocketAPI>(new SnapcastWebsocketAPI());
 
-export const serverAtom = atom<ServerDetails | undefined>(undefined);
+const defaultServer: ServerDetails | undefined = undefined
+export const serverAtom = atom(defaultServer);
 export const hostAtom = atom<Host | undefined>((get) => {
   return get(serverAtom)?.host;
 });
-export const connectedAtom = atom<boolean | undefined>(undefined);
+
+const defaultConnected: boolean | undefined = undefined
+export const connectedAtom = atom(defaultConnected);
 export const internalStreamsAtom = atom<Record<string, Stream>>({});
 
 const internalGroupsAtom = atom<Record<string, Group>>({});
@@ -33,7 +36,7 @@ export const groupsAtom = atom(
   (get) => {
     return get(internalGroupsAtom);
   },
-  (get, set, data: Record<string, Group>) => {
+  (_get, set, data: Record<string, Group>) => {
     set(internalGroupsAtom, data);
   },
 );
@@ -52,7 +55,7 @@ export const streamsAtom = atom(
     });
     return returnData;
   },
-  (get, set, data: Record<string, Stream>) => {
+  (_get, set, data: Record<string, Stream>) => {
     set(internalStreamsAtom, data);
   },
 );

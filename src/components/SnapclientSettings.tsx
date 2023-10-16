@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { useAtom } from "jotai";
 import { preventAutomaticReconnectAtom } from "src/atoms/snapclient/localStorage";
-import { showSettingsAtom } from "src/atoms/snapclient/settings";
 import StreamUrl from "./Stream/StreamUrl";
+import { useGlobalModal } from "src/atoms/global-modal";
 
 export interface SnapclientSettingsProps extends Omit<DialogProps, "open"> {
   onClose?: () => void;
@@ -25,20 +25,20 @@ const SnapclientSettings = ({
   onClose = () => {},
   ...props
 }: SnapclientSettingsProps) => {
+  const { isOpen, closeModal } = useGlobalModal()
   const [preventAutomaticReconnect, setPreventAutomaticReconnect] = useAtom(
     preventAutomaticReconnectAtom,
   );
-  const [open, setSettings] = useAtom(showSettingsAtom);
 
   const closeSettings = useCallback(() => {
-    setSettings(false);
-  }, [setSettings]);
+    closeModal('SETTINGS')
+  }, [closeModal]);
 
   return (
     <Dialog
       fullScreen={false}
       onClose={closeSettings}
-      open={open}
+      open={isOpen('SETTINGS')}
       fullWidth={fullWidth}
       {...props}
     >
@@ -60,7 +60,7 @@ const SnapclientSettings = ({
                 checked={!preventAutomaticReconnect}
                 value={!preventAutomaticReconnect}
                 aria-label="Automatic Reconnect?"
-                onChange={(e, checked) => {
+                onChange={(_e, checked) => {
                   setPreventAutomaticReconnect(!checked);
                 }}
               />

@@ -4,7 +4,6 @@ import {
   BoxProps,
   Button,
   Paper,
-  Slider,
   Typography,
 } from "@mui/material";
 import { Group } from "src/types/snapcast";
@@ -55,14 +54,14 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
     }/${clientCount}`;
   }, [group, group.clients, internalShowOffline]);
 
-  const averageGroupVolume = useMemo(() => {
-    const clientCount = connectedClients.length;
-    let v = 0;
-    connectedClients.forEach((c) => {
-      v += c.config.volume.percent;
-    });
-    return v / clientCount;
-  }, [connectedClients]);
+  // const averageGroupVolume = useMemo(() => {
+  //   const clientCount = connectedClients.length;
+  //   let v = 0;
+  //   connectedClients.forEach((c) => {
+  //     v += c.config.volume.percent;
+  //   });
+  //   return v / clientCount;
+  // }, [connectedClients]);
 
   const groupSettingsElements = useMemo(() => {
     return (

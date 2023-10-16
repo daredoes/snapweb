@@ -19,7 +19,6 @@ import {
   updateStreamPropertiesAtom,
   updateGroupStreamAtom,
   updateStreamSeekAtom,
-  hostAtom,
   updateGroupMuteAtom,
   updateGroupAtom,
   updateGroupNameAtom,
@@ -78,6 +77,9 @@ export const useSnapclient = () => {
 
   const connect = useCallback(
     (httpUrl: string) => {
+      setStreams({})
+      setGroups({})
+      setServerDetails(undefined)
       if (api.connection) {
         api.close();
       }
@@ -152,7 +154,7 @@ export const useSnapclient = () => {
           "Client.OnLatencyChanged": (r) => {
             updateClientLatency(r.id, r.latency);
           },
-          "Client.OnConnect": (r) => {
+          "Client.OnConnect": (_r) => {
             api.serverGetStatus();
           },
           "Client.OnDisconnect": (r) => {

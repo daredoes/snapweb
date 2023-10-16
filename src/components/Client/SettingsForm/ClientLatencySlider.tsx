@@ -27,14 +27,14 @@ const ClientLatencySlider: React.FC<ClientLatencySliderProps> = ({
   }, [clients, id, setInternalState]);
 
   const handleChangeCommitted = useCallback(
-    (e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       setInternalState(v as number);
     },
     [setInternalState],
   );
 
   const handleChange = useCallback(
-    (e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       console.log("ccc");
       setInternalState(v as number);
     },

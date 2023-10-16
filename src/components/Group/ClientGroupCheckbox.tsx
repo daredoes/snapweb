@@ -35,7 +35,7 @@ const ClientGroupCheckbox: React.FC<ClientGroupCheckboxProps> = ({
             {...{ "data-id": clientId }}
             checked={internalState}
             aria-label={client.config.name}
-            onChange={(e, checked) => {
+            onChange={(_e, checked) => {
               setInternalState(checked);
             }}
           />

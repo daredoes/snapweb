@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, BoxProps } from "@mui/material";
 import ClientSlider from "./ClientSlider";
-import ClientMute from "./ClientMute";
 import ClientActions from "./ClientActions";
 
 export interface ClientVolumeProps extends Omit<BoxProps, "children"> {

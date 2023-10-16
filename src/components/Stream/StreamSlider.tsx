@@ -56,7 +56,7 @@ const StreamSlider: React.FC<StreamSliderProps> = ({ streamId: id }) => {
   );
 
   const handleChangeCommitted = useCallback(
-    (e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       api.streamControlSetPosition({
         id: id,
         params: { position: v as number },
@@ -67,7 +67,7 @@ const StreamSlider: React.FC<StreamSliderProps> = ({ streamId: id }) => {
   );
 
   const handleChange = useCallback(
-    (e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       setInternalPlaytime(v as number);
     },
     [setInternalPlaytime],

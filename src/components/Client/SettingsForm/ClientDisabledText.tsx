@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { BaseTextFieldProps, InputAdornment, TextField } from "@mui/material";
-import { Info } from "@mui/icons-material";
 
 export interface ClientDisabledTextProps
   extends Omit<BaseTextFieldProps, "disabled"> {
