@@ -1,6 +1,10 @@
 # Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
+env:
+  # Setting an environment variable with the value of a configuration variable
+  BASE_URL: ${{ vars.BASE_URL }}
+
 on:
   # Runs on pushes targeting the default branch
   push:
