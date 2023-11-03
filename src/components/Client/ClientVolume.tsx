@@ -2,13 +2,15 @@ import React from "react";
 import { Box, BoxProps } from "@mui/material";
 import ClientSlider from "./ClientSlider";
 import ClientActions from "./ClientActions";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientVolumeProps extends Omit<BoxProps, "children"> {
-  clientId: string;
+  clientAtom: PrimitiveAtom<ClientType>
 }
 
 export const ClientVolume: React.FC<ClientVolumeProps> = ({
-  clientId,
+  clientAtom,
   display = "flex",
   flexDirection = "column",
   gap = "0.5rem",
@@ -25,8 +27,8 @@ export const ClientVolume: React.FC<ClientVolumeProps> = ({
       justifyContent={justifyContent}
       alignItems={alignItems}
     >
-      <ClientSlider clientId={clientId} />
-      <ClientActions clientId={clientId} />
+      <ClientSlider clientAtom={clientAtom} />
+      <ClientActions clientAtom={clientAtom} />
     </Box>
   );
 };

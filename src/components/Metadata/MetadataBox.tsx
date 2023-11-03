@@ -2,13 +2,15 @@ import { Box, BoxProps } from "@mui/material";
 import SongTitle from "./SongTitle";
 import SongArtist from "./SongArtist";
 import SongAlbum from "./SongAlbum";
+import { PrimitiveAtom, useAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface MetadataBoxProps extends BoxProps {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
 const MetadataBox: React.FC<MetadataBoxProps> = ({
-  streamId: id,
+  streamAtom,
   width = "100%",
   display = "flex",
   flexDirection = "column",
@@ -17,6 +19,7 @@ const MetadataBox: React.FC<MetadataBoxProps> = ({
   gap = 0,
   ...props
 }) => {
+  const [stream] = useAtom(streamAtom)
   return (
     <Box
       {...props}
@@ -26,10 +29,11 @@ const MetadataBox: React.FC<MetadataBoxProps> = ({
       justifyContent={justifyContent}
       alignItems={alignItems}
       gap={gap}
+      id={`stream-metadata-box-${stream.id}`}
     >
-      <SongTitle streamId={id} />
-      <SongArtist streamId={id} />
-      <SongAlbum streamId={id} />
+      <SongTitle streamAtom={streamAtom} />
+      <SongArtist streamAtom={streamAtom} />
+      <SongAlbum streamAtom={streamAtom} />
     </Box>
   );
 };

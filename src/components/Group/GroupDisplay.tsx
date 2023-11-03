@@ -6,53 +6,80 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { Group } from "src/types/snapcast";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { Divider } from "../generic";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ClientBox from "../Client/ClientBox";
 import GroupActions from "./GroupActions";
+import { PrimitiveAtom, atom, useAtom } from "jotai";
+import { GroupType } from "src/atoms/snapclient/split";
+import { showOfflineClientsAtom } from "src/atoms/snapclient/localStorage";
+import { Client } from "src/types/snapcast";
 
 export interface GroupDisplayProps extends BoxProps {
-  group: Group;
+  groupAtom: PrimitiveAtom<GroupType>
 }
 
 export const GroupDisplay: React.FC<GroupDisplayProps> = ({
-  group,
+  groupAtom,
   ...props
 }) => {
-  const { showOfflineClients, connected } = useSnapclient();
+  const [group] = useAtom(groupAtom)
+  const [showOfflineClients] = useAtom(showOfflineClientsAtom)
+  const { connected } = useSnapclient();
   const [internalShowOffline, setInternalShowOffline] = useState<
     boolean | undefined
   >(undefined);
-  const connectedClients = useMemo(() => {
-    if (
-      showOfflineClients ||
-      (typeof internalShowOffline !== "undefined" && internalShowOffline)
-    ) {
-      return group.clients || [];
-    }
-    return (group.clients || []).filter((c) => c.connected);
-  }, [group.clients, showOfflineClients, internalShowOffline]);
+
+  const [connectedClientAtoms] = useAtom(
+    useMemo(
+      // This is also fine
+      () => atom((get) => {
+        
+        const validAtoms: PrimitiveAtom<Client>[] = []
+        get(group.clientAtoms).forEach((clientAtom) => {
+          const client = get(clientAtom)
+          if (
+            showOfflineClients ||
+            (typeof internalShowOffline !== "undefined" && internalShowOffline)
+          ) {
+            validAtoms.push(clientAtom)
+          } else {
+            if (client.connected === true) {
+              validAtoms.push(clientAtom)
+            }
+          }
+        })
+        return validAtoms;
+      }),
+      [internalShowOffline, showOfflineClients]
+    )
+  )
 
   const clientElements = useMemo(() => {
-    return connectedClients.map((c) => {
-      return <ClientBox key={c.id} clientId={c.id} />;
+    return connectedClientAtoms.map((cAtom) => {
+      return <ClientBox key={cAtom.toString()} clientAtom={cAtom} />;
     });
-  }, [connectedClients, connected]);
+  }, [connectedClientAtoms, connected]);
 
-  const groupName = useMemo(() => {
-    const clientCount = (group.clients || []).length;
+  const [groupName] = useAtom(
+    useMemo(
+      // This is also fine
+      () => atom((get) => {
+        const clientCount = get(group.clientAtoms).length;
     if (clientCount === 1) {
       return undefined;
     }
-    const disconnectedClientCount = (group.clients || []).filter(
-      (c) => !c.connected,
+    const disconnectedClientCount = get(group.clientAtoms).filter(
+      (c) => !true,
     ).length;
     return `${group.name ? `${group.name}: ` : ""}${
       internalShowOffline ? clientCount : disconnectedClientCount
     }/${clientCount}`;
-  }, [group, group.clients, internalShowOffline]);
+      }),
+      [group, group.clientAtoms, internalShowOffline]
+    )
+  )
 
   // const averageGroupVolume = useMemo(() => {
   //   const clientCount = connectedClients.length;
@@ -66,7 +93,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const groupSettingsElements = useMemo(() => {
     return (
       <>
-        <GroupActions pt={1} groupId={group.id} />
+        <GroupActions pt={1} groupAtom={groupAtom} />
         <Divider />
       </>
     );

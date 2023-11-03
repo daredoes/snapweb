@@ -1,28 +1,27 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useAtom } from "jotai";
 import { Replay10 } from "@mui/icons-material";
 import { IconButton, IconButtonProps } from "@mui/material";
-import { apiAtom, streamsAtom } from "src/atoms/snapclient";
+import { apiAtom } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface SeekPreviousTenButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
 const SeekPreviousTenButton: React.FC<SeekPreviousTenButtonProps> = ({
   title = "Seek Previous 10 Seconds",
-  streamId,
+  streamAtom,
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [streams] = useAtom(streamsAtom);
-  const stream = useMemo(() => {
-    return streams[streamId];
-  }, [streams, streamId]);
+  const [stream] = useAtom(streamAtom)
 
   const handleClick = useCallback(() => {
-    api.streamControlSeek({ id: streamId, params: { offset: -10 } });
-  }, [api, streamId]);
+    api.streamControlSeek({ id: stream.id, params: { offset: -10 } });
+  }, [api, stream.id]);
   return (
     <IconButton
       {...props}

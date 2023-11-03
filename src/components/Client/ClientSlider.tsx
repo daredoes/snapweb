@@ -1,14 +1,16 @@
 import { Slider, SliderProps } from "@mui/material";
 import { useAtom } from "jotai";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   apiAtom,
-  clientsAtom,
   connectedAtom
 } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
+
 
 export interface ClientSliderProps extends SliderProps {
-  clientId: string;
+  clientAtom: PrimitiveAtom<ClientType>
 }
 
 function valuetext(value: number) {
@@ -16,24 +18,22 @@ function valuetext(value: number) {
 }
 
 const ClientSlider: React.FC<ClientSliderProps> = ({
-  clientId: id,
+  clientAtom,
   ...props
 }) => {
-  const [clients] = useAtom(clientsAtom);
   const [api] = useAtom(apiAtom);
   const [connected] = useAtom(connectedAtom);
   const [internalVolume, setInternalVolume] = useState(0);
-
-  const client = useMemo(() => {
-    const c = clients[id];
-    setInternalVolume(c.config.volume.percent);
-    return c;
-  }, [clients, id, setInternalVolume]);
+  
+  const [client] = useAtom(clientAtom)
+  useEffect(() => {
+    setInternalVolume(client.config.volume.percent);
+  }, [client, setInternalVolume]);
 
   const handleChangeCommitted = useCallback(
     (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       api.clientSetVolume({
-        id: id,
+        id: client.id,
         volume: {
           percent: v as number,
           muted: client.config.volume.muted,
@@ -41,7 +41,7 @@ const ClientSlider: React.FC<ClientSliderProps> = ({
       });
       setInternalVolume(v as number);
     },
-    [api, id, setInternalVolume, client.config.volume.muted],
+    [api, client.id, setInternalVolume, client.config.volume.muted],
   );
 
   const handleChange = useCallback(

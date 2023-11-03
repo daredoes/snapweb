@@ -1,13 +1,15 @@
 import { Box, BoxProps } from "@mui/material";
 import ClientVolume from "./ClientVolume";
 import ClientName from "./ClientName";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientBoxProps extends BoxProps {
-  clientId: string;
+  clientAtom: PrimitiveAtom<ClientType>
 }
 
 const ClientBox: React.FC<ClientBoxProps> = ({
-  clientId: id,
+  clientAtom,
   width = "75px",
   display = "flex",
   flexDirection = "column",
@@ -30,8 +32,8 @@ const ClientBox: React.FC<ClientBoxProps> = ({
       alignItems={alignItems}
       gap={gap}
     >
-      <ClientVolume clientId={id} />
-      <ClientName clientId={id} />
+      <ClientVolume clientAtom={clientAtom} />
+      <ClientName clientAtom={clientAtom} />
     </Box>
   );
 };

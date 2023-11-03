@@ -1,13 +1,13 @@
 import { useMemo } from "react";
-import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import StreamDisplay from "./StreamDisplay";
+import { useAtom } from "jotai";
+import { streamAtomAtom } from "src/atoms/snapclient/split";
 
 const Stream = () => {
-  const { streams } = useSnapclient();
-
+  const [streams] = useAtom(streamAtomAtom)
   const streamElements = useMemo(() => {
-    return Object.keys(streams).map((streamId) => {
-      return <StreamDisplay id={streamId} key={streamId} />;
+    return streams.map((streamAtom) => {
+      return <StreamDisplay streamAtom={streamAtom} key={streamAtom.toString()} />;
     });
   }, [streams]);
 

@@ -1,24 +1,22 @@
 import { useAtom } from "jotai";
 import { useMemo } from "react";
-import { clientsAtom } from "src/atoms/snapclient";
 import UnMuteIcon from "../Icons/UnMuteIcon";
 import MuteIcon from "../Icons/MuteIcon";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientMuteProps {
-  clientId: string;
+  clientAtom: PrimitiveAtom<ClientType>
 }
 
-const ClientMute: React.FC<ClientMuteProps> = ({ clientId }) => {
-  const [clients] = useAtom(clientsAtom);
-  const client = useMemo(() => {
-    return clients[clientId];
-  }, [clientId, clients]);
+const ClientMute: React.FC<ClientMuteProps> = ({ clientAtom }) => {
+  const [client] = useAtom(clientAtom);
   const result = useMemo(() => {
     if (client.config.volume.muted) {
-      return <UnMuteIcon clientId={client.id} />;
+      return <UnMuteIcon clientAtom={clientAtom} />;
     }
-    return <MuteIcon clientId={client.id} />;
-  }, [client.config.volume.muted, client.id]);
+    return <MuteIcon clientAtom={clientAtom} />;
+  }, [client.config.volume.muted, clientAtom]);
   return result;
 };
 

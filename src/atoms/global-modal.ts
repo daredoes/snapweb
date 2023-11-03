@@ -43,7 +43,6 @@ const useGlobalModal = () => {
         const hash = MODAL_TO_ANCHOR[key]
         if (hash) {
           if (typeof window !== undefined) {
-            console.log(window.location)
             let search = ""
             if (window.location.hash.indexOf("?") !== -1) {
               search = "?" + window.location.hash.replace('#', '').split("?")[1]

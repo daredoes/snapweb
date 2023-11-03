@@ -6,18 +6,24 @@ export const showOfflineClientsAtom = atomWithStorage(
   LOCAL_STORAGE_KEYS["Snapcast Server Show Offline Clients"],
   false,
 );
+
+showOfflineClientsAtom.debugLabel = "Show Offline Clients"
 export const preventAutomaticReconnectAtom = atomWithStorage(
   LOCAL_STORAGE_KEYS["Snapcast Server Prevent Automatic Reconnect"],
   false,
 );
+preventAutomaticReconnectAtom.debugLabel = "Prevent Automatic Reconnection"
 export const serverUrlAtom = atomWithStorage(
   LOCAL_STORAGE_KEYS["Snapcast Server Url"],
   "http://snapcast.local:1780/jsonrpc",
 );
+
+serverUrlAtom.debugLabel = "Server URL"
 export const streamUrlAtom = atomWithStorage(
   LOCAL_STORAGE_KEYS["Snapcast Stream Url"],
   "http://snapcast.local:1780/stream",
 );
+streamUrlAtom.debugLabel = "Stream URL"
 
 const validateUrl = (url: string) => {
   try {
@@ -38,3 +44,5 @@ export const browserServerUrlAtom = atom((get) => {
   }
   return "";
 });
+
+browserServerUrlAtom.debugLabel = "Validated Server URL"

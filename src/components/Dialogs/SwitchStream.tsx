@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { StreamImg } from "../generic";
+import { atom, useAtom } from "jotai";
+import { streamAtomAtom } from "src/atoms/snapclient/split";
 
 export interface SwitchStreamsProps extends Omit<DialogProps, "open"> {
   onClose?: () => void;
@@ -21,7 +23,14 @@ const SwitchStreams = ({
   onClose = () => {},
   ...props
 }: SwitchStreamsProps) => {
-  const { selectStream, setSelectStream, streams, api } = useSnapclient();
+  const { selectStream, setSelectStream, api } = useSnapclient();
+  const [streams] =  useAtom(
+    useMemo(
+      // This is also fine
+      () => atom((get) => get(streamAtomAtom).map((a) => get(a))),
+      []
+    )
+  )
 
   const closeSettings = useCallback(() => {
     setSelectStream(undefined);
@@ -30,7 +39,7 @@ const SwitchStreams = ({
   const streamMenuItems = useMemo(() => {
     const elements: React.ReactNode[] = [];
     if (selectStream) {
-      Object.values(streams).forEach((stream) => {
+      streams.forEach((stream) => {
         if (stream.id != selectStream?.stream_id) {
           elements.push(
             <Box

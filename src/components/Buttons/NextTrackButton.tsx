@@ -3,26 +3,25 @@ import { useAtom } from "jotai";
 import { SkipNext } from "@mui/icons-material";
 import { IconButton, IconButtonProps } from "@mui/material";
 import { apiAtom, streamsAtom } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface NextTrackButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamId: string;
+    streamAtom: PrimitiveAtom<Stream>
 }
 
 const NextTrackButton: React.FC<NextTrackButtonProps> = ({
   title = "Next Song",
-  streamId,
+  streamAtom,
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [streams] = useAtom(streamsAtom);
-  const stream = useMemo(() => {
-    return streams[streamId];
-  }, [streams, streamId]);
+  const [stream] = useAtom(streamAtom)
 
   const handleClick = useCallback(() => {
-    api.streamControlNext({ id: streamId });
-  }, [api, streamId]);
+    api.streamControlNext({ id: stream.id });
+  }, [api, stream.id]);
   return (
     <IconButton
       {...props}

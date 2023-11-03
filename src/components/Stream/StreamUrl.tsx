@@ -40,7 +40,6 @@ const StreamUrl: React.FC<StreamUrlProps> = ({
     if (isFirstRender) {
       const search = "?" + window.location.hash.replace('#', '').split("?")[1]
       const params = new URLSearchParams(search)
-      console.log(params.keys())
       const qUrl = params.get("url")
       if (qUrl && qUrl !== "") {
         setUrl(qUrl)

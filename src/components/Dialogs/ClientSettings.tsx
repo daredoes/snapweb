@@ -7,12 +7,13 @@ import {
   DialogProps,
   DialogTitle,
 } from "@mui/material";
-import { useAtom } from "jotai";
-import { apiAtom, clientsAtom } from "src/atoms/snapclient";
-import { clientSettingsAtom } from "src/atoms/snapclient/settings";
+import { atom, useAtom } from "jotai";
+import { apiAtom } from "src/atoms/snapclient";
+import { clientAtomSettingsAtom, clientSettingsAtom } from "src/atoms/snapclient/settings";
 import ClientName from "../Client/SettingsForm/ClientName";
 import ClientLatencySlider from "../Client/SettingsForm/ClientLatencySlider";
 import ClientDisabledText from "../Client/SettingsForm/ClientDisabledText";
+import { clientsAtomsFamily } from "src/atoms/snapclient/split";
 
 export interface ClientSettingsProp extends Omit<DialogProps, "open"> {
   onClose?: () => void;
@@ -33,43 +34,36 @@ const ClientSettings = ({
   onClose = () => {},
   ...props
 }: ClientSettingsProp) => {
-  const [clientId, setClientId] = useAtom(clientSettingsAtom);
-  const [clients] = useAtom(clientsAtom);
+  const [clientAtom, setClient] = useAtom(clientAtomSettingsAtom);
+  const [client] = useAtom(clientSettingsAtom)
   const [api] = useAtom(apiAtom);
 
-  const client = useMemo(() => {
-    if (clientId) {
-      return clients[clientId];
-    }
-    return undefined;
-  }, [clientId, clients]);
-
   const closeDialog = useCallback(() => {
-    setClientId("");
-  }, [setClientId]);
+    setClient(undefined);
+  }, [setClient]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<CustomForm>) => {
       e.preventDefault();
-      if (clientId) {
+      if (client?.id) {
         const newName = e.currentTarget.elements.name.value;
-        if (newName !== client?.config.name) {
-          api.clientSetName({ id: clientId, name: newName });
+        if (newName !== client.config.name) {
+          api.clientSetName({ id: client.id, name: newName });
         }
         const newLatency = parseInt(e.currentTarget.elements.latency.value);
         if (newLatency !== client?.config.latency) {
-          api.clientSetLatency({ id: clientId, latency: newLatency });
+          api.clientSetLatency({ id: client.id, latency: newLatency });
         }
       }
     },
-    [api, clientId, client],
+    [api, client],
   );
 
   return (
     <Dialog
       fullScreen={false}
       onClose={closeDialog}
-      open={Boolean(clientId)}
+      open={Boolean(client)}
       fullWidth={fullWidth}
       {...props}
     >
@@ -85,7 +79,7 @@ const ClientSettings = ({
           gap={1}
         >
           <ClientName externalValue={client?.config.name} />
-          <ClientLatencySlider clientId={clientId || ""} />
+          <ClientLatencySlider clientAtom={clientAtom} />
           <ClientDisabledText
             label="MAC"
             placeholder="00:00:00:00:00"

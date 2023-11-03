@@ -1,28 +1,27 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useAtom } from "jotai";
 import { SkipPrevious } from "@mui/icons-material";
 import { IconButton, IconButtonProps } from "@mui/material";
-import { apiAtom, streamsAtom } from "src/atoms/snapclient";
+import { apiAtom } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface PreviousTrackButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
 const PreviousTrackButton: React.FC<PreviousTrackButtonProps> = ({
   title = "Previous Song",
-  streamId,
+  streamAtom,
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [streams] = useAtom(streamsAtom);
-  const stream = useMemo(() => {
-    return streams[streamId];
-  }, [streams, streamId]);
+  const [stream] = useAtom(streamAtom)
 
   const handleClick = useCallback(() => {
-    api.streamControlPrevious({ id: streamId });
-  }, [api, streamId]);
+    api.streamControlPrevious({ id: stream.id });
+  }, [api, stream.id]);
   return (
     <IconButton
       {...props}

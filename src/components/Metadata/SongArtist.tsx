@@ -1,24 +1,21 @@
 import { Typography, TypographyProps } from "@mui/material";
-import { useAtom } from "jotai";
+import { PrimitiveAtom, useAtom } from "jotai";
 import { useMemo } from "react";
-import { streamsAtom } from "src/atoms/snapclient";
+import { Stream } from "src/types/snapcast";
 
 export interface SongArtistProps
   extends Omit<TypographyProps, "title" | "children"> {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
 const SongArtist: React.FC<SongArtistProps> = ({
-  streamId,
+  streamAtom,
   px = 2,
   variant = "subtitle2",
   textAlign = "center",
   ...props
 }) => {
-  const [streams] = useAtom(streamsAtom);
-  const stream = useMemo(() => {
-    return streams[streamId];
-  }, [streams, streamId]);
+  const [stream] = useAtom(streamAtom)
 
   const myTitle = useMemo(() => {
     return (

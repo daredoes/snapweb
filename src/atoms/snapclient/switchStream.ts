@@ -1,5 +1,6 @@
 import { atom } from "jotai";
-import { Group } from "src/types/snapcast";
+import { GroupType } from "src/atoms/snapclient/split";
 
-const defaultSwitchStream: Group | undefined = undefined
+const defaultSwitchStream: GroupType | undefined = undefined
 export const switchStreamAtom = atom(defaultSwitchStream);
+switchStreamAtom.debugLabel = "Switch Stream Group Atom"

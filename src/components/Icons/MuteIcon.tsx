@@ -1,25 +1,24 @@
 import { useCallback, useMemo } from "react";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { useAtom } from "jotai";
-import { apiAtom, clientsAtom } from "src/atoms/snapclient";
+import { apiAtom } from "src/atoms/snapclient";
 import VolumeLevel from "./VolumeLevel";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface MuteIconProps
   extends Omit<IconButtonProps, "onClick" | "children"> {
-  clientId: string;
+    clientAtom: PrimitiveAtom<ClientType>
 }
 
 const MuteIcon: React.FC<MuteIconProps> = ({
   title = "Mute",
-  clientId,
+  clientAtom,
   "aria-label": ariaLabel = "Mute the client",
   ...props
 }) => {
-  const [clients] = useAtom(clientsAtom);
   const [api] = useAtom(apiAtom);
-  const client = useMemo(() => {
-    return clients[clientId];
-  }, [clientId, clients]);
+  const [client] = useAtom(clientAtom);
   const handleClick = useCallback(() => {
     api.clientSetVolume({
       id: client.id,

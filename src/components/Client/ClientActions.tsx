@@ -3,14 +3,16 @@ import { useCallback } from "react";
 import { Box, BoxProps, IconButton } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import ClientMute from "./ClientMute";
-import { clientSettingsAtom } from "src/atoms/snapclient/settings";
+import { clientAtomSettingsAtom } from "src/atoms/snapclient/settings";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientActionsProps extends BoxProps {
-  clientId: string;
+  clientAtom: PrimitiveAtom<ClientType>
 }
 
 const ClientActions: React.FC<ClientActionsProps> = ({
-  clientId,
+  clientAtom,
   px = 1,
   display = "flex",
   flexDirection = "row",
@@ -18,16 +20,11 @@ const ClientActions: React.FC<ClientActionsProps> = ({
   alignItems = "center",
   ...props
 }) => {
-  const [_, setClientId] = useAtom(clientSettingsAtom);
-  // const [clients] = useAtom(clientsAtom)
-  // // const [_, setSelectStream] = useAtom(switchStreamAtom)
-  // // const client = useMemo(() => {
-  // //   return clients[clientId]
-  // // }, [clientId, clients])
+  const [, setClient] = useAtom(clientAtomSettingsAtom);
 
   const handleClick = useCallback(() => {
-    setClientId(clientId);
-  }, [setClientId, clientId]);
+    setClient(clientAtom);
+  }, [setClient, clientAtom]);
 
   return (
     <Box
@@ -38,7 +35,7 @@ const ClientActions: React.FC<ClientActionsProps> = ({
       justifyContent={justifyContent}
       alignItems={alignItems}
     >
-      <ClientMute clientId={clientId} />
+      <ClientMute clientAtom={clientAtom} />
       <IconButton
         onClick={handleClick}
         title="Client Settings"

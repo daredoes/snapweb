@@ -2,13 +2,15 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { clientsAtom } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientNameProps extends BoxProps {
-  clientId: string;
+  clientAtom: PrimitiveAtom<ClientType>
 }
 
 const ClientName: React.FC<ClientNameProps> = ({
-  clientId: id,
+  clientAtom,
   maxWidth = "100%",
   display = "flex",
   flexDirection = "column",
@@ -18,10 +20,7 @@ const ClientName: React.FC<ClientNameProps> = ({
   sx = {},
   ...props
 }) => {
-  const [clients] = useAtom(clientsAtom);
-  const client = useMemo(() => {
-    return clients[id];
-  }, [clients, id]);
+  const [client] = useAtom(clientAtom);
 
   const clientName = useMemo(() => {
     return client.config.name || client.host.name;

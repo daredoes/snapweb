@@ -1,20 +1,18 @@
 import { Box, Slider, Typography } from "@mui/material";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { apiAtom, streamsAtom } from "src/atoms/snapclient";
+import { apiAtom } from "src/atoms/snapclient";
 import { convertSecondsToTimestamp } from "src/helpers";
+import { PrimitiveAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface StreamSliderProps {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
-const StreamSlider: React.FC<StreamSliderProps> = ({ streamId: id }) => {
-  const [streams] = useAtom(streamsAtom);
+const StreamSlider: React.FC<StreamSliderProps> = ({ streamAtom }) => {
   const [api] = useAtom(apiAtom);
-
-  const stream = useMemo(() => {
-    return streams[id];
-  }, [streams, id]);
+  const [stream] = useAtom(streamAtom)
 
   const durationLabel = useMemo(
     () => convertSecondsToTimestamp(stream.properties.metadata?.duration),
@@ -58,12 +56,12 @@ const StreamSlider: React.FC<StreamSliderProps> = ({ streamId: id }) => {
   const handleChangeCommitted = useCallback(
     (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
       api.streamControlSetPosition({
-        id: id,
+        id: stream.id,
         params: { position: v as number },
       });
       setInternalPlaytime(0);
     },
-    [api, id, setInternalPlaytime],
+    [api, stream.id, setInternalPlaytime],
   );
 
   const handleChange = useCallback(

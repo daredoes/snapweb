@@ -2,23 +2,22 @@ import { useCallback, useMemo } from "react";
 import { useAtom } from "jotai";
 import { Pause, PlayArrow } from "@mui/icons-material";
 import { IconButton, IconButtonProps } from "@mui/material";
-import { apiAtom, streamsAtom } from "src/atoms/snapclient";
+import { apiAtom } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface PlayPauseButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
 const PlayPauseButton: React.FC<PlayPauseButtonProps> = ({
   title,
-  streamId,
+  streamAtom,
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [streams] = useAtom(streamsAtom);
-  const stream = useMemo(() => {
-    return streams[streamId];
-  }, [streams, streamId]);
+  const [stream] = useAtom(streamAtom)
 
   const playbackStatus = useMemo(
     () => stream.properties.playbackStatus,
@@ -30,7 +29,7 @@ const PlayPauseButton: React.FC<PlayPauseButtonProps> = ({
 
   const handleClick = useCallback(() => {
     api.streamControlPlayPause({ id: stream.id });
-  }, [api, streamId]);
+  }, [api, stream.id]);
 
   const Icon = useMemo(() => {
     return playbackStatus === "playing" ? Pause : PlayArrow;

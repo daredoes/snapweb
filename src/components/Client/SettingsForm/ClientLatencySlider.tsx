@@ -1,10 +1,12 @@
 import { Box, Slider, SliderProps, TextField } from "@mui/material";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
-import { clientsAtom, connectedAtom } from "src/atoms/snapclient";
+import { connectedAtom } from "src/atoms/snapclient";
+import { PrimitiveAtom } from "jotai";
+import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientLatencySliderProps extends SliderProps {
-  clientId: string;
+  clientAtom?: PrimitiveAtom<ClientType>
 }
 
 function valuetext(value: number) {
@@ -12,19 +14,21 @@ function valuetext(value: number) {
 }
 
 const ClientLatencySlider: React.FC<ClientLatencySliderProps> = ({
-  clientId: id,
+  clientAtom,
   ...props
 }) => {
-  const [clients] = useAtom(clientsAtom);
+  if (!clientAtom) {
+    return null
+  }
+  const [client] = useAtom(clientAtom);
   const [connected] = useAtom(connectedAtom);
   const [internalState, setInternalState] = useState(0);
 
   useEffect(() => {
-    const c = clients[id];
-    if (c) {
-      setInternalState(c.config.latency);
+    if (client) {
+      setInternalState(client.config.latency);
     }
-  }, [clients, id, setInternalState]);
+  }, [client, setInternalState]);
 
   const handleChangeCommitted = useCallback(
     (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
@@ -35,7 +39,6 @@ const ClientLatencySlider: React.FC<ClientLatencySliderProps> = ({
 
   const handleChange = useCallback(
     (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
-      console.log("ccc");
       setInternalState(v as number);
     },
     [setInternalState],

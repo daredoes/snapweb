@@ -8,13 +8,14 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material";
-import { useAtom } from "jotai";
-import { apiAtom, clientsAtom, groupsAtom } from "src/atoms/snapclient";
-import { groupIdSettingsAtom } from "src/atoms/snapclient/settings";
+import { atom, useAtom } from "jotai";
+import { apiAtom } from "src/atoms/snapclient";
+import { groupAtomSettingsAtom, groupSettingsAtom } from "src/atoms/snapclient/settings";
 import ClientDisabledText from "../Client/SettingsForm/ClientDisabledText";
 import GroupName from "../Group/GroupName";
 import ClientGroupCheckbox from "../Group/ClientGroupCheckbox";
 import { Divider } from "../generic";
+import { allClientsAtom } from "src/atoms/snapclient/split";
 
 export interface GroupClientsSettingsProps extends Omit<DialogProps, "open"> {
   onClose?: () => void;
@@ -35,29 +36,33 @@ const GroupClientsSettings: React.FC<GroupClientsSettingsProps> = ({
   onClose = () => {},
   ...props
 }) => {
-  const [groupId, setGroupId] = useAtom(groupIdSettingsAtom);
-  const [clients] = useAtom(clientsAtom);
-  const [groups] = useAtom(groupsAtom);
+  const [, setGroupAtom] = useAtom(groupAtomSettingsAtom);
+  const [group] = useAtom(groupSettingsAtom);
+  const [clients] = useAtom(allClientsAtom);
   const [api] = useAtom(apiAtom);
 
-  const group = useMemo(() => {
-    if (groupId) {
-      return groups[groupId];
+  const currentGroupClientIds = useMemo(() => {
+    const newData: string[] = []
+    if (group) {
+      clients.forEach((client) => {
+        if (client.groupId === group.id)
+        newData.push(client.id)
+      })
     }
-    return undefined;
-  }, [groupId, groups]);
+    return newData
+  }, [clients, group])
 
   const closeDialog = useCallback(() => {
-    setGroupId("");
-  }, [setGroupId]);
+    setGroupAtom(undefined);
+  }, [setGroupAtom]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<CustomForm>) => {
       e.preventDefault();
-      if (groupId) {
+      if (group?.id) {
         const newName = e.currentTarget.elements.name.value;
         if (newName !== group?.name) {
-          api.groupSetName({ id: groupId, name: newName });
+          api.groupSetName({ id: group.id, name: newName });
         }
         const updatedClients: string[] = [];
         e.currentTarget.elements.client.forEach((c) => {
@@ -65,20 +70,20 @@ const GroupClientsSettings: React.FC<GroupClientsSettingsProps> = ({
             updatedClients.push(c.value);
           }
         });
-        if (updatedClients != group?.clients.map((c) => c.id)) {
-          api.groupSetClients({ id: groupId, clients: updatedClients });
+        if (updatedClients != currentGroupClientIds) {
+          api.groupSetClients({ id: group.id, clients: updatedClients });
         }
       }
     },
-    [api, groupId, group],
+    [api, group, currentGroupClientIds],
   );
 
   const clientElements = useMemo(() => {
     if (group?.id) {
       if (clients) {
-        return Object.keys(clients).map((c) => {
+        return clients.map((c) => {
           return (
-            <ClientGroupCheckbox key={c} clientId={c} groupId={group?.id} />
+            <ClientGroupCheckbox key={c.id} client={c} groupId={group?.id} />
           );
         });
       }
@@ -89,7 +94,7 @@ const GroupClientsSettings: React.FC<GroupClientsSettingsProps> = ({
     <Dialog
       fullScreen={false}
       onClose={closeDialog}
-      open={Boolean(groupId)}
+      open={Boolean(group?.id)}
       fullWidth={fullWidth}
       {...props}
     >

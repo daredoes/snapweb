@@ -4,13 +4,15 @@ import PreviousTrackButton from "./PreviousTrackButton";
 import PlayPauseButton from "./PlayPauseButton";
 import NextTrackButton from "./NextTrackButton";
 import SeekForwardTenButton from "./SeekForwardTenButton";
+import { PrimitiveAtom } from "jotai";
+import { Stream } from "src/types/snapcast";
 
 export interface MediaControlsBarProps extends BoxProps {
-  streamId: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
 const MediaControlsBar: React.FC<MediaControlsBarProps> = ({
-  streamId: id,
+  streamAtom,
   width = "100%",
   display = "flex",
   flexDirection = "row",
@@ -29,11 +31,11 @@ const MediaControlsBar: React.FC<MediaControlsBarProps> = ({
       alignItems={alignItems}
       gap={gap}
     >
-      <SeekPreviousTenButton streamId={id} />
-      <PreviousTrackButton streamId={id} />
-      <PlayPauseButton streamId={id} />
-      <NextTrackButton streamId={id} />
-      <SeekForwardTenButton streamId={id} />
+      <SeekPreviousTenButton streamAtom={streamAtom} />
+      <PreviousTrackButton streamAtom={streamAtom} />
+      <PlayPauseButton streamAtom={streamAtom} />
+      <NextTrackButton streamAtom={streamAtom} />
+      <SeekForwardTenButton streamAtom={streamAtom} />
     </Box>
   );
 };

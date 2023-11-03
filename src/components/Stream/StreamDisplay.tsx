@@ -1,50 +1,40 @@
 import React, { useCallback, useMemo } from "react";
-import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
-import { Group } from "src/types/snapcast";
+import { Stream } from "src/types/snapcast";
 import GroupDisplay from "../Group/GroupDisplay";
 import { Box, Paper } from "@mui/material";
 import { Divider } from "../generic";
 import MediaControlsBar from "../Buttons/MediaControlsBar";
 import StreamMetadata from "./StreamMetadata";
 import StreamSlider from "./StreamSlider";
+import { PrimitiveAtom, useAtom } from "jotai";
+import { GroupType, groupAtomsFamily } from "src/atoms/snapclient/split";
 
 export interface StreamDisplayProps {
-  id: string;
+  streamAtom: PrimitiveAtom<Stream>
 }
 
-const StreamDisplay: React.FC<StreamDisplayProps> = ({ id }) => {
-  const { showOfflineClients, streams } = useSnapclient();
+const StreamDisplay: React.FC<StreamDisplayProps> = ({ streamAtom }) => {
+  const [stream] = useAtom(streamAtom)
+  const [groupAtoms] = useAtom(groupAtomsFamily(stream.id))
 
-  const stream = useMemo(() => {
-    return streams[id];
-  }, [streams, id]);
-
-  const makeGroupElements = useCallback((theGroups: Group[]) => {
-    return theGroups.map((g) => {
+  const makeGroupElements = useCallback((theGroups: PrimitiveAtom<GroupType>[]) => {
+    return theGroups.map((groupAtom) => {
       return (
         <GroupDisplay
           flexGrow={1}
           justifyContent={"flex-end"}
           display={"flex"}
           flexDirection={"column"}
-          key={g.id}
-          group={g}
+          key={groupAtom.toString()}
+          groupAtom={groupAtom}
         />
       );
     });
   }, []);
 
-  const connectedGroups = useMemo(() => {
-    const g = stream.groups || [];
-    if (showOfflineClients) {
-      return g;
-    }
-    return g.filter((gg) => gg.clients.filter((c) => c.connected).length !== 0);
-  }, [stream.groups, showOfflineClients]);
-
   const innerElements = useMemo(
-    () => makeGroupElements(connectedGroups),
-    [connectedGroups],
+    () => makeGroupElements(groupAtoms),
+    [groupAtoms],
   );
   if (innerElements.length === 0) {
     return null;
@@ -53,7 +43,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({ id }) => {
     <Paper
       variant={"elevation"}
       elevation={4}
-      key={id}
+      key={stream.id}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -62,7 +52,7 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({ id }) => {
         gap: 1,
       }}
     >
-      <StreamMetadata streamId={id} />
+      <StreamMetadata streamAtom={streamAtom} />
       <Divider />
       <Box
         width={"90%"}
@@ -74,8 +64,8 @@ const StreamDisplay: React.FC<StreamDisplayProps> = ({ id }) => {
         alignItems={"flex-start"}
         flexDirection={"column"}
       >
-        <StreamSlider streamId={id} />
-        <MediaControlsBar streamId={id} />
+        <StreamSlider streamAtom={streamAtom} />
+        <MediaControlsBar streamAtom={streamAtom} />
       </Box>
       <Divider />
       <Box

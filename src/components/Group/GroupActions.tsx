@@ -1,17 +1,17 @@
-import { useAtom } from "jotai";
-import { useCallback, useMemo } from "react";
-import { groupsAtom } from "src/atoms/snapclient";
+import { useCallback } from "react";
 import { Box, BoxProps, IconButton } from "@mui/material";
 import { MoreVert, Input } from "@mui/icons-material";
 import { switchStreamAtom } from "src/atoms/snapclient/switchStream";
-import { groupIdSettingsAtom } from "src/atoms/snapclient/settings";
+import { groupAtomSettingsAtom } from "src/atoms/snapclient/settings";
+import { PrimitiveAtom, useAtom } from "jotai";
+import { GroupType } from "src/atoms/snapclient/split";
 
 export interface GroupActionsProps extends BoxProps {
-  groupId: string;
+  groupAtom: PrimitiveAtom<GroupType>
 }
 
 const GroupActions: React.FC<GroupActionsProps> = ({
-  groupId,
+  groupAtom,
   px = 1,
   display = "flex",
   flexDirection = "row",
@@ -19,20 +19,17 @@ const GroupActions: React.FC<GroupActionsProps> = ({
   alignItems = "center",
   ...props
 }) => {
-  const [groups] = useAtom(groupsAtom);
+  const [group] = useAtom(groupAtom)
   const [_, setSelectStream] = useAtom(switchStreamAtom);
-  const [__, setGroupId] = useAtom(groupIdSettingsAtom);
-  const group = useMemo(() => {
-    return groups[groupId];
-  }, [groupId, groups]);
+  const [__, setGroupAtom] = useAtom(groupAtomSettingsAtom);
 
   const handleClick = useCallback(() => {
     setSelectStream(group);
   }, [setSelectStream, group]);
 
   const handleSettingsClick = useCallback(() => {
-    setGroupId(groupId);
-  }, [setGroupId, groupId]);
+    setGroupAtom(groupAtom);
+  }, [setGroupAtom, groupAtom]);
 
   return (
     <Box
