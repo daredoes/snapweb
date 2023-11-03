@@ -7,12 +7,12 @@ import { PrimitiveAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
 
 export interface StreamSliderProps {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const StreamSlider: React.FC<StreamSliderProps> = ({ streamAtom }) => {
   const [api] = useAtom(apiAtom);
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const durationLabel = useMemo(
     () => convertSecondsToTimestamp(stream.properties.metadata?.duration),
@@ -54,7 +54,10 @@ const StreamSlider: React.FC<StreamSliderProps> = ({ streamAtom }) => {
   );
 
   const handleChangeCommitted = useCallback(
-    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (
+      _e: Event | React.SyntheticEvent<Element, Event>,
+      v: number | number[],
+    ) => {
       api.streamControlSetPosition({
         id: stream.id,
         params: { position: v as number },
@@ -65,7 +68,10 @@ const StreamSlider: React.FC<StreamSliderProps> = ({ streamAtom }) => {
   );
 
   const handleChange = useCallback(
-    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (
+      _e: Event | React.SyntheticEvent<Element, Event>,
+      v: number | number[],
+    ) => {
       setInternalPlaytime(v as number);
     },
     [setInternalPlaytime],

@@ -5,7 +5,7 @@ import { Stream } from "src/types/snapcast";
 
 export interface SongAlbumProps
   extends Omit<TypographyProps, "title" | "children"> {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const SongAlbum: React.FC<SongAlbumProps> = ({
@@ -15,7 +15,7 @@ const SongAlbum: React.FC<SongAlbumProps> = ({
   textAlign = "center",
   ...props
 }) => {
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const myTitle = useMemo(() => {
     return stream.properties.metadata?.album || "Album Not Provided";

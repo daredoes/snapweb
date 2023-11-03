@@ -6,7 +6,7 @@ import { PrimitiveAtom } from "jotai";
 import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientVolumeProps extends Omit<BoxProps, "children"> {
-  clientAtom: PrimitiveAtom<ClientType>
+  clientAtom: PrimitiveAtom<ClientType>;
 }
 
 export const ClientVolume: React.FC<ClientVolumeProps> = ({

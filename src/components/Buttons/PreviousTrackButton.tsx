@@ -8,7 +8,7 @@ import { Stream } from "src/types/snapcast";
 
 export interface PreviousTrackButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const PreviousTrackButton: React.FC<PreviousTrackButtonProps> = ({
@@ -17,7 +17,7 @@ const PreviousTrackButton: React.FC<PreviousTrackButtonProps> = ({
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const handleClick = useCallback(() => {
     api.streamControlPrevious({ id: stream.id });

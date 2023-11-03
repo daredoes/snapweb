@@ -8,7 +8,7 @@ import { Stream } from "src/types/snapcast";
 
 export interface SeekPreviousTenButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const SeekPreviousTenButton: React.FC<SeekPreviousTenButtonProps> = ({
@@ -17,7 +17,7 @@ const SeekPreviousTenButton: React.FC<SeekPreviousTenButtonProps> = ({
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const handleClick = useCallback(() => {
     api.streamControlSeek({ id: stream.id, params: { offset: -10 } });

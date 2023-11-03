@@ -25,20 +25,20 @@ const SnapclientSettings = ({
   onClose = () => {},
   ...props
 }: SnapclientSettingsProps) => {
-  const { isOpen, closeModal } = useGlobalModal()
+  const { isOpen, closeModal } = useGlobalModal();
   const [preventAutomaticReconnect, setPreventAutomaticReconnect] = useAtom(
     preventAutomaticReconnectAtom,
   );
 
   const closeSettings = useCallback(() => {
-    closeModal('SETTINGS')
+    closeModal("SETTINGS");
   }, [closeModal]);
 
   return (
     <Dialog
       fullScreen={false}
       onClose={closeSettings}
-      open={isOpen('SETTINGS')}
+      open={isOpen("SETTINGS")}
       fullWidth={fullWidth}
       {...props}
     >

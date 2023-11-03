@@ -5,7 +5,7 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
 
 export interface StreamMetadataProps extends BoxProps {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const StreamMetadata: React.FC<StreamMetadataProps> = ({
@@ -19,7 +19,7 @@ const StreamMetadata: React.FC<StreamMetadataProps> = ({
   py = 2,
   ...props
 }) => {
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
   return (
     <Box
       {...props}

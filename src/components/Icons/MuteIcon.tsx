@@ -8,7 +8,7 @@ import { ClientType } from "src/atoms/snapclient/split";
 
 export interface MuteIconProps
   extends Omit<IconButtonProps, "onClick" | "children"> {
-    clientAtom: PrimitiveAtom<ClientType>
+  clientAtom: PrimitiveAtom<ClientType>;
 }
 
 const MuteIcon: React.FC<MuteIconProps> = ({

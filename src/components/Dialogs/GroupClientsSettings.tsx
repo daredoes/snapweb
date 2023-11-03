@@ -10,7 +10,10 @@ import {
 } from "@mui/material";
 import { atom, useAtom } from "jotai";
 import { apiAtom } from "src/atoms/snapclient";
-import { groupAtomSettingsAtom, groupSettingsAtom } from "src/atoms/snapclient/settings";
+import {
+  groupAtomSettingsAtom,
+  groupSettingsAtom,
+} from "src/atoms/snapclient/settings";
 import ClientDisabledText from "../Client/SettingsForm/ClientDisabledText";
 import GroupName from "../Group/GroupName";
 import ClientGroupCheckbox from "../Group/ClientGroupCheckbox";
@@ -42,15 +45,14 @@ const GroupClientsSettings: React.FC<GroupClientsSettingsProps> = ({
   const [api] = useAtom(apiAtom);
 
   const currentGroupClientIds = useMemo(() => {
-    const newData: string[] = []
+    const newData: string[] = [];
     if (group) {
       clients.forEach((client) => {
-        if (client.groupId === group.id)
-        newData.push(client.id)
-      })
+        if (client.groupId === group.id) newData.push(client.id);
+      });
     }
-    return newData
-  }, [clients, group])
+    return newData;
+  }, [clients, group]);
 
   const closeDialog = useCallback(() => {
     setGroupAtom(undefined);

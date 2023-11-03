@@ -8,7 +8,7 @@ env:
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ['vite']
+    branches: ["vite"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,7 +21,7 @@ permissions:
 
 # Allow one concurrent deployment
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20.7.0
-          cache: 'npm'
+          cache: "npm"
       - name: Install dependencies
         run: bun install
       - name: Build
@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload dist repository
-          path: './dist'
+          path: "./dist"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

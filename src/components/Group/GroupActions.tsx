@@ -7,7 +7,7 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { GroupType } from "src/atoms/snapclient/split";
 
 export interface GroupActionsProps extends BoxProps {
-  groupAtom: PrimitiveAtom<GroupType>
+  groupAtom: PrimitiveAtom<GroupType>;
 }
 
 const GroupActions: React.FC<GroupActionsProps> = ({
@@ -19,7 +19,7 @@ const GroupActions: React.FC<GroupActionsProps> = ({
   alignItems = "center",
   ...props
 }) => {
-  const [group] = useAtom(groupAtom)
+  const [group] = useAtom(groupAtom);
   const [_, setSelectStream] = useAtom(switchStreamAtom);
   const [__, setGroupAtom] = useAtom(groupAtomSettingsAtom);
 

@@ -10,27 +10,30 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { GroupType, groupAtomsFamily } from "src/atoms/snapclient/split";
 
 export interface StreamDisplayProps {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const StreamDisplay: React.FC<StreamDisplayProps> = ({ streamAtom }) => {
-  const [stream] = useAtom(streamAtom)
-  const [groupAtoms] = useAtom(groupAtomsFamily(stream.id))
+  const [stream] = useAtom(streamAtom);
+  const [groupAtoms] = useAtom(groupAtomsFamily(stream.id));
 
-  const makeGroupElements = useCallback((theGroups: PrimitiveAtom<GroupType>[]) => {
-    return theGroups.map((groupAtom) => {
-      return (
-        <GroupDisplay
-          flexGrow={1}
-          justifyContent={"flex-end"}
-          display={"flex"}
-          flexDirection={"column"}
-          key={groupAtom.toString()}
-          groupAtom={groupAtom}
-        />
-      );
-    });
-  }, []);
+  const makeGroupElements = useCallback(
+    (theGroups: PrimitiveAtom<GroupType>[]) => {
+      return theGroups.map((groupAtom) => {
+        return (
+          <GroupDisplay
+            flexGrow={1}
+            justifyContent={"flex-end"}
+            display={"flex"}
+            flexDirection={"column"}
+            key={groupAtom.toString()}
+            groupAtom={groupAtom}
+          />
+        );
+      });
+    },
+    [],
+  );
 
   const innerElements = useMemo(
     () => makeGroupElements(groupAtoms),

@@ -3,12 +3,7 @@ import { useCallback, useMemo } from "react";
 import { convertHttpToWebsocket } from "src/helpers";
 import { Server } from "src/types/snapcast";
 import { useAtom } from "jotai";
-import {
-  apiAtom,
-  connectedAtom,
-  serverAtom,
-  
-} from "src/atoms/snapclient";
+import { apiAtom, connectedAtom, serverAtom } from "src/atoms/snapclient";
 import {
   streamAtomAtom,
   groupsAtomAtom,
@@ -26,7 +21,7 @@ import {
   updateClientNameAtom,
   updateClientVolumeAtom,
   updateClientAtom,
-} from 'src/atoms/snapclient/split'
+} from "src/atoms/snapclient/split";
 import { switchStreamAtom } from "src/atoms/snapclient/switchStream";
 import {
   preventAutomaticReconnectAtom,
@@ -51,8 +46,8 @@ export const useSnapclient = () => {
   const [, updateClientLatency] = useAtom(updateClientLatencyAtom);
   const [, updateClient] = useAtom(updateClientAtom);
   const [, updateStream] = useAtom(updateStreamAtom);
-  const [, updateStreams] = useAtom(streamAtom)
-  const [, updateGroups] = useAtom(groupAtom)
+  const [, updateStreams] = useAtom(streamAtom);
+  const [, updateGroups] = useAtom(groupAtom);
   const [, updateStreamProperties] = useAtom(updateStreamPropertiesAtom);
   const [, updateGroupStream] = useAtom(updateGroupStreamAtom);
   const [, updateGroupMute] = useAtom(updateGroupMuteAtom);
@@ -81,17 +76,17 @@ export const useSnapclient = () => {
   const connect = useCallback(
     (httpUrl: string) => {
       // New
-      updateStreams([])
-      updateGroups([])
+      updateStreams([]);
+      updateGroups([]);
       // Remaining
-      setServerDetails(undefined)
+      setServerDetails(undefined);
       if (api.connection) {
         api.close();
       }
       const serverStatusUpdate = (server: Server) => {
         setServerDetails(server.server);
-        updateStreams(server.streams)
-        updateGroups(server.groups)        
+        updateStreams(server.streams);
+        updateGroups(server.groups);
       };
       api.connect(
         convertHttpToWebsocket(httpUrl),

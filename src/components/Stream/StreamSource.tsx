@@ -7,7 +7,7 @@ import { PrimitiveAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
 
 export interface StreamSourceProps extends BoxProps {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const StreamSource: React.FC<StreamSourceProps> = ({
@@ -21,7 +21,7 @@ const StreamSource: React.FC<StreamSourceProps> = ({
   title = "Current Source",
   ...props
 }) => {
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const artSrc = useMemo(() => {
     const streamSrc = stream.properties.metadata?.artData?.data

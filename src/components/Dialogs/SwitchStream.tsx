@@ -24,13 +24,13 @@ const SwitchStreams = ({
   ...props
 }: SwitchStreamsProps) => {
   const { selectStream, setSelectStream, api } = useSnapclient();
-  const [streams] =  useAtom(
+  const [streams] = useAtom(
     useMemo(
       // This is also fine
       () => atom((get) => get(streamAtomAtom).map((a) => get(a))),
-      []
-    )
-  )
+      [],
+    ),
+  );
 
   const closeSettings = useCallback(() => {
     setSelectStream(undefined);

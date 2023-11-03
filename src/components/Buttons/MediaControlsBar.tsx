@@ -8,7 +8,7 @@ import { PrimitiveAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
 
 export interface MediaControlsBarProps extends BoxProps {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const MediaControlsBar: React.FC<MediaControlsBarProps> = ({

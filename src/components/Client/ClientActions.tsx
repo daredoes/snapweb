@@ -8,7 +8,7 @@ import { PrimitiveAtom } from "jotai";
 import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientActionsProps extends BoxProps {
-  clientAtom: PrimitiveAtom<ClientType>
+  clientAtom: PrimitiveAtom<ClientType>;
 }
 
 const ClientActions: React.FC<ClientActionsProps> = ({

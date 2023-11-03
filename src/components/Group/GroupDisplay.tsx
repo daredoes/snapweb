@@ -1,11 +1,5 @@
 import React, { useMemo, useState } from "react";
-import {
-  Box,
-  BoxProps,
-  Button,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, BoxProps, Button, Paper, Typography } from "@mui/material";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { Divider } from "../generic";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -17,15 +11,15 @@ import { showOfflineClientsAtom } from "src/atoms/snapclient/localStorage";
 import { Client } from "src/types/snapcast";
 
 export interface GroupDisplayProps extends BoxProps {
-  groupAtom: PrimitiveAtom<GroupType>
+  groupAtom: PrimitiveAtom<GroupType>;
 }
 
 export const GroupDisplay: React.FC<GroupDisplayProps> = ({
   groupAtom,
   ...props
 }) => {
-  const [group] = useAtom(groupAtom)
-  const [showOfflineClients] = useAtom(showOfflineClientsAtom)
+  const [group] = useAtom(groupAtom);
+  const [showOfflineClients] = useAtom(showOfflineClientsAtom);
   const { connected } = useSnapclient();
   const [internalShowOffline, setInternalShowOffline] = useState<
     boolean | undefined
@@ -34,27 +28,28 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [connectedClientAtoms] = useAtom(
     useMemo(
       // This is also fine
-      () => atom((get) => {
-        
-        const validAtoms: PrimitiveAtom<Client>[] = []
-        get(group.clientAtoms).forEach((clientAtom) => {
-          const client = get(clientAtom)
-          if (
-            showOfflineClients ||
-            (typeof internalShowOffline !== "undefined" && internalShowOffline)
-          ) {
-            validAtoms.push(clientAtom)
-          } else {
-            if (client.connected === true) {
-              validAtoms.push(clientAtom)
+      () =>
+        atom((get) => {
+          const validAtoms: PrimitiveAtom<Client>[] = [];
+          get(group.clientAtoms).forEach((clientAtom) => {
+            const client = get(clientAtom);
+            if (
+              showOfflineClients ||
+              (typeof internalShowOffline !== "undefined" &&
+                internalShowOffline)
+            ) {
+              validAtoms.push(clientAtom);
+            } else {
+              if (client.connected === true) {
+                validAtoms.push(clientAtom);
+              }
             }
-          }
-        })
-        return validAtoms;
-      }),
-      [internalShowOffline, showOfflineClients]
-    )
-  )
+          });
+          return validAtoms;
+        }),
+      [internalShowOffline, showOfflineClients],
+    ),
+  );
 
   const clientElements = useMemo(() => {
     return connectedClientAtoms.map((cAtom) => {
@@ -65,21 +60,22 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
   const [groupName] = useAtom(
     useMemo(
       // This is also fine
-      () => atom((get) => {
-        const clientCount = get(group.clientAtoms).length;
-    if (clientCount === 1) {
-      return undefined;
-    }
-    const disconnectedClientCount = get(group.clientAtoms).filter(
-      (c) => !true,
-    ).length;
-    return `${group.name ? `${group.name}: ` : ""}${
-      internalShowOffline ? clientCount : disconnectedClientCount
-    }/${clientCount}`;
-      }),
-      [group, group.clientAtoms, internalShowOffline]
-    )
-  )
+      () =>
+        atom((get) => {
+          const clientCount = get(group.clientAtoms).length;
+          if (clientCount === 1) {
+            return undefined;
+          }
+          const disconnectedClientCount = get(group.clientAtoms).filter(
+            (c) => !true,
+          ).length;
+          return `${group.name ? `${group.name}: ` : ""}${
+            internalShowOffline ? clientCount : disconnectedClientCount
+          }/${clientCount}`;
+        }),
+      [group, group.clientAtoms, internalShowOffline],
+    ),
+  );
 
   // const averageGroupVolume = useMemo(() => {
   //   const clientCount = connectedClients.length;

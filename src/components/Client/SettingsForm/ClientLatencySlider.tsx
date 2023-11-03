@@ -6,7 +6,7 @@ import { PrimitiveAtom } from "jotai";
 import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientLatencySliderProps extends SliderProps {
-  clientAtom?: PrimitiveAtom<ClientType>
+  clientAtom?: PrimitiveAtom<ClientType>;
 }
 
 function valuetext(value: number) {
@@ -18,7 +18,7 @@ const ClientLatencySlider: React.FC<ClientLatencySliderProps> = ({
   ...props
 }) => {
   if (!clientAtom) {
-    return null
+    return null;
   }
   const [client] = useAtom(clientAtom);
   const [connected] = useAtom(connectedAtom);
@@ -31,14 +31,20 @@ const ClientLatencySlider: React.FC<ClientLatencySliderProps> = ({
   }, [client, setInternalState]);
 
   const handleChangeCommitted = useCallback(
-    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (
+      _e: Event | React.SyntheticEvent<Element, Event>,
+      v: number | number[],
+    ) => {
       setInternalState(v as number);
     },
     [setInternalState],
   );
 
   const handleChange = useCallback(
-    (_e: Event | React.SyntheticEvent<Element, Event>, v: number | number[]) => {
+    (
+      _e: Event | React.SyntheticEvent<Element, Event>,
+      v: number | number[],
+    ) => {
       setInternalState(v as number);
     },
     [setInternalState],

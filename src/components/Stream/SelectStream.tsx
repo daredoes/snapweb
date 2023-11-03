@@ -2,7 +2,7 @@ import { Box, MenuItem, Select, SelectProps, Typography } from "@mui/material";
 import React, { useMemo } from "react";
 import { StreamImg } from "../generic";
 import { Stream } from "src/types/snapcast";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { streamAtom } from "src/atoms/snapclient/split";
 
 export interface SelectStreamProps extends SelectProps {
@@ -10,7 +10,7 @@ export interface SelectStreamProps extends SelectProps {
 }
 
 const SelectStream: React.FC<SelectStreamProps> = ({ stream }) => {
-  const [streams] = useAtom(streamAtom)
+  const [streams] = useAtom(streamAtom);
 
   const streamMenuItems: Record<string, React.ReactNode> = useMemo(() => {
     const newItems: Record<string, React.ReactNode> = {};

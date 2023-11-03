@@ -6,15 +6,15 @@ import { useGlobalModal } from "src/atoms/global-modal";
 export interface SnapclientSettingsIconProps extends IconButtonProps {}
 
 const SnapclientSettingsIcon = (props: SnapclientSettingsIconProps) => {
-  const { isOpen, openModal } = useGlobalModal()
+  const { isOpen, openModal } = useGlobalModal();
   const handleClickSettings = useCallback(() => {
-    openModal('SETTINGS');
+    openModal("SETTINGS");
   }, [openModal]);
 
   return (
     <SettingsIcon
       {...props}
-      disabled={isOpen('SETTINGS')}
+      disabled={isOpen("SETTINGS")}
       onClick={handleClickSettings}
     />
   );

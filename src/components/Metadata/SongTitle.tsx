@@ -6,7 +6,7 @@ import { Stream } from "src/types/snapcast";
 
 export interface SongTitleProps
   extends Omit<TypographyProps, "title" | "children"> {
-    streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const SongTitle: React.FC<SongTitleProps> = ({
@@ -16,7 +16,7 @@ const SongTitle: React.FC<SongTitleProps> = ({
   textAlign = "center",
   ...props
 }) => {
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const myTitle = useMemo(() => {
     return stream.properties.metadata?.title || "Song Not Provided";

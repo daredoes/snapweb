@@ -6,7 +6,7 @@ import { PrimitiveAtom } from "jotai";
 import { ClientType } from "src/atoms/snapclient/split";
 
 export interface ClientMuteProps {
-  clientAtom: PrimitiveAtom<ClientType>
+  clientAtom: PrimitiveAtom<ClientType>;
 }
 
 const ClientMute: React.FC<ClientMuteProps> = ({ clientAtom }) => {

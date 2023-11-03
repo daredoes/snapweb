@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Client } from "src/types/snapcast";
 
 export interface ClientGroupCheckboxProps extends FormGroupProps {
-  client: Client & {groupId: string};
+  client: Client & { groupId: string };
   groupId: string;
 }
 
@@ -19,8 +19,8 @@ const ClientGroupCheckbox: React.FC<ClientGroupCheckboxProps> = ({
 }) => {
   const [internalState, setInternalState] = useState(false);
   useEffect(() => {
-    setInternalState(client.groupId === groupId)
-  }, [setInternalState, client, groupId])
+    setInternalState(client.groupId === groupId);
+  }, [setInternalState, client, groupId]);
   return (
     <FormGroup {...props}>
       <FormControlLabel

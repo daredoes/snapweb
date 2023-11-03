@@ -9,7 +9,10 @@ import {
 } from "@mui/material";
 import { atom, useAtom } from "jotai";
 import { apiAtom } from "src/atoms/snapclient";
-import { clientAtomSettingsAtom, clientSettingsAtom } from "src/atoms/snapclient/settings";
+import {
+  clientAtomSettingsAtom,
+  clientSettingsAtom,
+} from "src/atoms/snapclient/settings";
 import ClientName from "../Client/SettingsForm/ClientName";
 import ClientLatencySlider from "../Client/SettingsForm/ClientLatencySlider";
 import ClientDisabledText from "../Client/SettingsForm/ClientDisabledText";
@@ -35,7 +38,7 @@ const ClientSettings = ({
   ...props
 }: ClientSettingsProp) => {
   const [clientAtom, setClient] = useAtom(clientAtomSettingsAtom);
-  const [client] = useAtom(clientSettingsAtom)
+  const [client] = useAtom(clientSettingsAtom);
   const [api] = useAtom(apiAtom);
 
   const closeDialog = useCallback(() => {

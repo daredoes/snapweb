@@ -4,10 +4,12 @@ import { useAtom } from "jotai";
 import { streamAtomAtom } from "src/atoms/snapclient/split";
 
 const Stream = () => {
-  const [streams] = useAtom(streamAtomAtom)
+  const [streams] = useAtom(streamAtomAtom);
   const streamElements = useMemo(() => {
     return streams.map((streamAtom) => {
-      return <StreamDisplay streamAtom={streamAtom} key={streamAtom.toString()} />;
+      return (
+        <StreamDisplay streamAtom={streamAtom} key={streamAtom.toString()} />
+      );
     });
   }, [streams]);
 

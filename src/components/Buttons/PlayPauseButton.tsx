@@ -8,7 +8,7 @@ import { Stream } from "src/types/snapcast";
 
 export interface PlayPauseButtonProps
   extends Omit<IconButtonProps, "children" | "onClick"> {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const PlayPauseButton: React.FC<PlayPauseButtonProps> = ({
@@ -17,7 +17,7 @@ const PlayPauseButton: React.FC<PlayPauseButtonProps> = ({
   ...props
 }) => {
   const [api] = useAtom(apiAtom);
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
 
   const playbackStatus = useMemo(
     () => stream.properties.playbackStatus,

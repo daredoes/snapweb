@@ -6,7 +6,7 @@ import { PrimitiveAtom, useAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
 
 export interface MetadataBoxProps extends BoxProps {
-  streamAtom: PrimitiveAtom<Stream>
+  streamAtom: PrimitiveAtom<Stream>;
 }
 
 const MetadataBox: React.FC<MetadataBoxProps> = ({
@@ -19,7 +19,7 @@ const MetadataBox: React.FC<MetadataBoxProps> = ({
   gap = 0,
   ...props
 }) => {
-  const [stream] = useAtom(streamAtom)
+  const [stream] = useAtom(streamAtom);
   return (
     <Box
       {...props}

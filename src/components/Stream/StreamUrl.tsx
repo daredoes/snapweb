@@ -18,18 +18,21 @@ const StreamUrl: React.FC<StreamUrlProps> = ({
 }) => {
   const [url, setUrl] = useAtom(serverUrlAtom);
 
-  const isFirstRender = useIsFirstRender()
+  const isFirstRender = useIsFirstRender();
 
   const handleClick: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   > = useCallback(
     (e) => {
       const newValue = e.currentTarget.value;
-      const params = new URLSearchParams()
-      params.set("url", newValue)
+      const params = new URLSearchParams();
+      params.set("url", newValue);
       if (history.pushState) {
-        var newurl =  window.location.href.replace('#', '').split("?")[0] + "?" + params.toString()
-        window.history.pushState({path:newurl},'',newurl);
+        var newurl =
+          window.location.href.replace("#", "").split("?")[0] +
+          "?" +
+          params.toString();
+        window.history.pushState({ path: newurl }, "", newurl);
       }
       setUrl(newValue);
     },
@@ -38,14 +41,14 @@ const StreamUrl: React.FC<StreamUrlProps> = ({
 
   useLayoutEffect(() => {
     if (isFirstRender) {
-      const search = "?" + window.location.hash.replace('#', '').split("?")[1]
-      const params = new URLSearchParams(search)
-      const qUrl = params.get("url")
+      const search = "?" + window.location.hash.replace("#", "").split("?")[1];
+      const params = new URLSearchParams(search);
+      const qUrl = params.get("url");
       if (qUrl && qUrl !== "") {
-        setUrl(qUrl)
+        setUrl(qUrl);
       }
     }
-  }, [isFirstRender, setUrl])
+  }, [isFirstRender, setUrl]);
 
   return (
     <TextField
