@@ -1,15 +1,16 @@
 import { Box, MenuItem, Select, SelectProps, Typography } from "@mui/material";
 import React, { useMemo } from "react";
-import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { StreamImg } from "../generic";
 import { Stream } from "src/types/snapcast";
+import { useAtom } from 'jotai';
+import { streamAtom } from "src/atoms/snapclient/split";
 
 export interface SelectStreamProps extends SelectProps {
   stream: Stream;
 }
 
 const SelectStream: React.FC<SelectStreamProps> = ({ stream }) => {
-  const { streams } = useSnapclient();
+  const [streams] = useAtom(streamAtom)
 
   const streamMenuItems: Record<string, React.ReactNode> = useMemo(() => {
     const newItems: Record<string, React.ReactNode> = {};

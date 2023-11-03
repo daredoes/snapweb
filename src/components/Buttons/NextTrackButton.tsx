@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useAtom } from "jotai";
 import { SkipNext } from "@mui/icons-material";
 import { IconButton, IconButtonProps } from "@mui/material";
-import { apiAtom, streamsAtom } from "src/atoms/snapclient";
+import { apiAtom } from "src/atoms/snapclient";
 import { PrimitiveAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
 

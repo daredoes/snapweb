@@ -12,7 +12,18 @@ import {
 } from "src/types/snapcast";
 import Stream from "src/types/snapcast/Stream/Stream";
 import { showOfflineClientsAtom } from "./localStorage";
-import { SplitAtomAction } from "jotai/vanilla/utils/splitAtom";
+export type SplitAtomAction<Item> = {
+  type: 'remove';
+  atom: PrimitiveAtom<Item>;
+} | {
+  type: 'insert';
+  value: Item;
+  before?: PrimitiveAtom<Item>;
+} | {
+  type: 'move';
+  atom: PrimitiveAtom<Item>;
+  before?: PrimitiveAtom<Item>;
+};
 
 type Details = {
   name?: string;

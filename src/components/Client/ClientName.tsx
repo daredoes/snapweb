@@ -1,7 +1,6 @@
 import { Box, BoxProps, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useAtom } from "jotai";
-import { clientsAtom } from "src/atoms/snapclient";
 import { PrimitiveAtom } from "jotai";
 import { ClientType } from "src/atoms/snapclient/split";
 
