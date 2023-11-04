@@ -19,7 +19,7 @@ jobs:
       - run: cd $GITHUB_WORKSPACE
       - run: yarn
       - run: yarn build
-      - run: zip -r dist.zip public
+      - run: cd public && zip -r dist.zip * && mv dist.zip ../dist.zip
 
       # Upload build file to the releas as an asset.
       - name: Upload zip to release
