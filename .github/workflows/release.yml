@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # Build
+      - name: Build
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.7'
+      - run: cd $GITHUB_WORKSPACE
+      - run: yarn
+      - run: yarn build
+      - run: zip -r dist.zip public
+
+      # Upload build file to the releas as an asset.
+      - name: Upload zip to release
+        uses: svenstaro/upload-release-action@v1-release
+
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: /home/runner/work/snapweb/snapweb/dist.zip
+          asset_name: dist.zip
+          tag: ${{ github.ref }}
+          overwrite: true
