@@ -208,7 +208,6 @@ export const updateStreamPropertiesAtom = atom(
       streamAtoms.forEach((Atom) => {
         const data = get(Atom);
         if (data.id === id) {
-          console.log("setting stream", properties, { ...data, properties });
           set(Atom, { ...data, properties });
           throw new Error("Early Exit");
         }
