@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from "react";
+import React, { useLayoutEffect, useMemo } from "react";
 import { useDebounce } from "@uidotdev/usehooks";
 import useSnapclient from "src/controllers/snapcontrol/useSnapclient/useSnapclient";
 import Streams from "./Stream/Streams";
