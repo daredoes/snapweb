@@ -1,7 +1,5 @@
-import { atom } from "jotai";
+import { atom, Getter, Setter } from "jotai";
 import type { PrimitiveAtom, WritableAtom } from "jotai";
-import { Getter } from "jotai/ts3.8/index";
-import { Setter } from "jotai/ts3.8/vanilla";
 
 import { atomFamily, splitAtom, atomWithReset } from "jotai/utils";
 import { Client, Group, Properties, Volume } from "src/types/snapcast";

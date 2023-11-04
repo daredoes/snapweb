@@ -8,7 +8,7 @@ env:
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["vite"]
+    branches: ["master"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,8 +40,12 @@ jobs:
         with:
           node-version: 20.7.0
           cache: "npm"
-      - name: Install dependencies
-        run: bun install
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
+      - name: Build
+        run: bun test
       - name: Build
         run: bun run build
       - name: Setup Pages
@@ -50,7 +54,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload dist repository
-          path: "./dist"
+          path: "./public"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
