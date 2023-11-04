@@ -27,19 +27,35 @@ test("convertHttpToWebsocket drops port", () => {
 });
 
 test("replaceUrlHostAndPort works with http", () => {
-  expect(replaceUrlHostAndPort("http://0.0.0.0:6680/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg", "http://example.com")).toEqual(
+  expect(
+    replaceUrlHostAndPort(
+      "http://0.0.0.0:6680/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg",
+      "http://example.com",
+    ),
+  ).toEqual(
     "http://example.com/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg",
   );
 });
 
 test("replaceUrlHostAndPort works with https", () => {
-  expect(replaceUrlHostAndPort("http://0.0.0.0:6680/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg", "https://example.com")).toEqual(
+  expect(
+    replaceUrlHostAndPort(
+      "http://0.0.0.0:6680/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg",
+      "https://example.com",
+    ),
+  ).toEqual(
     "https://example.com/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg",
   );
 });
 
 test("replaceUrlHostAndPort works with http and port", () => {
-  expect(replaceUrlHostAndPort("http://0.0.0.0:6680/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg", "http://example.com", 1234)).toEqual(
+  expect(
+    replaceUrlHostAndPort(
+      "http://0.0.0.0:6680/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg",
+      "http://example.com",
+      1234,
+    ),
+  ).toEqual(
     "http://example.com:1234/local/884e6e48595d8dfa79bea9a694ce09e1-715x715.jpeg",
   );
 });

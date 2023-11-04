@@ -24,8 +24,8 @@ const SwitchStreams = ({
   onClose = () => {},
   ...props
 }: SwitchStreamsProps) => {
-  const [api] = useAtom(apiAtom)
-  const [selectStream, setSelectStream] = useAtom(switchStreamAtom)
+  const [api] = useAtom(apiAtom);
+  const [selectStream, setSelectStream] = useAtom(switchStreamAtom);
   const [streams] = useAtom(
     useMemo(
       // This is also fine

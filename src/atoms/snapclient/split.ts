@@ -86,18 +86,20 @@ export const groupAtomsFamily = atomFamily((streamId: string) =>
     const groupAtoms = get(groupsAtomAtom);
     const showOfflineClients = get(showOfflineClientsAtom);
     return groupAtoms.filter((group) => {
-      const g = get(group)
-      const conditionOne =  g.stream_id === streamId;
-      const clientAtoms = get(g.clientAtoms)
+      const g = get(group);
+      const conditionOne = g.stream_id === streamId;
+      const clientAtoms = get(g.clientAtoms);
       if (showOfflineClients) {
-        return conditionOne
+        return conditionOne;
       }
       if (conditionOne) {
-        return clientAtoms.filter((clientAtom) => {
-          return get(clientAtom).connected === true
-        }).length > 0
+        return (
+          clientAtoms.filter((clientAtom) => {
+            return get(clientAtom).connected === true;
+          }).length > 0
+        );
       }
-      return false
+      return false;
     });
   }),
 );
@@ -206,7 +208,7 @@ export const updateStreamPropertiesAtom = atom(
       streamAtoms.forEach((Atom) => {
         const data = get(Atom);
         if (data.id === id) {
-          console.log("setting stream", properties, { ...data, properties })
+          console.log("setting stream", properties, { ...data, properties });
           set(Atom, { ...data, properties });
           throw new Error("Early Exit");
         }

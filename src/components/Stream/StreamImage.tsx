@@ -11,40 +11,33 @@ export interface StreamImageProps {
   streamAtom: PrimitiveAtom<Stream>;
 }
 
-const StreamImage: React.FC<StreamImageProps> = ({
-  streamAtom
-}) => {
+const StreamImage: React.FC<StreamImageProps> = ({ streamAtom }) => {
   const [stream] = useAtom(streamAtom);
-  const [streamArtUrls] = useAtom(streamArtUrlsAtom)
+  const [streamArtUrls] = useAtom(streamArtUrlsAtom);
 
   const streamDataSrc = useMemo(() => {
     return `data:image/${
       stream.properties.metadata?.artData?.extension === "svg"
         ? "svg+xml"
         : stream.properties.metadata?.artData?.extension
-    };base64,${stream.properties.metadata?.artData?.data}`
-  }, [stream])
+    };base64,${stream.properties.metadata?.artData?.data}`;
+  }, [stream]);
 
   const artSrc = useMemo(() => {
     const streamSrc = stream.properties.metadata?.artData?.data
-      ? streamDataSrc : undefined;
+      ? streamDataSrc
+      : undefined;
     if (!streamSrc) {
       try {
         const url = new URL(stream.properties.metadata?.artUrl);
-        const newUrl = streamArtUrls[stream.id][url.origin]
+        const newUrl = streamArtUrls[stream.id][url.origin];
         if (newUrl) {
-          return replaceUrlHostAndPort(url.href, newUrl)
+          return replaceUrlHostAndPort(url.href, newUrl);
         }
-      } catch {
-        
-      }
+      } catch {}
     }
     return streamSrc;
-  }, [
-    stream.id,
-    streamDataSrc,
-    stream.properties.metadata?.artUrl,
-  ]);
+  }, [stream.id, streamDataSrc, stream.properties.metadata?.artUrl]);
 
   if (artSrc) {
     return <StreamImg alt="" src={artSrc} />;
