@@ -12,6 +12,6 @@ export default defineConfig(({ mode }) => {
         src: "/src",
       },
     },
-    base: env.BASE_URL,
+    base: env.BASE_URL || '/',
   };
 });
