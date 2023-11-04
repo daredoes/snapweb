@@ -1,5 +1,6 @@
 export const LOCAL_STORAGE_KEYS = {
   "Snapcast Server Settings": "snapcast_server_settings",
+  "Snapcast Stream Art URLs": "snapcast_stream_art_urls",
   "Snapcast Server Url": "snapcast_server_url",
   "Snapcast Stream Url": "snapcast_stream_url",
   "Snapcast Server Prevent Automatic Reconnect":

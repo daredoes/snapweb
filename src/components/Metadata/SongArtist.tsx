@@ -21,7 +21,7 @@ const SongArtist: React.FC<SongArtistProps> = ({
     return (
       stream.properties.metadata?.artist?.join(", ") || "Artist Not Provided"
     );
-  }, [stream.properties.metadata?.title]);
+  }, [stream.properties]);
   return (
     <Typography
       {...props}

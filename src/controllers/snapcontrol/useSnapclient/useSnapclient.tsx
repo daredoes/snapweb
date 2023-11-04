@@ -5,8 +5,6 @@ import { Server } from "src/types/snapcast";
 import { useAtom } from "jotai";
 import { apiAtom, connectedAtom, serverAtom } from "src/atoms/snapclient";
 import {
-  streamAtomAtom,
-  groupsAtomAtom,
   updateGroupStreamAtom,
   streamAtom,
   groupAtom,
@@ -154,7 +152,7 @@ export const useSnapclient = () => {
             updateStream(r.id, r.stream);
           },
           "Stream.OnProperties": (r) => {
-            updateStreamProperties(r.id, r);
+            updateStreamProperties(r.id, r.properties);
           },
           "Group.OnStreamChanged": (r) => {
             updateGroupStream(r.id, r.stream_id);

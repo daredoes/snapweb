@@ -9,6 +9,7 @@ import { PrimitiveAtom, atom, useAtom } from "jotai";
 import { GroupType } from "src/atoms/snapclient/split";
 import { showOfflineClientsAtom } from "src/atoms/snapclient/localStorage";
 import { Client } from "src/types/snapcast";
+import { connectedAtom } from "src/atoms/snapclient";
 
 export interface GroupDisplayProps extends BoxProps {
   groupAtom: PrimitiveAtom<GroupType>;
@@ -20,7 +21,7 @@ export const GroupDisplay: React.FC<GroupDisplayProps> = ({
 }) => {
   const [group] = useAtom(groupAtom);
   const [showOfflineClients] = useAtom(showOfflineClientsAtom);
-  const { connected } = useSnapclient();
+  const [connected] = useAtom(connectedAtom);
   const [internalShowOffline, setInternalShowOffline] = useState<
     boolean | undefined
   >(undefined);

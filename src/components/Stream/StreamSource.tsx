@@ -1,10 +1,8 @@
 import { Box, BoxProps, Typography } from "@mui/material";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
-import { StreamImg } from "../generic";
-import { Input } from "@mui/icons-material";
 import { PrimitiveAtom } from "jotai";
 import { Stream } from "src/types/snapcast";
+import StreamImage from "./StreamImage";
 
 export interface StreamSourceProps extends BoxProps {
   streamAtom: PrimitiveAtom<Stream>;
@@ -22,23 +20,6 @@ const StreamSource: React.FC<StreamSourceProps> = ({
   ...props
 }) => {
   const [stream] = useAtom(streamAtom);
-
-  const artSrc = useMemo(() => {
-    const streamSrc = stream.properties.metadata?.artData?.data
-      ? `data:image/svg+xml;base64,${stream.properties.metadata?.artData?.data}`
-      : stream.properties.metadata?.artUrl;
-    return streamSrc;
-  }, [
-    stream.properties.metadata?.artData?.data,
-    stream.properties.metadata?.artUrl,
-  ]);
-
-  const img = useMemo(() => {
-    if (artSrc) {
-      return <StreamImg alt="" src={artSrc} />;
-    }
-    return <Input />;
-  }, [artSrc]);
   return (
     <Box
       title={title}
@@ -50,7 +31,7 @@ const StreamSource: React.FC<StreamSourceProps> = ({
       alignItems={alignItems}
       gap={gap}
     >
-      {img}
+      <StreamImage streamAtom={streamAtom} />
       <Typography textAlign={"center"}>{stream.id}</Typography>
     </Box>
   );

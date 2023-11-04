@@ -19,7 +19,7 @@ const SongAlbum: React.FC<SongAlbumProps> = ({
 
   const myTitle = useMemo(() => {
     return stream.properties.metadata?.album || "Album Not Provided";
-  }, [stream.properties.metadata?.title]);
+  }, [stream.properties]);
   return (
     <Typography
       {...props}

@@ -8,10 +8,11 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material";
-import useSnapclient from "src/controllers/snapcontrol/useSnapclient";
 import { StreamImg } from "../generic";
 import { atom, useAtom } from "jotai";
 import { streamAtomAtom } from "src/atoms/snapclient/split";
+import { switchStreamAtom } from "src/atoms/snapclient/switchStream";
+import { apiAtom } from "src/atoms/snapclient";
 
 export interface SwitchStreamsProps extends Omit<DialogProps, "open"> {
   onClose?: () => void;
@@ -23,7 +24,8 @@ const SwitchStreams = ({
   onClose = () => {},
   ...props
 }: SwitchStreamsProps) => {
-  const { selectStream, setSelectStream, api } = useSnapclient();
+  const [api] = useAtom(apiAtom)
+  const [selectStream, setSelectStream] = useAtom(switchStreamAtom)
   const [streams] = useAtom(
     useMemo(
       // This is also fine

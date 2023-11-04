@@ -2,6 +2,17 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { LOCAL_STORAGE_KEYS } from "src/types/localStorage";
 
+const initialStreamArtUrls:Record<string, Record<string, string>> = {
+  'Home': {
+    'http://0.0.0.0:6680': 'http://snapcast.local:6680'
+  }
+}
+
+export const streamArtUrlsAtom = atomWithStorage(
+  LOCAL_STORAGE_KEYS["Snapcast Stream Art URLs"],
+  initialStreamArtUrls
+)
+
 export const showOfflineClientsAtom = atomWithStorage(
   LOCAL_STORAGE_KEYS["Snapcast Server Show Offline Clients"],
   false,

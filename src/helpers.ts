@@ -30,3 +30,8 @@ export function convertSecondsToTimestamp(floatSeconds?: number): string {
   }
   return audioValue;
 }
+
+export const replaceUrlHostAndPort = (originalUrl: string, newHost: string, newPort?: number) => {
+  const url = new URL(originalUrl)
+  return `${url.href.replace(url.origin, `${newHost}${newPort ? `:${newPort}` : ''}`)}`
+}

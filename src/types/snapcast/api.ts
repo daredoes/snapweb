@@ -343,8 +343,9 @@ export type ServerOnUpdateResponse = {
   server: Server;
 };
 
-export interface StreamOnProperties extends Properties {
+export interface StreamOnProperties {
   id: string;
+  properties: Properties
 }
 
 export type NotificationMethods = {

@@ -20,7 +20,7 @@ const SongTitle: React.FC<SongTitleProps> = ({
 
   const myTitle = useMemo(() => {
     return stream.properties.metadata?.title || "Song Not Provided";
-  }, [stream.properties.metadata?.title]);
+  }, [stream.properties]);
   return (
     <Typography
       {...props}
