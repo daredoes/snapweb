@@ -38,6 +38,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-toastify": "^9.1.3",
+    "standardized-audio-context": "^25.3.58",
     "use-media-session": "^0.0.3"
   },
   "devDependencies": {

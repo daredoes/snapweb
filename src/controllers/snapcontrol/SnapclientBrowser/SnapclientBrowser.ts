@@ -1,3 +1,4 @@
+import { IAudioBuffer, IAudioContext, IAudioBufferSourceNode, IGainNode } from 'standardized-audio-context'
 import AudioStream from "src/controllers/snapcontrol/AudioStream";
 import TimeProvider from "src/controllers/snapcontrol/TimePro";
 import Decoder from "src/controllers/snapcontrol/decoders/Decoder";
@@ -70,10 +71,6 @@ class SnapclientBrowser {
       return false;
     }
     return true;
-  }
-
-  public static async getClientId(): Promise<string> {
-    return uuidv4();
   }
 
   public async setPlaying(playing: boolean): Promise<void> {
@@ -166,12 +163,13 @@ class SnapclientBrowser {
             );
           }
 
-          if (window.AudioContext) {
-            // we are not using webkitAudioContext, so it's safe to setup a new AudioContext with the new samplerate
-            // since this code is not triggered by direct user input, we cannt create a webkitAudioContext here
-            this.stopAudio();
-            this.setupAudioContext();
-          }
+          // NOTE: this breaks iOS audio output on v15.7.5 at least
+          // if (window.AudioContext) {
+          //   // we are not using webkitAudioContext, so it's safe to setup a new AudioContext with the new samplerate
+          //   // since this code is not triggered by direct user input, we cannt create a webkitAudioContext here
+          //   this.stopAudio();
+          //   this.setupAudioContext();
+          // }
 
           this.ctx.resume();
           this.timeProvider.setAudioContext(this.ctx);
@@ -346,7 +344,7 @@ class SnapclientBrowser {
   timeProvider: TimeProvider;
   stream: AudioStream | undefined;
   ctx!: AudioContext; // | undefined;
-  gainNode!: GainNode;
+  gainNode!: IGainNode<IAudioContext>;
   serverSettings: ServerSettingsMessage | undefined;
   decoder: Decoder | undefined;
   sampleFormat: SampleFormat | undefined;

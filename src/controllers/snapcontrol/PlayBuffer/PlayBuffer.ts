@@ -1,9 +1,11 @@
+import { IAudioBuffer, IAudioContext, IAudioBufferSourceNode, IGainNode } from 'standardized-audio-context'
+
 class PlayBuffer {
   constructor(
-    buffer: AudioBuffer,
+    buffer: IAudioBuffer,
     playTime: number,
-    source: AudioBufferSourceNode,
-    destination: AudioNode,
+    source: IAudioBufferSourceNode<IAudioContext>,
+    destination: IGainNode<IAudioContext>,
   ) {
     this.buffer = buffer;
     this.playTime = playTime;
@@ -22,9 +24,9 @@ class PlayBuffer {
     this.source.start(this.playTime);
   }
 
-  buffer: AudioBuffer;
+  buffer: IAudioBuffer;
   playTime: number;
-  source: AudioBufferSourceNode;
+  source: IAudioBufferSourceNode<IAudioContext>;
   num: number = 0;
 }
 export default PlayBuffer;
