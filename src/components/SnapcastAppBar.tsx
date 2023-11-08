@@ -1,8 +1,9 @@
 import React from "react";
-import { AppBar, AppBarProps, Toolbar } from "@mui/material";
+import { AppBar, AppBarProps, Box, Toolbar } from "@mui/material";
 import SnapclientSettingsIcon from "./SnapclientSettingsIcon";
 import SnapcastTitle from "./SnapcastTitle";
 import ToggleShowOfflineClients from "./ToggleShowOfflineClients";
+import AudioController from "./AudioController";
 
 const SnapcastAppBar: React.FC<Omit<AppBarProps, "children" | "position">> = ({
   sx,
@@ -23,7 +24,10 @@ const SnapcastAppBar: React.FC<Omit<AppBarProps, "children" | "position">> = ({
           sx={{ mr: 2 }}
         />
         <SnapcastTitle />
-        <ToggleShowOfflineClients sx={{ marginLeft: "auto" }} />
+        <Box ml={'auto'} display={'flex'} gap={1}>
+          <ToggleShowOfflineClients />
+          <AudioController />
+        </Box>
       </Toolbar>
     </AppBar>
   );

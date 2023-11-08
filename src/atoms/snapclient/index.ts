@@ -13,6 +13,6 @@ export const hostAtom = atom<Host | undefined>((get) => {
 });
 hostAtom.debugLabel = "Host Details";
 
-const defaultConnected: boolean | undefined = undefined;
+const defaultConnected: boolean | undefined = undefined as boolean | undefined;
 export const connectedAtom = atom(defaultConnected);
 connectedAtom.debugLabel = "Connected";

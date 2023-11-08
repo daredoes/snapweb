@@ -125,7 +125,7 @@ const AudioController = ({}: AudioControllerProps) => {
       if (!snapclient.streamsocket) {
         snapclient.connect();
       }
-      snapclient.play();
+      // snapclient.play();
     }
   }, [playing, snapclient]);
 
@@ -146,12 +146,12 @@ const AudioController = ({}: AudioControllerProps) => {
   });
   const icon = useMemo(() => {
     if (playing) {
-      return <StopIcon {...attrs} disabled={disabled} onClick={handleClick} />;
+      return <StopIcon color='inherit' {...attrs} disabled={disabled} onClick={handleClick} />;
     }
-    return <PlayIcon {...attrs} disabled={disabled} onClick={handleClick} />;
+    return <PlayIcon color='inherit' {...attrs} disabled={disabled} onClick={handleClick} />;
   }, [playing, handleClick, disabled, attrs]);
   return (
-    <div className={"cursor-pointer"}>
+    <Box>
       {icon}
       <Dialog
         fullScreen={fullScreen}
@@ -184,7 +184,7 @@ const AudioController = ({}: AudioControllerProps) => {
           <Button onClick={handleClickSave}>Save</Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 };
 

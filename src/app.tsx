@@ -7,8 +7,6 @@ import SwitchStreams from "./components/Dialogs/SwitchStream";
 import ClientSettings from "./components/Dialogs/ClientSettings";
 import GroupClientsSettings from "./components/Dialogs/GroupClientsSettings";
 import {
-  ANCHOR_TO_MODAL,
-  ModalHashes,
   useGlobalModal,
 } from "./atoms/global-modal";
 import React from "react";
