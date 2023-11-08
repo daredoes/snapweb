@@ -1,11 +1,11 @@
 import { atom } from "jotai";
 import SnapcastWebsocketAPI from "src/controllers/SnapcastWebsocketAPI";
-import { Client, Host, ServerDetails, Volume } from "src/types/snapcast";
+import { Host, ServerDetails } from "src/types/snapcast";
 
 export const apiAtom = atom<SnapcastWebsocketAPI>(new SnapcastWebsocketAPI());
 apiAtom.debugLabel = "API";
 
-const defaultServer: ServerDetails | undefined = undefined;
+const defaultServer: ServerDetails | undefined = undefined as (ServerDetails | undefined);
 export const serverAtom = atom(defaultServer);
 serverAtom.debugLabel = "Server Details";
 export const hostAtom = atom<Host | undefined>((get) => {
