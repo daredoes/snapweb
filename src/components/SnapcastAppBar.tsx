@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, AppBarProps, Box, Toolbar } from "@mui/material";
+import { AppBar, AppBarProps, Box, NoSsr, Toolbar } from "@mui/material";
 import SnapclientSettingsIcon from "./SnapclientSettingsIcon";
 import SnapcastTitle from "./SnapcastTitle";
 import ToggleShowOfflineClients from "./ToggleShowOfflineClients";
@@ -26,7 +26,9 @@ const SnapcastAppBar: React.FC<Omit<AppBarProps, "children" | "position">> = ({
         <SnapcastTitle />
         <Box ml={"auto"} display={"flex"} gap={1}>
           <ToggleShowOfflineClients />
-          <AudioController />
+          <NoSsr>
+            <AudioController />
+          </NoSsr>
         </Box>
       </Toolbar>
     </AppBar>
