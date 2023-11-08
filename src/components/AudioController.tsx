@@ -25,6 +25,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMediaMeta, useMediaSession } from "use-media-session";
 import { useAtom } from "jotai";
 import { streamUrlAtom } from "src/atoms/snapclient/localStorage";
+import { IMediaElementAudioSourceNode } from "standardized-audio-context";
+import AC from "src/types/snapcast/AudioContext/AudioContext";
+import { clientIdAtom } from "src/atoms/snapclient";
 
 const DEFAULT_SNAPCAST_URL = "http://snapcast.local:1780/stream";
 
@@ -32,12 +35,13 @@ export interface AudioControllerProps {}
 
 const AudioController = ({}: AudioControllerProps) => {
   const theme = useTheme();
+  const [myId] = useAtom(clientIdAtom);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [internalUrl, setInternalUrl] = useState("");
   const [streamUrl, setStreamUrl] = useAtom(streamUrlAtom);
   const [snapclient, setSnapclient] = useState(new SnapclientBrowser());
   const [audioSource, setAudioSource] =
-    useState<MediaElementAudioSourceNode | null>(null);
+    useState<IMediaElementAudioSourceNode<AC> | null>(null);
 
   useMediaMeta({
     title: "Snapcast Stream",
@@ -108,8 +112,10 @@ const AudioController = ({}: AudioControllerProps) => {
       snapclient.onConnect = () => {
         setDisabled(false);
       };
-      snapclient.onDisconnect = () => {
+      snapclient.onError = () => {
         setDisabled(true);
+      };
+      snapclient.onDisconnect = () => {
         setPlaying(false);
       };
       snapclient.onPlay = (p) => {
@@ -119,11 +125,18 @@ const AudioController = ({}: AudioControllerProps) => {
   }, [setDisabled, setPlaying, snapclient]);
 
   const handleClick = useCallback(() => {
+    console.log("click", playing, snapclient.streamsocket);
     if (playing) {
       snapclient.stop();
     } else {
       if (!snapclient.streamsocket) {
-        snapclient.connect();
+        snapclient.connect(
+          "Snapweb Client",
+          "00:00:00:00:00:00",
+          "web",
+          navigator.platform,
+          myId,
+        );
       }
       // snapclient.play();
     }
@@ -146,9 +159,23 @@ const AudioController = ({}: AudioControllerProps) => {
   });
   const icon = useMemo(() => {
     if (playing) {
-      return <StopIcon color='inherit' {...attrs} disabled={disabled} onClick={handleClick} />;
+      return (
+        <StopIcon
+          color="inherit"
+          {...attrs}
+          disabled={disabled}
+          onClick={handleClick}
+        />
+      );
     }
-    return <PlayIcon color='inherit' {...attrs} disabled={disabled} onClick={handleClick} />;
+    return (
+      <PlayIcon
+        color="inherit"
+        {...attrs}
+        disabled={disabled}
+        onClick={handleClick}
+      />
+    );
   }, [playing, handleClick, disabled, attrs]);
   return (
     <Box>

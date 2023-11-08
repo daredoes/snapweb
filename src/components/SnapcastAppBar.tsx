@@ -24,7 +24,7 @@ const SnapcastAppBar: React.FC<Omit<AppBarProps, "children" | "position">> = ({
           sx={{ mr: 2 }}
         />
         <SnapcastTitle />
-        <Box ml={'auto'} display={'flex'} gap={1}>
+        <Box ml={"auto"} display={"flex"} gap={1}>
           <ToggleShowOfflineClients />
           <AudioController />
         </Box>

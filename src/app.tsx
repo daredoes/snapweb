@@ -6,9 +6,7 @@ import SnapclientSettings from "./components/SnapclientSettings";
 import SwitchStreams from "./components/Dialogs/SwitchStream";
 import ClientSettings from "./components/Dialogs/ClientSettings";
 import GroupClientsSettings from "./components/Dialogs/GroupClientsSettings";
-import {
-  useGlobalModal,
-} from "./atoms/global-modal";
+import { useGlobalModal } from "./atoms/global-modal";
 import React from "react";
 import { DevTools } from "jotai-devtools";
 

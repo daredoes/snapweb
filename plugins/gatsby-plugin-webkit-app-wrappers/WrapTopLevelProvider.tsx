@@ -1,6 +1,6 @@
-import React from 'react'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.min.css'
+import React from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material";
 import "@fontsource/roboto/300.css";
@@ -9,7 +9,6 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 const AppWrapper: React.FC<any> = ({ children }) => {
-
   return (
     <ThemeProvider
       theme={createTheme({
@@ -30,9 +29,9 @@ const AppWrapper: React.FC<any> = ({ children }) => {
       {/* ancestor of the <App /> children, since once it's in the DOM the */}
       {/* components/plugins (even the ones above it in the hierarchy) will */}
       {/* be able to call `toast()` without issues*/}
-      <ToastContainer newestOnTop position='bottom-right' theme={'light'} />
+      <ToastContainer newestOnTop position="bottom-right" theme={"light"} />
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default AppWrapper
+export default AppWrapper;

@@ -1,4 +1,9 @@
-import { IAudioBuffer, IAudioContext, IAudioBufferSourceNode, IGainNode } from 'standardized-audio-context'
+import {
+  IAudioBuffer,
+  IAudioContext,
+  IAudioBufferSourceNode,
+  IGainNode,
+} from "standardized-audio-context";
 
 class PlayBuffer {
   constructor(
