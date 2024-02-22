@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+  
+      - name: Setup environment
+        run: |
+          echo "PARENT_DIR=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          env
+  
+      - name: Get dependencies
+        run: sudo apt-get update && sudo apt-get install -yq debhelper
+        env:
+          DEBIAN_FRONTEND: noninteractive
+  
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+  
+      - name: Update npm
+        run: npm install -g npm@latest
+  
+      - name: Clean npm cache
+        run: npm cache clean --force
+  
+      - name: NPM Clean install
+        run: npm ci
+  
+      - name: Build
+        env: 
+          GENERATE_SOURCEMAP: "false"
+        run: npm run build
+      - run: cd build && zip -r dist.zip * && mv dist.zip ../dist.zip
+
+      # Upload build file to the releas as an asset.
+      - name: Upload zip to release
+        uses: svenstaro/upload-release-action@v1-release
+
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: /home/runner/work/snapweb/snapweb/dist.zip
+          asset_name: dist.zip
+          tag: ${{ github.ref }}
+          overwrite: true
